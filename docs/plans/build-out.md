@@ -1,6 +1,6 @@
 # Plan: Build out `mdformat-markdownlint`
 
-Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), and the Markdown CI callers have landed; next is the compatibility matrix, then the `markdown` flag in `flungo/terraform-github`, then the package.
+Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix and the Markdown CI callers have landed; next is the `markdown` flag in `flungo/terraform-github`, then the package.
 
 ## Goal
 
@@ -10,7 +10,7 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 ## Steps
 
 - [x] `.claude/settings.json` enabling the conventions plugins; `CLAUDE.md`; the decisions and plans directories with their indexes; ADR-001 and ADR-002.
-- [ ] `docs/reference/compatibility-matrix.md` with its index: every markdownlint rule and option value with its status, grounded in probes of markdownlint 0.41.1 against mdformat 1.0.0, and checked adversarially against a second, independent probe.
+- [x] `docs/reference/compatibility-matrix.md` with its index: every markdownlint rule and option value with its status, grounded in probes of markdownlint 0.41.1 against mdformat 1.0.0, and checked adversarially against a second, independent probe.
 - [x] Adopt the Markdown CI from `flungo/github-workflows`: `markdown-lint`, `markdown-links`, `markdown-sembr` and `flungo-workflows` callers, `.markdownlint-cli2.jsonc`, and an empty `.lycheeignore` carrying its header.
 - [ ] Remove `markdown = false` from this repository's declaration in `flungo/terraform-github`, which attaches `LYCHEE_GITHUB_TOKEN` and requires the two lint and link contexts.
 - [ ] Verify the external link sweep by `workflow_dispatch` once the token exists, and curate `.lycheeignore` from that run.
