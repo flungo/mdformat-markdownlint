@@ -1,0 +1,7 @@
+# URLs the external link sweep (lychee) must skip: one regex per line.
+# Only list URLs that legitimately 403/404 while unauthenticated (a 404 can be
+# an existence-hiding response) — never a genuinely dead link, and never
+# entries copied from another repo. Populate from THIS repo's own
+# workflow_dispatch runs of the markdown-links workflow, only after
+# LYCHEE_GITHUB_TOKEN is provisioned (a tokenless run's cross-repo 404s are
+# token artifacts, not dead links).

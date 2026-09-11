@@ -1,0 +1,22 @@
+# Caller for the reusable Markdown link validation in flungo/github-workflows.
+# internal (blocking) runs on pull_request/push; external (issue-reporting)
+# runs on schedule/workflow_dispatch. See that repo's
+# docs/runbooks/adopting-markdown-workflows.md.
+name: Markdown links
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  markdown-links:
+    permissions:
+      contents: read
+      issues: write
+    uses: flungo/github-workflows/.github/workflows/markdown-links.yml@v2
+    secrets:
+      LYCHEE_GITHUB_TOKEN: ${{ secrets.LYCHEE_GITHUB_TOKEN }}

@@ -1,0 +1,18 @@
+# Caller for the reusable Markdown lint workflow in flungo/github-workflows.
+# Rules live in .markdownlint-cli2.jsonc at the repo root. See that repo's
+# docs/runbooks/adopting-markdown-workflows.md.
+#
+# Unfiltered, like every Markdown caller here: a path filter would stop the
+# check run being created at all on a PR touching no Markdown, and this
+# context becomes required once the repository's terraform-github declaration
+# drops its transient `markdown = false`.
+name: Markdown lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  markdown-lint:
+    uses: flungo/github-workflows/.github/workflows/markdown-lint.yml@v2
