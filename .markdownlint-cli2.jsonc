@@ -1,0 +1,29 @@
+// markdownlint rules for this repo, consumed by the markdown-lint workflow
+// (flungo/github-workflows). Standard defaults per that repo's
+// docs/reference/markdown-validation.md; add further overrides only with an
+// inline justification.
+//
+// This repository is about keeping mdformat and markdownlint in agreement, and
+// its own configuration will be the first adopter of the preset it ships: once
+// the preset exists, this file extends it. The three settings below stay here
+// either way — MD013 and MD024 are content choices no preset should carry, and
+// MD060's compact style holds through the plugin's derived option rather than
+// through mdformat alone — so none of them is a setting the preset would own.
+{
+  "config": {
+    // Disabled in favour of the semantic line breaks convention (one sentence
+    // per source line) — a character ceiling can't reflow and would fight it.
+    "MD013": false,
+    // Allow repeated subsection names under different parents (e.g. Context /
+    // Decision / Consequences across ADRs); paired with the unique-heading
+    // convention for anything cross-referenced.
+    "MD024": { "siblings_only": true },
+    // Compact tables, one space each side of every pipe. Pinned rather than
+    // left to MD060's default, which accepts whichever style each table
+    // happens to match. Same reasoning as MD013 above: a diff should be the
+    // size of the change. Under "aligned" cell width is shared state — every
+    // cell is padded to its column's widest, so one edit reflows the whole
+    // table and one long cell taxes every row.
+    "MD060": { "style": "compact" }
+  }
+}
