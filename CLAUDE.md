@@ -5,8 +5,8 @@ The shape is that of eslint-config-prettier — the linter is configured to acce
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions and the Markdown CI callers exist; the compatibility matrix, the `markdown` flag in terraform-github, the package, the preset and the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
-> Nothing is published yet, and no plugin code is in the repository: the prototype lives outside it until the package lands.
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md) and the Markdown CI callers exist; the `markdown` flag in terraform-github, the package, the preset and the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> Nothing is published yet, and no plugin code is in the repository: the prototype the matrix's Evidence column refers to lives outside it until the package lands.
 
 ## Repo layout
 
@@ -14,9 +14,13 @@ What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-0
 docs/
   decisions/   ADRs — numbered, never deleted or renumbered. README.md is the index.
   plans/       One-time procedures with status tracking; retired when complete. README.md is the index.
+  reference/   Lookup docs — the compatibility matrix lives here. README.md is the index.
 ```
 
-`docs/reference/` with the compatibility matrix, the package (`src/mdformat_markdownlint/`), the preset and the corpus (`tests/`) are added by the build-out plan and described here as they land.
+The package (`src/mdformat_markdownlint/`), the preset and the corpus (`tests/`) are added by the build-out plan and described here as they land.
+
+**The compatibility matrix and the corpus must agree** ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
+A status that changes in one changes in the other in the same pull request; until the corpus exists, the matrix's Evidence column says how each row is known.
 
 ## Conventions
 
@@ -57,7 +61,7 @@ GitHub interaction is through the **GitHub MCP** (`mcp__github__*`); there is no
 
 **Two tools are the subject here, and their versions are facts the corpus will pin.**
 Once the package exists, read the pinned versions from `pyproject.toml` and the test workflow, never from a note in prose; a note goes stale the day one of them is bumped.
-Until then the compatibility matrix, the first document the build-out adds, records the versions its rows were established against.
+Until then the matrix's version table is the only record of the versions its rows were established against.
 
 ## Active work
 

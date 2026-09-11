@@ -3,7 +3,7 @@
 An [mdformat](https://github.com/hukkin/mdformat) plugin and a [markdownlint](https://github.com/DavidAnson/markdownlint) preset that keep the two tools in agreement: one style configuration, markdownlint's, and formatter output that lints clean against it.
 
 > **Status: nothing is published yet.**
-> The repository is being built out; the compatibility matrix is the first deliverable, and the package, preset and test corpus follow it.
+> The repository is being built out; the [compatibility matrix](docs/reference/compatibility-matrix.md) is the first deliverable, and the package, preset and test corpus follow it.
 > Progress is tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 
 ## What it will do
@@ -22,9 +22,10 @@ This project takes the shape of [eslint-config-prettier](https://github.com/pret
 - **A corpus** will assert, for every rule and every option value, which of four things is true: the rule cannot fire on formatted output, the formatter never makes it worse, this plugin bridges it, or it is unsatisfiable and refused.
   It will run against pinned and latest versions of both tools, so a version bump fails here first.
 
-The rule-by-rule promise is the compatibility matrix, the first document the build-out adds; the reasoning is in the [decision records](docs/decisions/README.md).
+The rule-by-rule promise is the [compatibility matrix](docs/reference/compatibility-matrix.md), whose Evidence column says which rows a prototype already meets and which are pending; the reasoning is in the [decision records](docs/decisions/README.md).
 
 ## Documentation
 
 - [`docs/decisions/`](docs/decisions/README.md) — architecture decision records.
 - [`docs/plans/`](docs/plans/README.md) — one-time procedures in progress.
+- [`docs/reference/`](docs/reference/README.md) — lookup documents, including the compatibility matrix.
