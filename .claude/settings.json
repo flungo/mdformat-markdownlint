@@ -1,0 +1,16 @@
+{
+  "extraKnownMarketplaces": {
+    "flungo-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "flungo/claude-plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "git-conventions@flungo-plugins": true,
+    "docs-standards@flungo-plugins": true,
+    "markdown-standards@flungo-plugins": true,
+    "writing-styles@flungo-plugins": true
+  }
+}
