@@ -4,8 +4,7 @@
 #
 # Unfiltered, like every Markdown caller here: a path filter would stop the
 # check run being created at all on a PR touching no Markdown, and this
-# context becomes required once the repository's terraform-github declaration
-# drops its transient `markdown = false`.
+# context is required on main by the repository's terraform-github declaration.
 name: Markdown lint
 
 on:
