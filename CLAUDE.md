@@ -5,7 +5,7 @@ The shape is that of eslint-config-prettier — the linter is configured to acce
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md) and the Markdown CI callers exist; the `markdown` flag in terraform-github, the package, the preset and the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md) and the Markdown CI exist, with its two lint and link contexts required on `main`; the package, the preset and the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 > Nothing is published yet, and no plugin code is in the repository: the prototype the matrix's Evidence column refers to lives outside it until the package lands.
 
 ## Repo layout
