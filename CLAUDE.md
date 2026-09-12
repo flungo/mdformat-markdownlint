@@ -11,13 +11,16 @@ What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-0
 ## Repo layout
 
 ```text
+pyproject.toml              The package: flit_core build, the mdformat.parser_extension entry
+                            point, and dependency bounds that hold adopters at the verified minor.
+src/mdformat_markdownlint/  The plugin.
 docs/
   decisions/   ADRs — numbered, never deleted or renumbered. README.md is the index.
   plans/       One-time procedures with status tracking; retired when complete. README.md is the index.
   reference/   Lookup docs — the compatibility matrix lives here. README.md is the index.
 ```
 
-The package (`src/mdformat_markdownlint/`), the preset and the corpus (`tests/`) are added by the build-out plan and described here as they land.
+The preset and the corpus (`tests/`) are added by the build-out plan and described here as they land.
 
 **The compatibility matrix and the corpus must agree** ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 A status that changes in one changes in the other in the same pull request; until the corpus exists, the matrix's Evidence column says how each row is known.
