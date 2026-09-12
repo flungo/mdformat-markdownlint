@@ -8,4 +8,4 @@ A plan has a status line at the top, a goal, and numbered checkbox steps (`- [ ]
 
 | Plan | Status |
 | --- | --- |
-| [`build-out.md`](build-out.md) | In progress — skeleton, founding decisions, the compatibility matrix and the Markdown CI callers landed; next the `markdown` flag in `terraform-github`, then the package |
+| [`build-out.md`](build-out.md) | In progress — skeleton, founding decisions, the compatibility matrix and the Markdown CI landed, the `markdown` flag on and the external sweep verified; next the package |

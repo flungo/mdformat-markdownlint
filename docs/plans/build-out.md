@@ -1,6 +1,6 @@
 # Plan: Build out `mdformat-markdownlint`
 
-Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix and the Markdown CI callers have landed; next is the `markdown` flag in `flungo/terraform-github`, then the package.
+Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix and the Markdown CI have landed, the `markdown` flag is on in `flungo/terraform-github`, and the external link sweep is verified; next is the package.
 
 ## Goal
 
@@ -12,8 +12,9 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 - [x] `.claude/settings.json` enabling the conventions plugins; `CLAUDE.md`; the decisions and plans directories with their indexes; ADR-001 and ADR-002.
 - [x] `docs/reference/compatibility-matrix.md` with its index: every markdownlint rule and option value with its status, grounded in probes of markdownlint 0.41.1 against mdformat 1.0.0, and checked adversarially against a second, independent probe.
 - [x] Adopt the Markdown CI from `flungo/github-workflows`: `markdown-lint`, `markdown-links`, `markdown-sembr` and `flungo-workflows` callers, `.markdownlint-cli2.jsonc`, and an empty `.lycheeignore` carrying its header.
-- [ ] Remove `markdown = false` from this repository's declaration in `flungo/terraform-github`, which attaches `LYCHEE_GITHUB_TOKEN` and requires the two lint and link contexts.
-- [ ] Verify the external link sweep by `workflow_dispatch` once the token exists, and curate `.lycheeignore` from that run.
+- [x] Remove `markdown = false` from this repository's declaration in `flungo/terraform-github`, which attaches `LYCHEE_GITHUB_TOKEN` and requires the two lint and link contexts.
+- [x] Verify the external link sweep by `workflow_dispatch` once the token exists, and curate `.lycheeignore` from that run.
+  The first token-enabled run found nothing, so `.lycheeignore` stays empty.
 - [ ] Package skeleton: `pyproject.toml` declaring mdformat-gfm and mdformat-frontmatter as dependencies, `src/mdformat_markdownlint/`, the `mdformat.parser_extension` entry point, a repository-specific test workflow that installs both tools (`pip` for mdformat, `npm` for markdownlint-cli2).
 - [ ] The preset: the markdownlint settings mdformat's fixed choices satisfy, as a file a `.markdownlint-cli2.jsonc` can `extends`.
 - [ ] The corpus and its harness: one input per rule and option value, formatted then linted, asserting the matrix's status; pinned and latest versions of both tools.
