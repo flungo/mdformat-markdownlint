@@ -3,7 +3,7 @@
 An [mdformat](https://github.com/hukkin/mdformat) plugin and a [markdownlint](https://github.com/DavidAnson/markdownlint) preset that keep the two tools in agreement: one style configuration, markdownlint's, and formatter output that lints clean against it.
 
 > **Status: nothing is published yet.**
-> The repository is being built out; the [compatibility matrix](docs/reference/compatibility-matrix.md) is the first deliverable, and the package, preset and test corpus follow it.
+> The [compatibility matrix](docs/reference/compatibility-matrix.md) is written, and the package skeleton and the corpus harness exist; the plugin's behaviours, the preset and the corpus cases follow.
 > Progress is tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 
 ## What it will do

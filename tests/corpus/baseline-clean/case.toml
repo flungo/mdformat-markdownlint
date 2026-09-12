@@ -1,0 +1,5 @@
+# The baseline case ADR-002 states: a document that lints clean with no
+# markdownlint configuration at all still lints clean after formatting. No
+# rule is named, so every finding counts, and no configuration file is
+# present, so markdownlint runs on its defaults.
+status = "guaranteed"

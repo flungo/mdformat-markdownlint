@@ -1,6 +1,6 @@
 # Plan: Build out `mdformat-markdownlint`
 
-Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix and the Markdown CI have landed, the `markdown` flag is on in `flungo/terraform-github`, and the external link sweep is verified; next is the package.
+Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix, the Markdown CI with the `markdown` flag on and the external link sweep verified, and the package skeleton with the corpus harness have landed; next is the preset.
 
 ## Goal
 
@@ -15,10 +15,11 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 - [x] Remove `markdown = false` from this repository's declaration in `flungo/terraform-github`, which attaches `LYCHEE_GITHUB_TOKEN` and requires the two lint and link contexts.
 - [x] Verify the external link sweep by `workflow_dispatch` once the token exists, and curate `.lycheeignore` from that run.
   The first token-enabled run found nothing, so `.lycheeignore` stays empty.
-- [ ] Package skeleton: `pyproject.toml` declaring mdformat-gfm and mdformat-frontmatter as dependencies, `src/mdformat_markdownlint/`, the `mdformat.parser_extension` entry point, a repository-specific test workflow that installs both tools (`pip` for mdformat, `npm` for markdownlint-cli2).
-- [ ] The preset: the markdownlint settings mdformat's fixed choices satisfy, as a file a `.markdownlint-cli2.jsonc` can `extends`.
-- [ ] The corpus and its harness: one input per rule and option value, formatted then linted, asserting the matrix's status; pinned and latest versions of both tools.
+- [x] Package skeleton: `pyproject.toml` declaring mdformat-gfm and mdformat-frontmatter as dependencies, `src/mdformat_markdownlint/`, the `mdformat.parser_extension` entry point, a repository-specific test workflow that installs both tools (`pip` for mdformat, `npm` for markdownlint-cli2), and the corpus harness with its baseline case: pytest, both tools run as subprocesses, a pinned leg and a latest leg.
+- [ ] The preset: the markdownlint settings mdformat's fixed choices satisfy, as a file a `.markdownlint-cli2.jsonc` can `extends`, with a corpus case per setting it carries.
+- [ ] The corpus: one input per rule and option value, formatted then linted, asserting the matrix's status, and a test that a rule ID the corpus does not know fails.
   MD052 is enabled alongside other rules in every case, since markdownlint 0.41.1 reports nothing for it in isolation.
+  The link rules need inputs the repository's link check can still read: no external URL, and no relative link or fragment that does not resolve.
 - [ ] Plugin behaviours, each with its corpus entries: derived `number` and `compact_tables`, including compact tables whenever MD013 measures them; the markdownlint configuration read as markdownlint-cli2 reads it, `extends`, the YAML form and per-directory merging included, and the JavaScript forms refused; `ignores` matched with markdownlint-cli2's globby semantics, bare directory names, braces and negations included; comment blocks kept adjacent; single-space empty compact cells; `[//]: #` definitions preserved; `.mdformat.toml` validated against the derived options; refusal of unsatisfiable settings.
 - [ ] Upstream filings: an empty-cell fix and the task-list escape that breaks a link whose text is `x` to mdformat-gfm; a comment-adjacency option and an exclusion hook proposed to mdformat; the plugin shrinks as each lands.
 - [ ] Publish to PyPI, with the release procedure recorded as a runbook.

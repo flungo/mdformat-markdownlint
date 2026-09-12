@@ -1,0 +1,8 @@
+{
+  "name": "mdformat-markdownlint-corpus",
+  "private": true,
+  "description": "The markdownlint side of the corpus: the exact markdownlint-cli2 release the compatibility matrix's rows were established against, installed by `npm ci --prefix tests`.",
+  "devDependencies": {
+    "markdownlint-cli2": "0.23.2"
+  }
+}

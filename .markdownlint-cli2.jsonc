@@ -25,5 +25,10 @@
     // cell is padded to its column's widest, so one edit reflows the whole
     // table and one long cell taxes every row.
     "MD060": { "style": "compact" }
-  }
+  },
+  // The corpus inputs are test data, written to violate the rule their case
+  // names, so this repository's own lint cannot read them; the semantic-line-
+  // break check inherits this list. The node modules the corpus installs ship
+  // READMEs of their own.
+  "ignores": ["tests/corpus/**", "**/node_modules/**"]
 }
