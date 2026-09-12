@@ -1,0 +1,63 @@
+# Packaging for the mdformat plugin. The preset and the corpus live beside it
+# in this repository but are not part of the wheel: the preset is a
+# markdownlint artefact that ships on its own once it exists, and the corpus
+# is the test suite.
+[build-system]
+requires = ["flit_core>=3.12,<5"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "mdformat-markdownlint"
+version = "0.1.0"
+description = "mdformat plugin that keeps mdformat's output in agreement with a repository's markdownlint configuration"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "flungo" }]
+keywords = ["mdformat", "markdownlint", "markdown", "formatter", "linter"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Topic :: Text Processing :: Markup :: Markdown",
+]
+# The compatibility contract is stated against specific releases of the three
+# packages below, and a bump on any of them is this project's change before it
+# is an adopter's (ADR-001): the upper bounds hold adopters at the verified
+# minor until the corpus has passed on the next one. tests/constraints.txt
+# carries the exact releases the corpus's pinned leg runs against.
+dependencies = [
+  "mdformat>=1.0.0,<1.1",
+  "mdformat-gfm>=1.0.0,<1.1",
+  "mdformat-frontmatter>=2.1.2,<2.2",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+  "tomli>=2; python_version < '3.11'",
+]
+
+[project.urls]
+Repository = "https://github.com/flungo/mdformat-markdownlint"
+"Compatibility matrix" = "https://github.com/flungo/mdformat-markdownlint/blob/main/docs/reference/compatibility-matrix.md"
+
+[project.entry-points."mdformat.parser_extension"]
+markdownlint = "mdformat_markdownlint"
+
+[tool.flit.module]
+name = "mdformat_markdownlint"
+
+[tool.flit.sdist]
+exclude = [
+  ".claude/",
+  ".github/",
+  "docs/",
+  "tests/",
+  ".lycheeignore",
+  ".markdownlint-cli2.jsonc",
+  "CLAUDE.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
