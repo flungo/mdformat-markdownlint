@@ -1,0 +1,62 @@
+# The test suite: pytest over the corpus (docs/reference/corpus.md) and the
+# plugin's own tests. Two legs per Python version. `pinned` installs the
+# releases the compatibility matrix's rows were established against
+# (tests/constraints.txt, tests/package-lock.json). `latest` installs the newest
+# release of every tool, ignoring the plugin's own dependency bounds on purpose:
+# the bounds are what the corpus decides, so a new markdownlint rule or a
+# changed mdformat style fails here before it reaches an adopter (ADR-002). A
+# red `latest` leg is a bump waiting to be made, not a broken pull request.
+name: pytest
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        versions: [pinned, latest]
+        python: ['3.10', '3.13']
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            tests/constraints.txt
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Install the pinned tools
+        if: matrix.versions == 'pinned'
+        run: |
+          set -eu
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]' -c tests/constraints.txt
+          npm ci --prefix tests
+
+      - name: Install the latest tools
+        if: matrix.versions == 'latest'
+        run: |
+          set -eu
+          python -m pip install --upgrade pip
+          python -m pip install --no-deps -e .
+          python -m pip install --upgrade pytest mdformat mdformat-gfm mdformat-frontmatter 'tomli; python_version < "3.11"'
+          npm install --prefix tests --no-save --no-package-lock markdownlint-cli2@latest
+
+      - name: Run the tests
+        run: python -m pytest

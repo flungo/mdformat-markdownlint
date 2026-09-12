@@ -1,0 +1,8 @@
+# The corpus's pinned leg: the releases the compatibility matrix's rows were
+# established against, and the versions docs/reference/compatibility-matrix.md
+# names. Bump here first, watch the corpus, then move the bounds in
+# pyproject.toml; the latest leg installs the newest release of each on its
+# own, so a bump waiting to happen fails there first.
+mdformat==1.0.0
+mdformat-gfm==1.0.0
+mdformat-frontmatter==2.1.2

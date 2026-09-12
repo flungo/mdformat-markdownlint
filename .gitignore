@@ -6,3 +6,7 @@ build/
 dist/
 .venv/
 .pytest_cache/
+
+# The corpus's markdownlint side, installed by `npm ci --prefix tests`
+# (docs/runbooks/running-the-corpus.md).
+tests/node_modules/
