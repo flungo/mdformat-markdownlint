@@ -18,8 +18,8 @@ A paragraph with *emphasis*, **strong text**, `code`, and a [link to a section](
 ## Table
 
 | Column | Other |
-| --- | --- |
-| a | b |
+| ------ | ----- |
+| a      | b     |
 
 ## Code
 

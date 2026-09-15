@@ -1,0 +1,18 @@
+# MD035 hr-style at the preset's seventy underscores: dashes, asterisks and a
+# short underscore break are all rewritten by mdformat alone, and a
+# seventy-underscore break beside them is left as it is.
+status = "guaranteed"
+rule = "MD035"
+
+[inputs."dashes.md"]
+findings = 1
+
+[inputs."asterisks.md"]
+findings = 1
+
+[inputs."short-underscores.md"]
+findings = 1
+
+[inputs."underscores.md"]
+findings = 0
+unchanged = true

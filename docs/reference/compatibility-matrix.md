@@ -13,8 +13,8 @@ Each row carries one of the four statuses [ADR-002](../decisions/002-the-compati
 A status describes documents that use the construct the rule governs: a document with no tables satisfies every table rule, and that says nothing about the rule.
 
 The **Evidence** column says how a row is known.
-*Probe* is a run of one or more inputs per row against the versions below; *prototype* is the plugin prototype run over the same inputs; *construction* follows from mdformat's documented style and has not been exercised; *pending* is a plugin behaviour not yet implemented, so the row states the contract the plugin will meet and nothing an adopter can use today.
-The corpus replaces every value in that column with its own test as it lands, and a row the corpus contradicts is a defect in one or the other.
+*Corpus* is a case under `tests/corpus/` that asserts the row on every run, with and without the plugin ([the corpus reference](corpus.md)), and the word, with the value it proves where the row has several, links to the case; *probe* is a run of one or more inputs per row against the versions below; *prototype* is the plugin prototype run over the same inputs; *construction* follows from mdformat's documented style and has not been exercised; *pending* is a plugin behaviour not yet implemented, so the row states the contract the plugin will meet and nothing an adopter can use today.
+The corpus replaces every other value in that column with its own case as it lands, and a row the corpus contradicts is a defect in one or the other.
 
 | Tool | Version the rows were established against |
 | -- | -- |
@@ -63,7 +63,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
 | MD001 heading-increment | any | Neutral | Probe | Heading levels are content |
-| MD003 heading-style | `consistent`, `atx` | Guaranteed | Probe | Every heading, setext or closed, in a list or a blockquote, is rewritten as open ATX |
+| MD003 heading-style | `consistent`, `atx` | Guaranteed | [Corpus for `atx`](../../tests/corpus/md003-atx/case.toml), probe for `consistent` | Every heading, setext or closed, in a list or a blockquote, is rewritten as open ATX |
 | MD003 heading-style | `atx_closed`, `setext`, `setext_with_atx`, `setext_with_atx_closed` | Unsatisfiable | Probe | Closing hashes are dropped and setext headings converted |
 | MD018 no-missing-space-atx | | Neutral | Probe | `#Heading` is a paragraph in CommonMark and is left as one |
 | MD019 no-multiple-space-atx | | Guaranteed | Probe | A tab after the hashes is normalised too |
@@ -83,14 +83,14 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD004 ul-style | `consistent`, `dash` | Guaranteed | Probe | Every bullet is a dash, at every nesting level |
+| MD004 ul-style | `consistent`, `dash` | Guaranteed | [Corpus for `dash`](../../tests/corpus/md004-dash/case.toml), probe for `consistent` | Every bullet is a dash, at every nesting level |
 | MD004 ul-style | `consistent`, `dash`, on two lists written directly one after the other | Neutral | Probe | The source can only express adjacent lists with different markers, so it already violates the rule; mdformat keeps the second list's marker, and no formatter can satisfy the rule there without inserting a separator |
 | MD004 ul-style | `asterisk`, `plus`, `sublist` | Unsatisfiable | Probe | |
 | MD005 list-indent | | Guaranteed | Probe | Zero-padded markers included |
 | MD007 ul-indent | `indent` 2 | Guaranteed | Probe | Nested content is indented by the parent marker's width, two for a dash |
 | MD007 ul-indent | any other `indent` | Unsatisfiable | Probe | |
 | MD007 ul-indent | `start_indented` true | Unsatisfiable | Probe | The first level is never indented |
-| MD029 ol-prefix | `one` | Bridged | Prototype | `number` derived as `false`, so every item after the first is `1.`. A list whose first item is not `1.` or `0.` violates the rule before and after formatting |
+| MD029 ol-prefix | `one` | Guaranteed | [Corpus](../../tests/corpus/md029-one/case.toml) | At mdformat's default, every item after the first is written as `1.`; the plugin also derives `number` as `false`, so a `number = true` in mdformat's own configuration cannot contradict the rule (prototype). A list whose first item is not `1.` or `0.` violates the rule before and after formatting |
 | MD029 ol-prefix | `one_or_ordered`, `ordered` | Bridged | Prototype | `number` derived as `true`. Without the derivation a list starting at `0.` renders `0. 1. 1.`, which the rule reads as ordered and rejects. A list of ten or more items is zero-padded to `01.`, which the rule accepts. A list starting at 2 or above violates the rule before and after formatting |
 | MD029 ol-prefix | `zero` | Unsatisfiable | Probe | Items after the first are never `0.` |
 | MD030 list-marker-space | all four parameters at 1 | Guaranteed | Probe | One space follows every marker |
@@ -121,9 +121,9 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 | MD038 no-space-in-code | | Neutral | Probe | mdformat strips only the single symmetric space CommonMark itself strips, which the rule allows; every padding the rule reports is content and is kept |
 | MD040 fenced-code-language | any, on fenced blocks | Neutral | Probe | Content |
 | MD040 fenced-code-language | any, on an indented code block | Unsatisfiable | Probe | An indented block is outside the rule's scope; mdformat rewrites it as a fence with no language, which puts it inside, and only the author knows the language. The one place a document that lints clean at markdownlint's defaults stops doing so after formatting; ADR-002 names it |
-| MD046 code-block-style | `consistent`, `fenced` | Guaranteed | Probe | Indented code is rewritten as a fence |
+| MD046 code-block-style | `consistent`, `fenced` | Guaranteed | [Corpus for `fenced`](../../tests/corpus/md046-fenced/case.toml), probe for `consistent` | Indented code is rewritten as a fence |
 | MD046 code-block-style | `indented` | Unsatisfiable | Probe | |
-| MD048 code-fence-style | `consistent`, `backtick` | Guaranteed | Probe | Tilde fences are rewritten with backticks, lengthened where the content holds a backtick run |
+| MD048 code-fence-style | `consistent`, `backtick` | Guaranteed | [Corpus for `backtick`](../../tests/corpus/md048-backtick/case.toml), probe for `consistent` | Tilde fences are rewritten with backticks, lengthened where the content holds a backtick run |
 | MD048 code-fence-style | `tilde` | Unsatisfiable | Probe | |
 
 ## Emphasis and inline text
@@ -158,13 +158,13 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | Probe | Every row is written with a leading and a trailing pipe |
+| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | [Corpus for `leading_and_trailing`](../../tests/corpus/md055-pipes/case.toml), probe for `consistent` | Every row is written with a leading and a trailing pipe |
 | MD055 table-pipe-style | `leading_only`, `trailing_only`, `no_leading_or_trailing` | Unsatisfiable | Probe | |
 | MD056 table-column-count | | Guaranteed | Probe | A short row is padded with empty cells and a long row loses its extra cells, as GFM renders them |
 | MD058 blanks-around-tables | | Guaranteed | Probe | See the tight-list exception |
 | MD060 table-column-style | `any`, the default, with padded tables | Guaranteed | Probe | Padded tables are `aligned`, with wide, combining and escaped characters measured as the rule measures them |
 | MD060 table-column-style | `any` with compact tables | Bridged | Prototype | An empty cell is rendered as a single space; mdformat alone writes two, which no style accepts |
-| MD060 table-column-style | `aligned` | Bridged | Prototype | `compact_tables` derived as `false`, overriding a compact setting in mdformat's own configuration |
+| MD060 table-column-style | `aligned` | Guaranteed | [Corpus](../../tests/corpus/md060-aligned/case.toml) | At mdformat's default, every cell is padded to its column's widest; the plugin also derives `compact_tables` as `false`, so a compact setting in mdformat's own configuration cannot contradict the rule (prototype) |
 | MD060 table-column-style | `compact` | Bridged | Prototype | `compact_tables` derived as `true`, and empty cells rendered as above. The delimiter row is `--`, or `:-:` and `-:` for aligned columns, which the style accepts |
 | MD060 table-column-style | `tight` | Unsatisfiable | Probe | Every pipe is padded with a space |
 | MD060 table-column-style | `aligned_delimiter` true with `aligned` | Guaranteed | Probe | |
@@ -175,7 +175,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
 | MD035 hr-style | `consistent` | Guaranteed | Probe | Every thematic break is rewritten as seventy underscores |
-| MD035 hr-style | the explicit style of seventy underscores | Guaranteed | Construction | |
+| MD035 hr-style | the explicit style of seventy underscores | Guaranteed | [Corpus](../../tests/corpus/md035-underscores/case.toml) | |
 | MD035 hr-style | any other explicit style | Unsatisfiable | Construction | |
 
 ## Front matter

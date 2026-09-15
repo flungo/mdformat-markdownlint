@@ -1,4 +1,4 @@
-"""One test per corpus case: format without and with the plugin, lint, assert the status."""
+"""One test per corpus document: lint, format without and with the plugin, lint again."""
 
 from __future__ import annotations
 
@@ -7,79 +7,81 @@ from pathlib import Path
 
 import pytest
 
-from conftest import (
-    Finding,
-    cases,
-    count_by_rule,
-    format_file,
-    lint_file,
-    load_case,
-    select,
-)
+from conftest import Case, Input, cases, count_by_rule, format_file, lint_file, select
 
 CASES = cases()
+DOCUMENTS = [(case, document) for case in CASES for document in case.inputs]
 
 
 def test_the_corpus_is_not_empty() -> None:
-    assert CASES, "the corpus has no cases"
+    assert DOCUMENTS, "the corpus has no documents"
 
 
-def _format_and_lint(
-    case_dir: Path, work: Path, markdownlint: Path, *, with_plugin: bool
-) -> tuple[list[Finding], list[Finding]]:
-    """Lint the case's input, format a fresh copy of it, lint it again."""
-    shutil.copytree(case_dir, work)
-    target = work / "input.md"
-    before = lint_file(markdownlint, target)
-    result = format_file(target, with_plugin=with_plugin)
-    assert result.returncode == 0, (
-        f"mdformat failed on {case_dir.name} "
-        f"({'with' if with_plugin else 'without'} the plugin):\n{result.stderr}"
-    )
-    return before, lint_file(markdownlint, target)
+@pytest.mark.parametrize(
+    "case,document",
+    DOCUMENTS,
+    ids=[f"{case.name}/{document.name}" for case, document in DOCUMENTS],
+)
+def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Path) -> None:
+    label = f"{case.name}/{document.name}"
+    subject = case.rule or "any rule"
+    runs: dict[str, tuple[list, list]] = {}
+    for run, with_plugin in (("without the plugin", False), ("with the plugin", True)):
+        # A fresh copy of the whole case per run, so its configuration travels
+        # with it; a case that extends the config package by name resolves it
+        # from here too, since the corpus's markdownlint-cli2 sits beside the
+        # package `npm ci --prefix tests` links from the tree.
+        work = tmp_path / run.replace(" ", "-")
+        shutil.copytree(case.directory, work)
+        target = work / document.name
+        original = target.read_bytes()
 
+        before = select(lint_file(markdownlint, target), case.rule)
+        assert len(before) == document.findings, (
+            f"{label}: expected {document.findings} finding(s) for {subject} before "
+            f"formatting, found {len(before)}: {before}"
+        )
+        result = format_file(target, with_plugin=with_plugin)
+        assert result.returncode == 0, f"mdformat failed on {label} {run}:\n{result.stderr}"
+        after = select(lint_file(markdownlint, target), case.rule)
+        if document.unchanged:
+            assert target.read_bytes() == original, (
+                f"{label}: declared unchanged, but formatting {run} rewrote it"
+            )
+        if document.rewritten:
+            assert target.read_bytes() != original, (
+                f"{label}: declared rewritten, but formatting {run} left it as it was"
+            )
+        runs[run] = (before, after)
 
-@pytest.mark.parametrize("case_dir", CASES, ids=[path.name for path in CASES])
-def test_case(case_dir: Path, tmp_path: Path, markdownlint: Path) -> None:
-    case = load_case(case_dir)
-    before, alone = _format_and_lint(
-        case.directory, tmp_path / "without", markdownlint, with_plugin=False
-    )
-    _, with_plugin = _format_and_lint(
-        case.directory, tmp_path / "with", markdownlint, with_plugin=True
-    )
-    alone = select(alone, case.rule)
-    with_plugin = select(with_plugin, case.rule)
+    before, alone = runs["without the plugin"]
+    _, bridged = runs["with the plugin"]
 
     if case.status == "guaranteed":
-        if case.rule is None:
-            # A case naming no rule is a baseline case: a document that lints
-            # clean before formatting must lint clean after it (ADR-002).
-            assert not before, f"{case.name}: the input is not clean before formatting: {before}"
         assert not alone, (
-            f"{case.name}: guaranteed, but mdformat alone reports {alone}; "
+            f"{label}: guaranteed, but mdformat alone leaves {alone}; "
             "if the plugin holds the rule, the case is bridged"
         )
-        assert not with_plugin, (
-            f"{case.name}: guaranteed by mdformat alone, but with the plugin the "
-            f"formatted file reports {with_plugin}: the plugin broke it"
+        assert not bridged, (
+            f"{label}: guaranteed by mdformat alone, but with the plugin the formatted "
+            f"file reports {bridged}: the plugin broke it"
         )
     elif case.status == "bridged":
-        assert alone, (
-            f"{case.name}: bridged, but mdformat alone already satisfies {case.rule}; "
-            "the case is guaranteed"
-        )
-        assert not with_plugin, (
-            f"{case.name}: bridged, but with the plugin the formatted file still "
-            f"reports {with_plugin}"
+        if document.findings:
+            assert alone, (
+                f"{label}: bridged, but mdformat alone already satisfies {case.rule}; "
+                "the case is guaranteed"
+            )
+        assert not bridged, (
+            f"{label}: bridged, but with the plugin the formatted file still reports {bridged}"
         )
     elif case.status == "neutral":
-        expected = count_by_rule(select(before, case.rule))
+        expected = count_by_rule(before)
         assert count_by_rule(alone) == expected, (
-            f"{case.name}: neutral, but mdformat alone changed the findings"
+            f"{label}: neutral, but mdformat alone changed the findings"
         )
-        assert count_by_rule(with_plugin) == expected, (
-            f"{case.name}: neutral, but the plugin changed the findings"
+        assert count_by_rule(bridged) == expected, (
+            f"{label}: neutral, but the plugin changed the findings"
         )
     else:  # pragma: no cover
         raise AssertionError(f"unhandled status {case.status}")

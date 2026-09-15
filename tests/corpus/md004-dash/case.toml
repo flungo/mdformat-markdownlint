@@ -1,0 +1,15 @@
+# MD004 ul-style at the preset's `dash`: asterisk and plus bullets, at every
+# nesting level, are rewritten as dashes by mdformat alone, and a dash list
+# beside them is left as it is.
+status = "guaranteed"
+rule = "MD004"
+
+[inputs."asterisk.md"]
+findings = 3
+
+[inputs."plus.md"]
+findings = 2
+
+[inputs."dash.md"]
+findings = 0
+unchanged = true

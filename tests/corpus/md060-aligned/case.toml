@@ -1,0 +1,12 @@
+# MD060 table-column-style at the preset's `aligned`: at mdformat's default,
+# every cell is padded to its column's widest, so a compact table is rewritten
+# by mdformat alone and an aligned table beside it is left as it is.
+status = "guaranteed"
+rule = "MD060"
+
+[inputs."compact.md"]
+findings = 6
+
+[inputs."aligned.md"]
+findings = 0
+unchanged = true

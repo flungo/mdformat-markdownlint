@@ -1,0 +1,12 @@
+# MD029 ol-prefix at the preset's `one`: at mdformat's default, every item
+# after the first is written as `1.`, so an ordered list numbered 1, 2, 3 is
+# rewritten by mdformat alone and a list of ones beside it is left as it is.
+status = "guaranteed"
+rule = "MD029"
+
+[inputs."ordered.md"]
+findings = 2
+
+[inputs."ones.md"]
+findings = 0
+unchanged = true

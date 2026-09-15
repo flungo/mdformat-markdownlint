@@ -53,15 +53,25 @@ class Finding:
 
 
 @dataclass(frozen=True)
+class Input:
+    """One document of a case: how many findings it reports before formatting,
+    for the case's rule or for any rule when the case names none, and whether
+    mdformat must write it back byte for byte (`unchanged`) or must not
+    (`rewritten`)."""
+
+    name: str
+    findings: int
+    unchanged: bool
+    rewritten: bool
+
+
+@dataclass(frozen=True)
 class Case:
     name: str
     directory: Path
     status: str
     rule: str | None
-
-    @property
-    def input(self) -> Path:
-        return self.directory / "input.md"
+    inputs: tuple[Input, ...]
 
 
 @dataclass(frozen=True)
@@ -84,13 +94,46 @@ def load_case(directory: Path) -> Case:
         raise ValueError(f"{manifest}: rule must look like MD001, not {rule!r}")
     if status == "bridged" and rule is None:
         raise ValueError(f"{manifest}: a bridged case names the rule the plugin holds")
-    if not (directory / "input.md").is_file():
-        raise ValueError(f"{directory}: a case needs an input.md")
-    return Case(name=directory.name, directory=directory, status=status, rule=rule)
+    table = data.get("inputs")
+    if not isinstance(table, dict) or not table:
+        raise ValueError(f"{manifest}: a case lists each of its documents under [inputs.<file>]")
+    present = sorted(path.name for path in directory.glob("*.md"))
+    if sorted(table) != present:
+        raise ValueError(
+            f"{manifest}: [inputs] lists {sorted(table)} but the directory holds {present}"
+        )
+    inputs = []
+    for name, spec in table.items():
+        findings = spec.get("findings") if isinstance(spec, dict) else None
+        unchanged = spec.get("unchanged", False) if isinstance(spec, dict) else None
+        rewritten = spec.get("rewritten", False) if isinstance(spec, dict) else None
+        if not isinstance(findings, int) or isinstance(findings, bool) or findings < 0:
+            raise ValueError(f"{manifest}: inputs.{name}.findings must be a count")
+        if not isinstance(unchanged, bool) or not isinstance(rewritten, bool):
+            raise ValueError(
+                f"{manifest}: inputs.{name}.unchanged and .rewritten must be true or false"
+            )
+        if unchanged and rewritten:
+            raise ValueError(f"{manifest}: inputs.{name} cannot be both unchanged and rewritten")
+        inputs.append(
+            Input(name=name, findings=findings, unchanged=unchanged, rewritten=rewritten)
+        )
+    if rule is not None and not any(item.findings for item in inputs):
+        raise ValueError(
+            f"{manifest}: a case naming a rule needs a document that violates it, "
+            "or it proves nothing"
+        )
+    return Case(
+        name=directory.name,
+        directory=directory,
+        status=status,
+        rule=rule,
+        inputs=tuple(inputs),
+    )
 
 
-def cases() -> list[Path]:
-    return sorted(path for path in CORPUS_DIR.iterdir() if path.is_dir())
+def cases() -> list[Case]:
+    return [load_case(path) for path in sorted(CORPUS_DIR.iterdir()) if path.is_dir()]
 
 
 def format_file(path: Path, *, with_plugin: bool) -> FormatResult:
