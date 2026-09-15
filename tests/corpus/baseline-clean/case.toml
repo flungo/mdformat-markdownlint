@@ -5,7 +5,8 @@
 # style, so formatting writes it back byte for byte; the other is consistent
 # in every style markdownlint's defaults leave open, setext headings, asterisk
 # bullets, tilde fences, a dashed break, a compact table and 1, 2, 3 numbering,
-# so markdownlint accepts it before and after while mdformat rewrites all of it.
+# so markdownlint accepts it before and after while mdformat rewrites all of it;
+# it comes from the shared pool, and the preset's baseline runs the same file.
 status = "guaranteed"
 
 [inputs."clean.md"]
@@ -13,5 +14,6 @@ findings = 0
 unchanged = true
 
 [inputs."consistent.md"]
+from = "consistent.md"
 findings = 0
 rewritten = true
