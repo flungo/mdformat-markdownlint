@@ -4,13 +4,15 @@
 // inline justification.
 //
 // This repository is about keeping mdformat and markdownlint in agreement, and
-// its own configuration will be the first adopter of the preset it ships: once
-// the preset exists, this file extends it. The three settings below stay here
-// either way — MD013 and MD024 are content choices no preset should carry, and
-// MD060's compact style holds through the plugin's derived option rather than
-// through mdformat alone — so none of them is a setting the preset would own.
+// its own configuration is the first adopter of the preset it ships, by path,
+// since the repository root has no node_modules to resolve the package name
+// from (ADR-003). The settings below stay here: MD013 and MD024 are content
+// choices no preset should carry, and MD060 is this repository's one deviation
+// from mdformat's defaults, which the plugin derives compact_tables from, so
+// none of them is a setting the preset owns.
 {
   "config": {
+    "extends": "markdownlint-config-mdformat/mdformat.markdownlint.jsonc",
     // Disabled in favour of the semantic line breaks convention (one sentence
     // per source line) — a character ceiling can't reflow and would fight it.
     "MD013": false,

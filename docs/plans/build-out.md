@@ -16,7 +16,7 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 - [x] Verify the external link sweep by `workflow_dispatch` once the token exists, and curate `.lycheeignore` from that run.
   The first token-enabled run found nothing, so `.lycheeignore` stays empty.
 - [x] Package skeleton: `pyproject.toml` declaring mdformat-gfm and mdformat-frontmatter as dependencies, `src/mdformat_markdownlint/`, the `mdformat.parser_extension` entry point, a repository-specific test workflow that installs both tools (`pip` for mdformat, `npm` for markdownlint-cli2), and the corpus harness with its baseline case: pytest, both tools run as subprocesses, a pinned leg and a latest leg.
-- [x] The preset: the markdownlint settings mdformat's fixed choices satisfy, as a file a `.markdownlint-cli2.jsonc` can `extends`, with a corpus case per setting it carries.
+- [x] The preset: the markdownlint settings mdformat's fixed choices satisfy, as a file a `.markdownlint-cli2.jsonc` can `extends`, with a corpus case per setting it carries; this repository's own configuration extends it.
 - [x] Decide how an adopter obtains the preset and record it: it ships as the npm package `markdownlint-config-mdformat`, versioned independently of the plugin, and every corpus case extends it by name ([ADR-003](../decisions/003-ship-the-preset-as-an-npm-package.md)).
 - [ ] The corpus: one input per rule and option value, formatted then linted, asserting the matrix's status, and a test that a rule ID the corpus does not know fails.
   MD052 is enabled alongside other rules in every case, since markdownlint 0.41.1 reports nothing for it in isolation.
