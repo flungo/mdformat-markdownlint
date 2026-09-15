@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import importlib.metadata
 import re
+import shutil
 import subprocess
 import sys
 from collections import Counter
@@ -25,6 +26,11 @@ else:  # pragma: no cover
 
 TESTS_DIR = Path(__file__).resolve().parent
 CORPUS_DIR = TESTS_DIR / "corpus"
+# Documents more than one case runs, each named from case.toml by `from` and
+# copied into the case's temporary copy, so a document that behaves in a known
+# way under several configurations is written once and every case that names
+# it is the same bytes.
+DOCUMENTS_DIR = TESTS_DIR / "documents"
 MARKDOWNLINT_CLI2 = TESTS_DIR / "node_modules" / ".bin" / "markdownlint-cli2"
 
 # The extension set the compatibility contract is stated for, and the plugin's
@@ -54,15 +60,21 @@ class Finding:
 
 @dataclass(frozen=True)
 class Input:
-    """One document of a case: how many findings it reports before formatting,
-    for the case's rule or for any rule when the case names none, and whether
-    mdformat must write it back byte for byte (`unchanged`) or must not
-    (`rewritten`)."""
+    """One document of a case: where its bytes come from, the case's own
+    directory or the shared pool; how many findings it reports before
+    formatting, for the case's rule or for any rule when the case names none;
+    and whether mdformat must write it back byte for byte (`unchanged`) or must
+    not (`rewritten`)."""
 
     name: str
+    source: Path
     findings: int
     unchanged: bool
     rewritten: bool
+
+    @property
+    def shared(self) -> bool:
+        return self.source.parent == DOCUMENTS_DIR
 
 
 @dataclass(frozen=True)
@@ -98,12 +110,26 @@ def load_case(directory: Path) -> Case:
     if not isinstance(table, dict) or not table:
         raise ValueError(f"{manifest}: a case lists each of its documents under [inputs.<file>]")
     present = sorted(path.name for path in directory.glob("*.md"))
-    if sorted(table) != present:
+    local = sorted(
+        name for name, spec in table.items() if not (isinstance(spec, dict) and "from" in spec)
+    )
+    if local != present:
         raise ValueError(
-            f"{manifest}: [inputs] lists {sorted(table)} but the directory holds {present}"
+            f"{manifest}: [inputs] lists {local} of its own but the directory holds {present}"
         )
     inputs = []
     for name, spec in table.items():
+        shared = spec.get("from") if isinstance(spec, dict) else None
+        if shared is None:
+            source = directory / name
+        else:
+            if not isinstance(shared, str) or "/" in shared or not shared.endswith(".md"):
+                raise ValueError(
+                    f"{manifest}: inputs.{name}.from names a document in {DOCUMENTS_DIR}"
+                )
+            source = DOCUMENTS_DIR / shared
+            if not source.is_file():
+                raise ValueError(f"{manifest}: inputs.{name}.from names {source}, which is missing")
         findings = spec.get("findings") if isinstance(spec, dict) else None
         unchanged = spec.get("unchanged", False) if isinstance(spec, dict) else None
         rewritten = spec.get("rewritten", False) if isinstance(spec, dict) else None
@@ -116,7 +142,13 @@ def load_case(directory: Path) -> Case:
         if unchanged and rewritten:
             raise ValueError(f"{manifest}: inputs.{name} cannot be both unchanged and rewritten")
         inputs.append(
-            Input(name=name, findings=findings, unchanged=unchanged, rewritten=rewritten)
+            Input(
+                name=name,
+                source=source,
+                findings=findings,
+                unchanged=unchanged,
+                rewritten=rewritten,
+            )
         )
     if rule is not None and not any(item.findings for item in inputs):
         raise ValueError(
@@ -133,7 +165,21 @@ def load_case(directory: Path) -> Case:
 
 
 def cases() -> list[Case]:
-    return [load_case(path) for path in sorted(CORPUS_DIR.iterdir()) if path.is_dir()]
+    loaded = [load_case(path) for path in sorted(CORPUS_DIR.iterdir()) if path.is_dir()]
+    used = {item.source for case in loaded for item in case.inputs if item.shared}
+    unused = sorted(path.name for path in DOCUMENTS_DIR.glob("*.md") if path not in used)
+    if unused:
+        raise ValueError(f"{DOCUMENTS_DIR}: no case names {unused}; a pooled document is shared or removed")
+    return loaded
+
+
+def materialise(case: Case, work: Path) -> None:
+    """Copy the case directory to `work`, then the pooled documents it names
+    under the names its manifest gives them, so the copy is a whole case."""
+    shutil.copytree(case.directory, work)
+    for item in case.inputs:
+        if item.shared:
+            shutil.copyfile(item.source, work / item.name)
 
 
 def format_file(path: Path, *, with_plugin: bool) -> FormatResult:
