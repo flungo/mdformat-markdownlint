@@ -7,6 +7,7 @@ ADRs are numbered sequentially and **never deleted or renumbered** — a superse
 | -- | -- | -- |
 | [001](001-make-markdownlint-accept-mdformat.md) | Bridge the two tools by making markdownlint accept mdformat, not by making mdformat obey markdownlint | Accepted |
 | [002](002-the-compatibility-contract.md) | The compatibility contract: every rule variant is guaranteed, neutral, bridged or refused, and a corpus proves which | Accepted |
+| [003](003-ship-the-preset-as-an-npm-package.md) | Ship the preset as an npm package beside the plugin, versioned independently | Accepted |
 
 ## Adding a new ADR
 
