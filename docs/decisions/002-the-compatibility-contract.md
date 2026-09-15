@@ -17,7 +17,7 @@ Each rule needs its own statement, per option value, and each statement needs a 
 **Every markdownlint rule, and every value of each of its options, carries exactly one of four statuses, and the corpus asserts it.**
 
 | Status | Meaning | What the adopter relies on |
-| --- | --- | --- |
+| -- | -- | -- |
 | Guaranteed | mdformat's output cannot violate the rule under this setting | The rule never fires on a formatted file |
 | Neutral | mdformat never introduces a violation, and never removes one | markdownlint remains the gate; the formatter cannot make it worse |
 | Bridged | mdformat alone would violate it, and this plugin's rendering or derived options make it hold | The rule never fires on a file formatted with the plugin enabled |

@@ -18,13 +18,13 @@ What the corpus is and how a case is written is [the corpus reference](../refere
    python -m pip install -e '.[test]' -c tests/constraints.txt
    ```
 
-2. **Install the pinned markdownlint-cli2** into `tests/node_modules/`, which is gitignored:
+1. **Install the pinned markdownlint-cli2** into `tests/node_modules/`, which is gitignored:
 
    ```sh
    npm ci --prefix tests
    ```
 
-3. **Run it:**
+1. **Run it:**
 
    ```sh
    python -m pytest
@@ -48,6 +48,6 @@ The pinned leg's installs undo it; `npm ci` restores the lockfile's tree.
 
 1. **Change the release** in `tests/constraints.txt` or `tests/package.json`.
    For the latter, regenerate the lockfile with `npm install --prefix tests --package-lock-only`, never by hand.
-2. **Run the pinned leg.**
+1. **Run the pinned leg.**
    A case that fails is a row the bump changes: fix the plugin or re-establish the row, and change the matrix in the same pull request.
-3. **Move the bound** in `pyproject.toml` and the version in the matrix's table to match.
+1. **Move the bound** in `pyproject.toml` and the version in the matrix's table to match.

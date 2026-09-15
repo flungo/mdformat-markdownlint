@@ -7,5 +7,5 @@ Contrast [`../reference/`](../reference/) (information-oriented lookup docs, not
 A plan has a status line at the top, a goal, and numbered checkbox steps (`- [ ]` / `- [x]`); the pull request that completes a step is the one that ticks it.
 
 | Plan | Status |
-| --- | --- |
+| -- | -- |
 | [`build-out.md`](build-out.md) | In progress — skeleton, founding decisions, the compatibility matrix, the Markdown CI, and the package skeleton with the corpus harness landed; next the preset |

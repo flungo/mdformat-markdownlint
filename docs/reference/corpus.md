@@ -6,7 +6,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 ## Layout
 
 | Path | Purpose |
-| --- | --- |
+| -- | -- |
 | `tests/corpus/<case>/` | One directory per case, named for what it exercises |
 | `tests/corpus/<case>/case.toml` | The case's status and, where it exercises one, its rule |
 | `tests/corpus/<case>/input.md` | The document the case formats and lints |
@@ -22,7 +22,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 `case.toml` carries two keys:
 
 | Key | Values | Meaning |
-| --- | --- | --- |
+| -- | -- | -- |
 | `status` | `guaranteed`, `neutral`, `bridged` | The matrix status the case asserts; `unsatisfiable` joins them when the plugin's refusal lands |
 | `rule` | `MD001` to `MD060`, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts |
 
@@ -31,7 +31,7 @@ Both tools run as the subprocesses an adopter runs, from the case's own director
 Each format must exit zero; then the status decides what the two runs must show:
 
 | Status | Without the plugin | With the plugin |
-| --- | --- | --- |
+| -- | -- | -- |
 | `guaranteed` | No finding for the rule; with no rule named, no finding at all, and none in the input either | No finding for the rule: the plugin does not break what mdformat alone holds |
 | `bridged` | At least one finding for the rule: mdformat alone does not hold it | No finding for the rule: the plugin is what holds it |
 | `neutral` | The findings for the rule are the same, by rule and count, as before formatting | The same |
@@ -49,7 +49,7 @@ The link check does not skip them, so an input carries no external URL and no re
 The test suite runs twice per Python version in CI ([`pytest.yml`](../../.github/workflows/pytest.yml)):
 
 | Leg | Installs | Purpose |
-| --- | --- | --- |
+| -- | -- | -- |
 | `pinned` | `tests/constraints.txt` and `tests/package-lock.json`, the releases the matrix's rows were established against and the ones its version table names | The contract as stated holds |
 | `latest` | The newest release of mdformat, mdformat-gfm, mdformat-frontmatter and markdownlint-cli2, ignoring the plugin's own dependency bounds | A new rule or a changed style fails here before it reaches an adopter |
 

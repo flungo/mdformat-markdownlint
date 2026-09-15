@@ -53,6 +53,9 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
 - **`.markdownlint-cli2.jsonc` will be the first adopter of this project's own preset.**
   Today it carries the fleet's three settings itself.
   Once the preset exists the file extends it and keeps what is this repository's own: `MD013` off and `MD024` `siblings_only` are content choices that belong to no preset, and `MD060` `compact` holds through the plugin's derived option rather than mdformat alone, so all three stay here.
+- **The repository's Markdown follows mdformat's decisions wherever markdownlint is indifferent.**
+  Every ordered-list item is `1.`, since numbering the source churns on insertion, and a table's delimiter row is `--` per column.
+  `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
 - **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header.
 - **The corpus inputs under `tests/corpus/` are exempt from the lint and sembr checks, not from the link check.**
   They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores them and the sembr check inherits that; lychee still reads them, so an input carries no external URL and no unresolvable link.
