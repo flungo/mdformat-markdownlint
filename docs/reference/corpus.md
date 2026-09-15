@@ -7,7 +7,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 
 | Path | Purpose |
 | -- | -- |
-| `tests/corpus/<case>/` | One directory per case, named for what it exercises |
+| `tests/corpus/<case>/` | One directory per case, named for what its documents share, which is the configuration they run under: `baseline` for markdownlint's defaults, `preset` for the config package alone, `md003-atx` for the preset with that setting the subject |
 | `tests/corpus/<case>/case.toml` | The case's status, the rule it exercises where it does, and one entry per document |
 | `tests/corpus/<case>/*.md` | The documents the case formats and lints. A rule case carries at least one that violates the rule and one already in mdformat's style that formatting must leave byte for byte; a baseline case carries one in mdformat's style and one consistent in the styles mdformat does not write, which markdownlint's defaults accept before and after formatting and the preset reports only before |
 | `tests/documents/*.md` | The pool: a document more than one case runs, written once and named from each case's `case.toml` by `from`, so a document that behaves in a known way under several configurations is the same bytes in every case that runs it; a pooled document no case names fails the suite |
