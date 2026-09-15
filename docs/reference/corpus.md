@@ -7,9 +7,10 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 
 | Path | Purpose |
 | -- | -- |
-| `tests/corpus/<case>/` | One directory per case, named for what it exercises |
+| `tests/corpus/<case>/` | One directory per case, named for what its documents share, which is the configuration they run under: `baseline` for markdownlint's defaults, `preset` for the config package alone, `md003-atx` for the preset with that setting the subject |
 | `tests/corpus/<case>/case.toml` | The case's status, the rule it exercises where it does, and one entry per document |
 | `tests/corpus/<case>/*.md` | The documents the case formats and lints. A rule case carries at least one that violates the rule and one already in mdformat's style that formatting must leave byte for byte; a baseline case carries one in mdformat's style and one consistent in the styles mdformat does not write, which markdownlint's defaults accept before and after formatting and the preset reports only before |
+| `tests/documents/*.md` | The pool: a document more than one case runs, written once and named from each case's `case.toml` by `from`, so a document that behaves in a known way under several configurations is the same bytes in every case that runs it; a pooled document no case names fails the suite |
 | `tests/corpus/<case>/.markdownlint-cli2.jsonc` | The markdownlint configuration the case runs under; absent, markdownlint runs on its defaults. A case about a preset setting extends the config package by name, `markdownlint-config-mdformat`, as an adopter does |
 | `markdownlint-config-mdformat/` | The config package the cases extend; `tests/package.json` installs it from the tree, so `npm ci --prefix tests` links it beside the markdownlint-cli2 the harness runs, and Node's resolution finds it from a case's temporary copy |
 | `tests/conftest.py` | The harness: runs both tools and asserts the status |
@@ -20,12 +21,13 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 
 ## A case
 
-`case.toml` names the status and the rule, then lists every document in the directory:
+`case.toml` names the status and the rule, then lists every document the case runs, its own and the pooled ones:
 
 | Key | Values | Meaning |
 | -- | -- | -- |
 | `status` | `guaranteed`, `neutral`, `bridged` | The matrix status the case asserts; `unsatisfiable` joins them when the plugin's refusal lands |
 | `rule` | `MD001` to `MD060`, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts |
+| `inputs.<file>.from` | a filename, or absent | The pooled document under `tests/documents/` the harness copies into the case under this entry's name; absent, the document is the case's own file of that name. The case's own `.md` files are exactly the entries without `from` |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
 | `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style |
 | `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter |
@@ -35,7 +37,7 @@ One violates the rule, in one construct per document where the rule has several,
 The other is already what mdformat writes, and is `unchanged`: it proves the setting really is the formatter's output, since a preset value that differed from it would be rewritten, and it proves formatting is stable on compliant input rather than churning it.
 Two documents rather than one is deliberate: the violating document alone shows the rule is satisfied after formatting, and the compliant document shows the fixed point is where the preset says it is.
 
-For each document the harness copies the case directory twice, lints the document, formats it in place, one copy with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and one with the `markdownlint` extension added, and lints both again.
+For each document the harness copies the case directory twice, pooled documents included, lints the document, formats it in place, one copy with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and one with the `markdownlint` extension added, and lints both again.
 Both tools run as the subprocesses an adopter runs, from the case's own directory, so the configuration markdownlint-cli2 discovers is the case's and nothing outside the case reaches either tool.
 The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not; then the status decides what the two runs must show:
 
@@ -50,7 +52,7 @@ A guaranteed case the plugin turns out to hold is misdeclared and belongs in bri
 
 ## What a document may contain
 
-Documents are test data, written to violate the rule their case names, so the repository's own Markdown checks skip `tests/corpus/`: `.markdownlint-cli2.jsonc` ignores the directory and the semantic-line-break check inherits that.
+Documents are test data, written to violate the rule their case names, so the repository's own Markdown checks skip `tests/corpus/` and `tests/documents/`: `.markdownlint-cli2.jsonc` ignores both directories and the semantic-line-break check inherits that.
 The link check does not skip them, so a document carries no external URL and no relative link or fragment that does not resolve.
 
 ## The two legs

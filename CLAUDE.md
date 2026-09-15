@@ -17,8 +17,9 @@ src/mdformat_markdownlint/  The plugin.
 markdownlint-config-mdformat/  The npm package: the preset, every setting mdformat's fixed
                             choices satisfy, that a .markdownlint-cli2.jsonc extends by name.
 tests/                      The corpus and its harness (docs/reference/corpus.md): one directory
-                            per case under corpus/, both tools run as subprocesses, the pinned
-                            releases in constraints.txt and package.json.
+                            per case under corpus/, the documents cases share under documents/,
+                            both tools run as subprocesses, the pinned releases in
+                            constraints.txt and package.json.
 docs/
   decisions/   ADRs — numbered, never deleted or renumbered. README.md is the index.
   plans/       One-time procedures with status tracking; retired when complete. README.md is the index.
@@ -57,8 +58,8 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
   Every ordered-list item is `1.`, since numbering the source churns on insertion, and a table's delimiter row is `--` per column.
   `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
 - **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header.
-- **The corpus documents under `tests/corpus/` are exempt from the lint and sembr checks, not from the link check.**
-  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores them and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link.
+- **The corpus documents under `tests/corpus/` and `tests/documents/` are exempt from the lint and sembr checks, not from the link check.**
+  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores both directories and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link.
 
 ## The corpus
 

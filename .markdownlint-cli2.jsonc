@@ -28,9 +28,15 @@
     // table and one long cell taxes every row.
     "MD060": { "style": "compact" }
   },
-  // The corpus inputs are test data, written to violate the rule their case
-  // names, so this repository's own lint cannot read them; the semantic-line-
-  // break check inherits this list. The node modules the corpus installs ship
-  // READMEs of their own, and pytest leaves one in its cache.
-  "ignores": ["tests/corpus/**", "**/node_modules/**", ".pytest_cache/**"]
+  // The corpus documents, in the cases and in the pool the cases share, are
+  // test data written to violate the rule their case names, so this
+  // repository's own lint cannot read them; the semantic-line-break check
+  // inherits this list. The node modules the corpus installs ship READMEs of
+  // their own, and pytest leaves one in its cache.
+  "ignores": [
+    "tests/corpus/**",
+    "tests/documents/**",
+    "**/node_modules/**",
+    ".pytest_cache/**"
+  ]
 }

@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
 import pytest
 
-from conftest import Case, Input, cases, count_by_rule, format_file, lint_file, select
+from conftest import (
+    Case,
+    Input,
+    cases,
+    count_by_rule,
+    format_file,
+    lint_file,
+    materialise,
+    select,
+)
 
 CASES = cases()
 DOCUMENTS = [(case, document) for case in CASES for document in case.inputs]
@@ -27,12 +35,13 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
     subject = case.rule or "any rule"
     runs: dict[str, tuple[list, list]] = {}
     for run, with_plugin in (("without the plugin", False), ("with the plugin", True)):
-        # A fresh copy of the whole case per run, so its configuration travels
-        # with it; a case that extends the config package by name resolves it
-        # from here too, since the corpus's markdownlint-cli2 sits beside the
-        # package `npm ci --prefix tests` links from the tree.
+        # A fresh copy of the whole case per run, pooled documents included, so
+        # its configuration travels with it; a case that extends the config
+        # package by name resolves it from here too, since the corpus's
+        # markdownlint-cli2 sits beside the package `npm ci --prefix tests`
+        # links from the tree.
         work = tmp_path / run.replace(" ", "-")
-        shutil.copytree(case.directory, work)
+        materialise(case, work)
         target = work / document.name
         original = target.read_bytes()
 
