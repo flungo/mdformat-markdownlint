@@ -50,9 +50,9 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
 - **Tool version — read it from a CI run, never from a note.**
   The shared workflow tracks the linter action's major tag, so the markdownlint version floats; take it from the first line of the markdownlint job's log and match it locally before chasing findings.
   That floating version will also be one of the two this project's corpus pins, so a bump the fleet's CI picks up becomes a change this repository tests before its adopters see it.
-- **`.markdownlint-cli2.jsonc` will be the first adopter of this project's own preset.**
-  Today it carries the fleet's three settings itself.
-  Once the preset exists the file extends it and keeps what is this repository's own: `MD013` off and `MD024` `siblings_only` are content choices that belong to no preset, and `MD060` `compact` holds through the plugin's derived option rather than mdformat alone, so all three stay here.
+- **`.markdownlint-cli2.jsonc` is the first adopter of this project's own preset.**
+  It extends `markdownlint-config-mdformat/mdformat.markdownlint.jsonc` by path, the one adopter that does since the repository root has no `node_modules`, and keeps what is this repository's own: `MD013` off and `MD024` `siblings_only` are content choices that belong to no preset, and `MD060` `compact` is its one deviation from mdformat's defaults, which the plugin derives `compact_tables` from, so all three stay here.
+  A setting the preset carries is never restated here; change the preset, and its corpus case, instead.
 - **The repository's Markdown follows mdformat's decisions wherever markdownlint is indifferent.**
   Every ordered-list item is `1.`, since numbering the source churns on insertion, and a table's delimiter row is `--` per column.
   `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
