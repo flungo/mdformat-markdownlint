@@ -4,7 +4,7 @@ What an adopter may rely on, for every markdownlint rule and every value of its 
 Each row carries one of the four statuses [ADR-002](../decisions/002-the-compatibility-contract.md) defines, and the corpus asserts them.
 
 | Status | Meaning |
-| --- | --- |
+| -- | -- |
 | Guaranteed | mdformat's output cannot violate the rule under this setting |
 | Neutral | mdformat never introduces a violation and never removes one; markdownlint remains the gate |
 | Bridged | mdformat alone would violate it; this plugin's derived options or rendering make it hold |
@@ -17,7 +17,7 @@ The **Evidence** column says how a row is known.
 The corpus replaces every value in that column with its own test as it lands, and a row the corpus contradicts is a defect in one or the other.
 
 | Tool | Version the rows were established against |
-| --- | --- |
+| -- | -- |
 | markdownlint | 0.41.1, run through markdownlint-cli2 0.23.2 |
 | mdformat | 1.0.0 |
 | mdformat-gfm | 1.0.0, providing the `gfm` and `tables` extensions |
@@ -47,7 +47,7 @@ Compact tables is an option of mdformat-gfm's `tables` plugin.
 The plugin sets two of these from the nearest `.markdownlint-cli2.jsonc` and leaves the rest to mdformat's own configuration.
 
 | markdownlint setting | mdformat option | Derivation | Evidence |
-| --- | --- | --- | --- |
+| -- | -- | -- | -- |
 | `MD029.style` | `number` | `one` gives `false`; `one_or_ordered`, `ordered` and the default give `true`, the numbering every style but `one` accepts. `MD029: false` leaves `number` to mdformat's own configuration | Prototype |
 | `MD060.style` | `compact_tables` | `compact` gives `true`; `aligned` gives `false`; `any`, `tight` and the default leave mdformat's own setting in place | Prototype |
 | `MD013` with `tables` true, the default | `compact_tables` | `true` unless `MD060.style` is `aligned`: a padded table lengthens every row to its widest cell, which is the one way mdformat's own style breaks a line-length limit | Pending |
@@ -61,7 +61,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Headings
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD001 heading-increment | any | Neutral | Probe | Heading levels are content |
 | MD003 heading-style | `consistent`, `atx` | Guaranteed | Probe | Every heading, setext or closed, in a list or a blockquote, is rewritten as open ATX |
 | MD003 heading-style | `atx_closed`, `setext`, `setext_with_atx`, `setext_with_atx_closed` | Unsatisfiable | Probe | Closing hashes are dropped and setext headings converted |
@@ -82,7 +82,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Lists
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD004 ul-style | `consistent`, `dash` | Guaranteed | Probe | Every bullet is a dash, at every nesting level |
 | MD004 ul-style | `consistent`, `dash`, on two lists written directly one after the other | Neutral | Probe | The source can only express adjacent lists with different markers, so it already violates the rule; mdformat keeps the second list's marker, and no formatter can satisfy the rule there without inserting a separator |
 | MD004 ul-style | `asterisk`, `plus`, `sublist` | Unsatisfiable | Probe | |
@@ -100,7 +100,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Whitespace and blank lines
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD009 no-trailing-spaces | any `br_spaces`, `strict` true, `list_item_empty_lines` | Guaranteed | Probe | Trailing whitespace is stripped and a hard break is written as a backslash; see the HTML-block exception |
 | MD009 no-trailing-spaces | `code_blocks` true | Neutral | Probe | Code content is preserved |
 | MD010 no-hard-tabs | `code_blocks` false | Guaranteed | Probe | Tabs in prose become spaces; see the HTML-block exception |
@@ -115,7 +115,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Code
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD014 commands-show-output | | Neutral | Probe | Code content |
 | MD031 blanks-around-fences | outside tight list items; `list_items` false | Guaranteed | Probe | See the tight-list exception |
 | MD038 no-space-in-code | | Neutral | Probe | mdformat strips only the single symmetric space CommonMark itself strips, which the rule allows; every padding the rule reports is content and is kept |
@@ -129,7 +129,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Emphasis and inline text
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD033 no-inline-html | any | Neutral | Probe | Content |
 | MD034 no-bare-urls | | Neutral | Probe | A bare URL, `www.` literal or email address is left as written |
 | MD036 no-emphasis-as-heading | any | Neutral | Probe | Content |
@@ -142,7 +142,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Links and images
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD011 no-reversed-links | | Neutral | Probe | Reversed syntax is plain text to the parser |
 | MD042 no-empty-links | | Neutral | Probe | An empty destination is rewritten as `<>`, which the rule reads the same way |
 | MD045 no-alt-text | | Neutral | Probe | Content |
@@ -157,7 +157,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Tables
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | Probe | Every row is written with a leading and a trailing pipe |
 | MD055 table-pipe-style | `leading_only`, `trailing_only`, `no_leading_or_trailing` | Unsatisfiable | Probe | |
 | MD056 table-column-count | | Guaranteed | Probe | A short row is padded with empty cells and a long row loses its extra cells, as GFM renders them |
@@ -173,7 +173,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 ## Thematic breaks
 
 | Rule | Setting | Status | Evidence | Notes |
-| --- | --- | --- | --- | --- |
+| -- | -- | -- | -- | -- |
 | MD035 hr-style | `consistent` | Guaranteed | Probe | Every thematic break is rewritten as seventy underscores |
 | MD035 hr-style | the explicit style of seventy underscores | Guaranteed | Construction | |
 | MD035 hr-style | any other explicit style | Unsatisfiable | Construction | |
@@ -189,7 +189,7 @@ No markdownlint rule reads front matter except through the `front_matter_title` 
 markdownlint's directives are HTML comments, and mdformat treats a comment on its own line as a block and puts a blank line after it.
 
 | Directive | Status | Evidence | Notes |
-| --- | --- | --- | --- |
+| -- | -- | -- | -- |
 | `disable-next-line` | Bridged | Prototype | A comment block written flush against the next block stays flush, at top level, in a blockquote and in a list item; one the author separated with a blank line keeps it. A comment kept flush before a heading, list, fence or table triggers none of MD022, MD032, MD031 or MD058 |
 | `disable-line` | Guaranteed | Probe | An inline comment on the governed line is inline HTML and is kept in place |
 | `disable`, `enable`, `disable-file`, `capture`, `restore`, `configure-file` | Guaranteed | Probe | Their scope starts at the comment's own line, so a blank line after it changes nothing |
