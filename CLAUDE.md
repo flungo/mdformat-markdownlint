@@ -5,7 +5,7 @@ The shape is that of eslint-config-prettier — the linter is configured to acce
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the corpus harness and the config package exist; the plugin's behaviours, the preset's cases and the rest of the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the corpus harness and the config package with its cases exist; the plugin's behaviours and the rest of the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 > Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing until its behaviours land, the config package is installable only from a checkout, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
 
 ## Repo layout
@@ -57,8 +57,8 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
   Every ordered-list item is `1.`, since numbering the source churns on insertion, and a table's delimiter row is `--` per column.
   `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
 - **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header.
-- **The corpus inputs under `tests/corpus/` are exempt from the lint and sembr checks, not from the link check.**
-  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores them and the sembr check inherits that; lychee still reads them, so an input carries no external URL and no unresolvable link.
+- **The corpus documents under `tests/corpus/` are exempt from the lint and sembr checks, not from the link check.**
+  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores them and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link.
 
 ## The corpus
 

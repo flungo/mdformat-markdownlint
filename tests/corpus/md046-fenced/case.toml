@@ -1,0 +1,13 @@
+# MD046 code-block-style at the preset's `fenced`: an indented code block is
+# rewritten as a fence by mdformat alone, and a fence beside it is left as it
+# is. The new fence has no language, which MD040 then reports; that is the
+# matrix's one documented exception and not this case's rule.
+status = "guaranteed"
+rule = "MD046"
+
+[inputs."indented.md"]
+findings = 1
+
+[inputs."fenced.md"]
+findings = 0
+unchanged = true

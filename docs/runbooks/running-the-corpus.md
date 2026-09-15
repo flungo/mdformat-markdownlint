@@ -18,7 +18,7 @@ What the corpus is and how a case is written is [the corpus reference](../refere
    python -m pip install -e '.[test]' -c tests/constraints.txt
    ```
 
-1. **Install the pinned markdownlint-cli2** into `tests/node_modules/`, which is gitignored:
+1. **Install the pinned markdownlint-cli2** into `tests/node_modules/`, which is gitignored, together with a link to the config package in this tree, which the cases extend by name:
 
    ```sh
    npm ci --prefix tests

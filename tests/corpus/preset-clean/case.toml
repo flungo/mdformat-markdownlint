@@ -1,0 +1,17 @@
+# The preset's baseline: a document in mdformat's style lints clean under the
+# preset before formatting and after it, on both runs, and formatting writes
+# it back byte for byte. No rule is named, so every finding counts. The second
+# document is the one the default baseline accepts unchanged in its findings,
+# consistent in setext headings, asterisk bullets, tilde fences, a dashed
+# break, a compact table and 1, 2, 3 numbering: under the preset each of those
+# is a finding before formatting, since the preset names the style mdformat
+# writes, and none is a finding after it.
+status = "guaranteed"
+
+[inputs."clean.md"]
+findings = 0
+unchanged = true
+
+[inputs."consistent.md"]
+findings = 15
+rewritten = true

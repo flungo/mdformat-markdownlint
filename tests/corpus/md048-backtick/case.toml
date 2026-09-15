@@ -1,0 +1,12 @@
+# MD048 code-fence-style at the preset's `backtick`: tilde fences are rewritten
+# with backticks by mdformat alone, lengthened where the content holds a
+# backtick run, and a backtick fence beside them is left as it is.
+status = "guaranteed"
+rule = "MD048"
+
+[inputs."tilde.md"]
+findings = 2
+
+[inputs."backtick.md"]
+findings = 0
+unchanged = true

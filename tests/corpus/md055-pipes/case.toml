@@ -1,0 +1,14 @@
+# MD055 table-pipe-style at the preset's `leading_and_trailing`: rows written
+# without leading and trailing pipes gain both from mdformat alone, and a
+# table already piped and padded beside them is left as it is. markdownlint
+# reports a missing leading pipe and a missing trailing pipe separately, so
+# four bare rows are eight findings.
+status = "guaranteed"
+rule = "MD055"
+
+[inputs."bare-rows.md"]
+findings = 8
+
+[inputs."piped.md"]
+findings = 0
+unchanged = true
