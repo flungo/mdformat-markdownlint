@@ -1,0 +1,41 @@
+// The markdownlint preset, shipped as the npm package markdownlint-config-mdformat
+// (ADR-003): every rule setting mdformat's fixed choices satisfy, stated here so
+// a repository's markdownlint configuration declares the style its formatter
+// writes (ADR-001). A .markdownlint-cli2.jsonc extends it by package name:
+//
+//   { "config": { "extends": "markdownlint-config-mdformat", ...its own rules... } }
+//
+// A setting is here where markdownlint's default differs from, or is looser
+// than, what mdformat writes at its own defaults. Where the default already
+// agrees (MD005, MD007, MD019, MD021, MD022, MD023, MD027, MD030, MD032, MD047,
+// MD056, MD058) the preset says nothing. Two of the settings, MD029 and MD060,
+// pin what mdformat writes at its defaults for the options it does have: a
+// repository that runs mdformat with --number or --compact-tables overrides the
+// rule in its own configuration to match, and the mdformat plugin, where it is
+// installed, derives the option from that configuration so the choice is made
+// once. Each row's status is in docs/reference/compatibility-matrix.md and its
+// proof is a case under tests/corpus/ that extends this file.
+{
+  // Every heading is written as open ATX; setext and closed forms are rewritten.
+  "MD003": { "style": "atx" },
+  // Every bullet is a dash, at every nesting level. Two lists written directly
+  // one after the other keep alternating markers, which the rule already
+  // reports before formatting.
+  "MD004": { "style": "dash" },
+  // At mdformat's default, every item after the first is written as `1.`;
+  // `--number` writes 1, 2, 3, which `ordered` accepts.
+  "MD029": { "style": "one" },
+  // Every thematic break is written as seventy underscores.
+  "MD035": { "style": "______________________________________________________________________" },
+  // Indented code is rewritten as a fence.
+  "MD046": { "style": "fenced" },
+  // Every fence is written with backticks, lengthened where the content holds
+  // a backtick run.
+  "MD048": { "style": "backtick" },
+  // Every table row is written with a leading and a trailing pipe.
+  "MD055": { "style": "leading_and_trailing" },
+  // At mdformat's default, every cell is padded to its column's widest;
+  // `--compact-tables` writes one space each side of every pipe, which
+  // `compact` accepts.
+  "MD060": { "style": "aligned" }
+}

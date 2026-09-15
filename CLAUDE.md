@@ -1,12 +1,12 @@
 # CLAUDE.md — mdformat-markdownlint
 
-An [mdformat](https://github.com/hukkin/mdformat) plugin, a [markdownlint](https://github.com/DavidAnson/markdownlint) preset, and the corpus that proves the two agree: a repository keeps one style configuration, markdownlint's, and mdformat's output lints clean against it.
+An [mdformat](https://github.com/hukkin/mdformat) plugin, a [markdownlint](https://github.com/DavidAnson/markdownlint) preset shipped as an npm package, and the corpus that proves the two agree: a repository keeps one style configuration, markdownlint's, and mdformat's output lints clean against it.
 The shape is that of eslint-config-prettier — the linter is configured to accept the formatter's fixed decisions, and the plugin bridges only what a static preset cannot ([ADR-001](docs/decisions/001-make-markdownlint-accept-mdformat.md)).
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton and the corpus harness exist; the plugin's behaviours, the preset and the corpus cases are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
-> Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing until its behaviours land, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the corpus harness and the config package exist; the plugin's behaviours, the preset's cases and the rest of the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing until its behaviours land, the config package is installable only from a checkout, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
 
 ## Repo layout
 
@@ -14,6 +14,8 @@ What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-0
 pyproject.toml              The package: flit_core build, the mdformat.parser_extension entry
                             point, and dependency bounds that hold adopters at the verified minor.
 src/mdformat_markdownlint/  The plugin.
+markdownlint-config-mdformat/  The npm package: the preset, every setting mdformat's fixed
+                            choices satisfy, that a .markdownlint-cli2.jsonc extends by name.
 tests/                      The corpus and its harness (docs/reference/corpus.md): one directory
                             per case under corpus/, both tools run as subprocesses, the pinned
                             releases in constraints.txt and package.json.
@@ -23,8 +25,6 @@ docs/
   reference/   Lookup docs — the compatibility matrix and the corpus reference. README.md is the index.
   runbooks/    Repeatable procedures — running the corpus, bumping a pin. README.md is the index.
 ```
-
-The preset is added by the build-out plan and described here when it lands.
 
 **The compatibility matrix and the corpus must agree** ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 A status that changes in one changes in the other in the same pull request; until the corpus exists, the matrix's Evidence column says how each row is known.

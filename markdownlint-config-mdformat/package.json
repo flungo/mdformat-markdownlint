@@ -1,0 +1,25 @@
+{
+  "name": "markdownlint-config-mdformat",
+  "version": "0.1.0",
+  "description": "Shareable markdownlint configuration that declares the style mdformat writes, so a formatted file lints clean and pre-format drift is reported in the style the formatter will produce.",
+  "main": "mdformat.markdownlint.jsonc",
+  "files": [
+    "mdformat.markdownlint.jsonc",
+    "README.md"
+  ],
+  "keywords": [
+    "markdownlint",
+    "markdownlint-config",
+    "mdformat",
+    "markdown",
+    "lint",
+    "formatter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flungo/mdformat-markdownlint.git",
+    "directory": "markdownlint-config-mdformat"
+  },
+  "homepage": "https://github.com/flungo/mdformat-markdownlint#readme",
+  "bugs": "https://github.com/flungo/mdformat-markdownlint/issues"
+}
