@@ -62,22 +62,22 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD001 heading-increment | any | Neutral | [Corpus at the default](../../tests/corpus/md001/case.toml), [for `front_matter_title` empty](../../tests/corpus/md001-no-front-matter-title/case.toml) | Heading levels are content |
+| MD001 heading-increment | any | Neutral | [Corpus at the default](../../tests/corpus/md001/case.toml), [for `front_matter_title` empty](../../tests/corpus/md001-front-matter-title-empty/case.toml) | Heading levels are content |
 | MD003 heading-style | `consistent`, `atx` | Guaranteed | [Corpus for `atx`](../../tests/corpus/md003-atx/case.toml), [for `consistent`](../../tests/corpus/md003-consistent/case.toml) | Every heading, setext or closed, in a list or a blockquote, is rewritten as open ATX |
 | MD003 heading-style | `atx_closed`, `setext`, `setext_with_atx`, `setext_with_atx_closed` | Unsatisfiable | Probe | Closing hashes are dropped and setext headings converted |
 | MD018 no-missing-space-atx | | Neutral | [Corpus](../../tests/corpus/md018/case.toml) | `#Heading` is a paragraph in CommonMark and is left as one |
 | MD019 no-multiple-space-atx | | Guaranteed | [Corpus](../../tests/corpus/md019/case.toml) | |
 | MD020 no-missing-space-closed-atx | | Neutral | [Corpus](../../tests/corpus/md020/case.toml) | `#Heading#` is a paragraph and is left as one. The one form the rule reports that is a heading, `# Heading#`, is escaped to `# Heading\#`, which removes the finding |
 | MD021 no-multiple-space-closed-atx | | Guaranteed | [Corpus](../../tests/corpus/md021/case.toml) | |
-| MD022 blanks-around-headings | `lines_above` and `lines_below` at 1, 0 or −1 | Guaranteed | [Corpus for 1](../../tests/corpus/md022/case.toml), [for 0 and −1 in the per-level array form](../../tests/corpus/md022-per-level/case.toml) | Blocks outside tight list items are separated by exactly one blank line, and the rule checks for at least the configured number |
+| MD022 blanks-around-headings | `lines_above` and `lines_below` at 1, 0 or −1 | Guaranteed | [Corpus for 1](../../tests/corpus/md022/case.toml), [for 0 and −1 in the per-level array form](../../tests/corpus/md022-lines-1-0-minus-1/case.toml) | Blocks outside tight list items are separated by exactly one blank line, and the rule checks for at least the configured number |
 | MD022 blanks-around-headings | `lines_above` or `lines_below` at 2 or more, in any form | Unsatisfiable | Probe | |
-| MD022 blanks-around-headings | `include_front_matter` | Guaranteed | [Corpus](../../tests/corpus/md022-front-matter/case.toml) | mdformat separates front matter from the first block with a blank line |
+| MD022 blanks-around-headings | `include_front_matter` | Guaranteed | [Corpus](../../tests/corpus/md022-include-front-matter/case.toml) | mdformat separates front matter from the first block with a blank line |
 | MD023 heading-start-left | | Guaranteed | [Corpus](../../tests/corpus/md023/case.toml) | |
 | MD024 no-duplicate-heading | any | Neutral | [Corpus at the default](../../tests/corpus/md024/case.toml), [for `siblings_only`](../../tests/corpus/md024-siblings-only/case.toml) | Content |
-| MD025 single-title | any | Neutral | [Corpus at the default](../../tests/corpus/md025/case.toml), [for `level`](../../tests/corpus/md025-level-2/case.toml), [for `front_matter_title` empty](../../tests/corpus/md025-no-front-matter-title/case.toml) | Content; a front-matter title counts as the first heading, as the rule documents |
-| MD026 no-trailing-punctuation | any | Neutral | [Corpus at the default](../../tests/corpus/md026/case.toml), [for `punctuation`](../../tests/corpus/md026-punctuation/case.toml) | Content |
-| MD041 first-line-heading | any | Neutral | [Corpus at the default](../../tests/corpus/md041/case.toml), [for `level`](../../tests/corpus/md041-level-2/case.toml), [for `allow_preamble`](../../tests/corpus/md041-allow-preamble/case.toml), [for `front_matter_title` empty](../../tests/corpus/md041-no-front-matter-title/case.toml) | Content |
-| MD043 required-headings | any | Neutral | [Corpus for `headings`](../../tests/corpus/md043/case.toml), [for `match_case`](../../tests/corpus/md043-match-case/case.toml) | Content |
+| MD025 single-title | any | Neutral | [Corpus at the default](../../tests/corpus/md025/case.toml), [for `level`](../../tests/corpus/md025-level-2/case.toml), [for `front_matter_title` empty](../../tests/corpus/md025-front-matter-title-empty/case.toml) | Content; a front-matter title counts as the first heading, as the rule documents |
+| MD026 no-trailing-punctuation | any | Neutral | [Corpus at the default](../../tests/corpus/md026/case.toml), [for `punctuation`](../../tests/corpus/md026-punctuation-question-mark/case.toml) | Content |
+| MD041 first-line-heading | any | Neutral | [Corpus at the default](../../tests/corpus/md041/case.toml), [for `level`](../../tests/corpus/md041-level-2/case.toml), [for `allow_preamble`](../../tests/corpus/md041-allow-preamble/case.toml), [for `front_matter_title` empty](../../tests/corpus/md041-front-matter-title-empty/case.toml) | Content |
+| MD043 required-headings | any | Neutral | [Corpus for `headings`](../../tests/corpus/md043-headings/case.toml), [for `match_case`](../../tests/corpus/md043-headings-match-case/case.toml) | Content |
 
 ## Lists
 
@@ -158,7 +158,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | [Corpus for `leading_and_trailing`](../../tests/corpus/md055-pipes/case.toml), probe for `consistent` | Every row is written with a leading and a trailing pipe |
+| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | [Corpus for `leading_and_trailing`](../../tests/corpus/md055-leading-and-trailing/case.toml), probe for `consistent` | Every row is written with a leading and a trailing pipe |
 | MD055 table-pipe-style | `leading_only`, `trailing_only`, `no_leading_or_trailing` | Unsatisfiable | Probe | |
 | MD056 table-column-count | | Guaranteed | Probe | A short row is padded with empty cells and a long row loses its extra cells, as GFM renders them |
 | MD058 blanks-around-tables | | Guaranteed | Probe | See the tight-list exception |
