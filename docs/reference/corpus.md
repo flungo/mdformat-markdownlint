@@ -16,6 +16,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/conftest.py` | The harness: runs both tools and asserts the status |
 | `tests/test_corpus.py` | One test per document, on both runs |
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
+| `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix |
 | `tests/constraints.txt` | The mdformat releases the pinned leg installs |
 | `tests/package.json` and its lockfile | The markdownlint-cli2 release the pinned leg installs |
 
@@ -26,7 +27,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | Key | Values | Meaning |
 | -- | -- | -- |
 | `status` | `guaranteed`, `neutral`, `bridged` | The matrix status the case asserts; `unsatisfiable` joins them when the plugin's refusal lands |
-| `rule` | `MD001` to `MD060`, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts |
+| `rule` | a rule the corpus knows, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts. The rules the corpus knows are the ones markdownlint ships, and a case naming any other does not load |
 | `inputs.<file>.from` | a filename, or absent | The pooled document under `tests/documents/` the harness copies into the case under this entry's name; absent, the document is the case's own file of that name. The case's own `.md` files are exactly the entries without `from` |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
 | `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style |
@@ -47,6 +48,9 @@ The findings before formatting must match the count the case declares, each form
 | `bridged` | For a violating document, at least one finding for the rule: mdformat alone does not hold it | No finding for the rule: the plugin is what holds it |
 | `neutral` | The findings for the rule are the same, by rule and count, as before formatting | The same |
 
+A finding for a rule the corpus does not know fails the document it is on, whatever rule the case names, rather than being filtered out with the findings the case is not about.
+That, with the load-time check on `rule` and the test that the installed markdownlint ships exactly the rules the corpus knows, is what makes a rule ID the corpus does not know a failure and never a skip.
+
 Two runs rather than one keep a status honest.
 A guaranteed case the plugin turns out to hold is misdeclared and belongs in bridged; a bridged case mdformat alone already satisfies is misdeclared and belongs in guaranteed; both fail, so a status claims no more than the run that earns it.
 
@@ -62,7 +66,7 @@ The test suite runs twice per Python version in CI ([`pytest.yml`](../../.github
 | Leg | Installs | Purpose |
 | -- | -- | -- |
 | `pinned` | `tests/constraints.txt` and `tests/package-lock.json`, the releases the matrix's rows were established against and the ones its version table names | The contract as stated holds |
-| `latest` | The newest release of mdformat, mdformat-gfm, mdformat-frontmatter and markdownlint-cli2, ignoring the plugin's own dependency bounds | A new rule or a changed style fails here before it reaches an adopter |
+| `latest` | The newest release of mdformat, mdformat-gfm, mdformat-frontmatter and markdownlint-cli2, ignoring the plugin's own dependency bounds | A new rule or a changed style fails here before it reaches an adopter: a rule the release adds or drops fails the rule-set test whether or not a document trips it |
 
 A red `latest` leg is a bump waiting to be made, not a broken pull request: [bump the pin](../runbooks/running-the-corpus.md#bumping-a-pin), fix or re-establish the rows the bump changes, and change the matrix with them.
 Every run prints the versions it ran against in pytest's header, which is the record of what a given run proved.

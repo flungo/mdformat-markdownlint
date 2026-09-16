@@ -32,6 +32,22 @@ CORPUS_DIR = TESTS_DIR / "corpus"
 # it is the same bytes.
 DOCUMENTS_DIR = TESTS_DIR / "documents"
 MARKDOWNLINT_CLI2 = TESTS_DIR / "node_modules" / ".bin" / "markdownlint-cli2"
+# The package the binary belongs to: Node resolves markdownlint from here, so
+# the rule list read for the corpus is the one markdownlint-cli2 runs.
+MARKDOWNLINT_CLI2_PACKAGE = TESTS_DIR / "node_modules" / "markdownlint-cli2"
+MATRIX = TESTS_DIR.parent / "docs" / "reference" / "compatibility-matrix.md"
+
+# The rules the corpus knows: every rule markdownlint 0.41.1 ships, each with
+# its rows in the compatibility matrix. A rule ID outside this set is a
+# failure, not a skip (ADR-002): a case naming one does not load, a finding
+# markdownlint reports for one fails the document it is on, and the rule list
+# the installed markdownlint ships is compared with it whole, so a rule a new
+# release adds or drops fails the latest leg before an adopter meets it.
+KNOWN_RULES = frozenset(
+    f"MD{number:03d}"
+    for number in range(1, 61)
+    if number not in {2, 6, 8, 15, 16, 17, 57}
+)
 
 # The extension set the compatibility contract is stated for, and the plugin's
 # own extension, passed explicitly so a run does not depend on what else is
@@ -102,8 +118,11 @@ def load_case(directory: Path) -> Case:
             f"{manifest}: status must be one of {STATUSES}, not {status!r}"
         )
     rule = data.get("rule")
-    if rule is not None and not re.fullmatch(r"MD\d{3}", rule):
-        raise ValueError(f"{manifest}: rule must look like MD001, not {rule!r}")
+    if rule is not None and rule not in KNOWN_RULES:
+        raise ValueError(
+            f"{manifest}: the corpus does not know the rule {rule!r}; a rule it knows "
+            "is one markdownlint ships, MD001 to MD060 less the retired IDs"
+        )
     if status == "bridged" and rule is None:
         raise ValueError(f"{manifest}: a bridged case names the rule the plugin holds")
     table = data.get("inputs")
@@ -221,6 +240,12 @@ def lint_file(markdownlint: Path, path: Path) -> list[Finding]:
                     detail=match["detail"],
                 )
             )
+    unknown = sorted({finding.rule for finding in findings} - KNOWN_RULES)
+    if unknown:
+        pytest.fail(
+            f"markdownlint reported {unknown} on {path}, which the corpus does not "
+            "know: a new rule needs its rows in the matrix and its cases here"
+        )
     return findings
 
 
@@ -233,6 +258,33 @@ def select(findings: list[Finding], rule: str | None) -> list[Finding]:
 
 def count_by_rule(findings: list[Finding]) -> Counter[str]:
     return Counter(finding.rule for finding in findings)
+
+
+def markdownlint_rules() -> frozenset[str]:
+    """The rule IDs the installed markdownlint ships, read from its rule
+    module by path since the package does not export the list, and resolved
+    from markdownlint-cli2's own directory so it is the markdownlint that
+    binary runs."""
+    script = (
+        'const path = require("path");'
+        'const rules = path.join(path.dirname(require.resolve("markdownlint")), "rules.mjs");'
+        "import(rules).then((m) => console.log(m.default.map((r) => r.names[0]).join(\"\\n\")));"
+    )
+    proc = subprocess.run(
+        ["node", "-e", script],
+        cwd=MARKDOWNLINT_CLI2_PACKAGE,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(f"listing markdownlint's rules failed:\n{proc.stderr}")
+    return frozenset(proc.stdout.split())
+
+
+def matrix_rules() -> frozenset[str]:
+    """The rule IDs the compatibility matrix has a row for."""
+    return frozenset(re.findall(r"^\| (MD\d{3}) ", MATRIX.read_text(), re.MULTILINE))
 
 
 def markdownlint_version() -> str:
