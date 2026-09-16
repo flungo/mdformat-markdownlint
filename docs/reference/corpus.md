@@ -29,6 +29,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `status` | `guaranteed`, `neutral`, `bridged` | The matrix status the case asserts; `unsatisfiable` joins them when the plugin's refusal lands |
 | `rule` | a rule the corpus knows, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts. The rules the corpus knows are the ones markdownlint ships, and a case naming any other does not load |
 | `inputs.<file>.from` | a filename, or absent | The pooled document under `tests/documents/` the harness copies into the case under this entry's name; absent, the document is the case's own file of that name. The case's own `.md` files are exactly the entries without `from` |
+| `inputs.<file>.status` | `guaranteed`, `neutral`, `bridged`, or absent | The status this document asserts; absent, the case's. Set on a document whose construct is the exception to the rule's row under the same configuration, such as two adjacent lists under MD004, so the case stays one per configuration and the exception is an entry in it rather than a case of its own; a case naming no rule counts every finding and cannot carry one |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
 | `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style |
 | `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter |
@@ -40,7 +41,7 @@ Two documents rather than one is deliberate: the violating document alone shows 
 
 For each document the harness copies the case directory twice, pooled documents included, lints the document, formats it in place, one copy with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and one with the `markdownlint` extension added, and lints both again.
 Both tools run as the subprocesses an adopter runs, from the case's own directory, so the configuration markdownlint-cli2 discovers is the case's and nothing outside the case reaches either tool.
-The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not; then the status decides what the two runs must show:
+The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not; then the document's status, the case's unless its entry says otherwise, decides what the two runs must show:
 
 | Status | Without the plugin | With the plugin |
 | -- | -- | -- |

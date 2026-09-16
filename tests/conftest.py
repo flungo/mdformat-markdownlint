@@ -77,13 +77,15 @@ class Finding:
 @dataclass(frozen=True)
 class Input:
     """One document of a case: where its bytes come from, the case's own
-    directory or the shared pool; how many findings it reports before
-    formatting, for the case's rule or for any rule when the case names none;
-    and whether mdformat must write it back byte for byte (`unchanged`) or must
-    not (`rewritten`)."""
+    directory or the shared pool; the status it asserts, the case's unless the
+    document is a construct the row excepts; how many findings it reports
+    before formatting, for the case's rule or for any rule when the case names
+    none; and whether mdformat must write it back byte for byte (`unchanged`)
+    or must not (`rewritten`)."""
 
     name: str
     source: Path
+    status: str
     findings: int
     unchanged: bool
     rewritten: bool
@@ -149,6 +151,20 @@ def load_case(directory: Path) -> Case:
             source = DOCUMENTS_DIR / shared
             if not source.is_file():
                 raise ValueError(f"{manifest}: inputs.{name}.from names {source}, which is missing")
+        # A document may carry its own status where its construct is the
+        # exception to the rule's row under the same configuration, so a case
+        # stays named for the configuration its documents share; a case naming
+        # no rule counts every finding, and an override there says nothing.
+        own_status = spec.get("status", status) if isinstance(spec, dict) else None
+        if own_status not in STATUSES:
+            raise ValueError(
+                f"{manifest}: inputs.{name}.status must be one of {STATUSES}, not {own_status!r}"
+            )
+        if own_status != status and rule is None:
+            raise ValueError(
+                f"{manifest}: inputs.{name}.status overrides the case's, but a case naming "
+                "no rule counts every finding and has no row for a document to except"
+            )
         findings = spec.get("findings") if isinstance(spec, dict) else None
         unchanged = spec.get("unchanged", False) if isinstance(spec, dict) else None
         rewritten = spec.get("rewritten", False) if isinstance(spec, dict) else None
@@ -164,6 +180,7 @@ def load_case(directory: Path) -> Case:
             Input(
                 name=name,
                 source=source,
+                status=own_status,
                 findings=findings,
                 unchanged=unchanged,
                 rewritten=rewritten,

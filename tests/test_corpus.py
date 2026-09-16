@@ -66,7 +66,9 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
     before, alone = runs["without the plugin"]
     _, bridged = runs["with the plugin"]
 
-    if case.status == "guaranteed":
+    # The document's status: the case's, unless the entry excepts it.
+    status = document.status
+    if status == "guaranteed":
         assert not alone, (
             f"{label}: guaranteed, but mdformat alone leaves {alone}; "
             "if the plugin holds the rule, the case is bridged"
@@ -75,7 +77,7 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
             f"{label}: guaranteed by mdformat alone, but with the plugin the formatted "
             f"file reports {bridged}: the plugin broke it"
         )
-    elif case.status == "bridged":
+    elif status == "bridged":
         if document.findings:
             assert alone, (
                 f"{label}: bridged, but mdformat alone already satisfies {case.rule}; "
@@ -84,7 +86,7 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
         assert not bridged, (
             f"{label}: bridged, but with the plugin the formatted file still reports {bridged}"
         )
-    elif case.status == "neutral":
+    elif status == "neutral":
         expected = count_by_rule(before)
         assert count_by_rule(alone) == expected, (
             f"{label}: neutral, but mdformat alone changed the findings"
@@ -93,4 +95,4 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
             f"{label}: neutral, but the plugin changed the findings"
         )
     else:  # pragma: no cover
-        raise AssertionError(f"unhandled status {case.status}")
+        raise AssertionError(f"unhandled status {status}")
