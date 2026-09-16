@@ -1,0 +1,28 @@
+# MD041 first-line-heading at its default: a document whose first line is not
+# a level-one heading, whether a list before the title or a level-two heading
+# first, is a finding before and after mdformat rewrites the list marker or
+# the setext heading; with the default `front_matter_title`, a front-matter
+# title satisfies the rule, so the pooled document with one and no heading
+# at all reports nothing.
+status = "neutral"
+rule = "MD041"
+
+[inputs."asterisk-list-before-title.md"]
+from = "asterisk-list-before-title.md"
+findings = 1
+rewritten = true
+
+[inputs."setext-second-level-heading-first.md"]
+from = "setext-second-level-heading-first.md"
+findings = 1
+rewritten = true
+
+[inputs."front-matter-title-then-no-heading.md"]
+from = "front-matter-title-then-no-heading.md"
+findings = 0
+unchanged = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

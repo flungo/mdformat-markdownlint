@@ -1,0 +1,22 @@
+# MD043 required-headings with the same `headings` structure and `match_case`
+# true: the pooled document whose second heading is `setup` no longer matches
+# `## Setup` and is a finding, where the default configuration reports
+# nothing on it; the one whose second heading is `Usage` is a finding under
+# both.
+status = "neutral"
+rule = "MD043"
+
+[inputs."heading-text-differs.md"]
+from = "heading-text-differs.md"
+findings = 1
+rewritten = true
+
+[inputs."heading-case-differs.md"]
+from = "heading-case-differs.md"
+findings = 1
+rewritten = true
+
+[inputs."heading-structure-matches.md"]
+from = "heading-structure-matches.md"
+findings = 0
+unchanged = true

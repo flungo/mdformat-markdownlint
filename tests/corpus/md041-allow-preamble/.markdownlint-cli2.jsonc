@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD041": {
+      "allow_preamble": true
+    }
+  }
+}

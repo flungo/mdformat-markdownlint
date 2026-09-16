@@ -1,6 +1,6 @@
 # Plan: Build out `mdformat-markdownlint`
 
-Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix, the Markdown CI with the `markdown` flag on and the external link sweep verified, the package skeleton with the corpus harness, and the config package with a case per setting have landed; next is the corpus.
+Status: In progress — the repository skeleton, the founding decisions ([ADR-001](../decisions/001-make-markdownlint-accept-mdformat.md), [ADR-002](../decisions/002-the-compatibility-contract.md)), the compatibility matrix, the Markdown CI with the `markdown` flag on and the external link sweep verified, the package skeleton with the corpus harness, and the config package with a case per setting have landed; the corpus is landing a matrix section at a time.
 
 ## Goal
 
@@ -21,6 +21,8 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 - [ ] The corpus: one input per rule and option value, formatted then linted, asserting the matrix's status, and a test that a rule ID the corpus does not know fails.
   MD052 is enabled alongside other rules in every case, since markdownlint 0.41.1 reports nothing for it in isolation.
   The link rules need inputs the repository's link check can still read: no external URL, and no relative link or fragment that does not resolve.
+  One pull request per matrix section, each replacing the section's Evidence cells with its cases; the unsatisfiable rows wait for the refusal and the bridged rows for the behaviour that bridges them, both below.
+  Landed: headings.
 - [ ] Plugin behaviours, each with its corpus entries: derived `number` and `compact_tables`, including compact tables whenever MD013 measures them; the markdownlint configuration read as markdownlint-cli2 reads it, `extends`, the YAML form and per-directory merging included, and the JavaScript forms refused; `ignores` matched with markdownlint-cli2's globby semantics, bare directory names, braces and negations included; comment blocks kept adjacent; single-space empty compact cells; `[//]: #` definitions preserved; `.mdformat.toml` validated against the derived options; refusal of unsatisfiable settings.
 - [ ] Review the corpus for coverage once the plugin's entries exist: every rule and every value of each option has a case, and each case's documents exercise every construct the rule reports, with a count that proves it; in the same pass, move every document more than one case could run into the shared pool under `tests/documents/`.
 - [ ] Upstream filings: an empty-cell fix and the task-list escape that breaks a link whose text is `x` to mdformat-gfm; a comment-adjacency option and an exclusion hook proposed to mdformat; the plugin shrinks as each lands.

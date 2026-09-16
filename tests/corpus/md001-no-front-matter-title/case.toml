@@ -1,0 +1,11 @@
+# MD001 heading-increment with `front_matter_title` empty: the front-matter
+# title no longer counts as a heading, so the level-three heading after it is
+# the document's first and only the level-five one skips, one finding where
+# the default configuration reports two on the same pooled document.
+status = "neutral"
+rule = "MD001"
+
+[inputs."front-matter-title-then-skipped-levels.md"]
+from = "front-matter-title-then-skipped-levels.md"
+findings = 1
+unchanged = true

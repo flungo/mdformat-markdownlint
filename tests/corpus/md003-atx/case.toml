@@ -1,15 +1,19 @@
 # MD003 heading-style at the preset's `atx`: setext headings and closed ATX
-# headings are rewritten as open ATX by mdformat alone, and an open ATX
-# heading beside them is left as it is.
+# headings, at top level, in a blockquote and in a list item, are rewritten
+# as open ATX by mdformat alone, and the pooled document of open ATX headings
+# is left as it is.
 status = "guaranteed"
 rule = "MD003"
 
-[inputs."setext.md"]
-findings = 2
+[inputs."setext-headings.md"]
+findings = 4
+rewritten = true
 
-[inputs."closed-atx.md"]
-findings = 1
+[inputs."closed-atx-headings.md"]
+findings = 3
+rewritten = true
 
-[inputs."atx.md"]
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
 findings = 0
 unchanged = true

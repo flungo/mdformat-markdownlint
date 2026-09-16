@@ -1,0 +1,17 @@
+# MD022 blanks-around-headings with `lines_above` and `lines_below` in their
+# per-level array form, at 1, 0 and -1 for levels one to three: the rule asks
+# for at least the configured number of blank lines, so a level-one heading
+# with none is the only finding, a level-two heading needs none and a
+# level-three heading is not checked. mdformat alone separates every heading
+# by one blank line, which satisfies all three values.
+status = "guaranteed"
+rule = "MD022"
+
+[inputs."three-levels-without-blank-lines.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

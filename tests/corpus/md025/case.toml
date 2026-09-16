@@ -1,0 +1,20 @@
+# MD025 single-title at its default: a second level-one heading is a finding
+# before and after mdformat rewrites the setext one as ATX. With the default
+# `front_matter_title`, a front-matter title is the first title, so both
+# level-one headings of the pooled front-matter document are findings.
+status = "neutral"
+rule = "MD025"
+
+[inputs."setext-and-atx-titles.md"]
+findings = 1
+rewritten = true
+
+[inputs."front-matter-title-and-two-titles.md"]
+from = "front-matter-title-and-two-titles.md"
+findings = 2
+unchanged = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

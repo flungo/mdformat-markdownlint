@@ -1,0 +1,14 @@
+# MD021 no-multiple-space-closed-atx: a closed ATX heading with a run of
+# spaces inside its hashes is rewritten by mdformat alone as an open one with
+# a single space, which is outside the rule.
+status = "guaranteed"
+rule = "MD021"
+
+[inputs."multiple-spaces-inside-closed-hashes.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

@@ -1,0 +1,21 @@
+# MD041 first-line-heading with `allow_preamble` true: content before the
+# first heading is allowed, so the pooled document with a list before its
+# title reports nothing where the default configuration reports one, and the
+# first heading must still be level one, so a list before a level-two heading
+# is the finding, before and after mdformat rewrites the list marker.
+status = "neutral"
+rule = "MD041"
+
+[inputs."asterisk-list-before-title.md"]
+from = "asterisk-list-before-title.md"
+findings = 0
+rewritten = true
+
+[inputs."asterisk-list-before-second-level-heading.md"]
+findings = 1
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

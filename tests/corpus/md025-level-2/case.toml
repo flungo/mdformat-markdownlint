@@ -1,0 +1,15 @@
+# MD025 single-title with `level` 2: the title is a level-two heading, so a
+# second one is the finding, before and after mdformat rewrites the setext
+# one as ATX, and the pooled document with one heading of each level reports
+# nothing.
+status = "neutral"
+rule = "MD025"
+
+[inputs."setext-and-atx-second-level-headings.md"]
+findings = 1
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

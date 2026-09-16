@@ -1,0 +1,13 @@
+# MD019 no-multiple-space-atx: a run of spaces after the hashes is written
+# back as one by mdformat alone.
+status = "guaranteed"
+rule = "MD019"
+
+[inputs."multiple-spaces-after-hashes.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

@@ -1,0 +1,17 @@
+# MD041 first-line-heading with `level` 2: the first line must be a level-two
+# heading, so the pooled document that opens with a level-one heading is the
+# finding, before and after formatting leaves it as it is, and the one that
+# opens with a setext level-two heading reports nothing, the reverse of the
+# default configuration on the same two documents.
+status = "neutral"
+rule = "MD041"
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 1
+unchanged = true
+
+[inputs."setext-second-level-heading-first.md"]
+from = "setext-second-level-heading-first.md"
+findings = 0
+rewritten = true

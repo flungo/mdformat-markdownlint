@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD043": {
+      "headings": ["# Title", "## Setup", "*"]
+    }
+  }
+}

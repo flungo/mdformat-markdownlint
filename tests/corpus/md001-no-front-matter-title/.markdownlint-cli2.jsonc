@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD001": {
+      "front_matter_title": ""
+    }
+  }
+}
