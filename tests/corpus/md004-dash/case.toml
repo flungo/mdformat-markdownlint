@@ -1,15 +1,38 @@
 # MD004 ul-style at the preset's `dash`: asterisk and plus bullets, at every
 # nesting level, are rewritten as dashes by mdformat alone, and a dash list
-# beside them is left as it is.
+# beside them is left as it is. Every pooled document is run by the
+# `consistent` case too, which reports nothing on the ones whose bullets are
+# all asterisks or all pluses.
+#
+# The exception is two lists written directly one after the other, neutral:
+# the source can only express adjacent lists with different markers, so the
+# second list's asterisk is a finding before formatting, and mdformat keeps
+# it, with a blank line between the lists, since a dash would merge them into
+# one list and change the render.
 status = "guaranteed"
 rule = "MD004"
 
-[inputs."asterisk.md"]
+[inputs."asterisk-bullets.md"]
+from = "asterisk-bullets.md"
 findings = 3
+rewritten = true
 
-[inputs."plus.md"]
+[inputs."plus-bullets.md"]
+from = "plus-bullets.md"
 findings = 2
+rewritten = true
 
-[inputs."dash.md"]
+[inputs."dash-then-asterisk-bullets.md"]
+from = "dash-then-asterisk-bullets.md"
+findings = 3
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
 findings = 0
 unchanged = true
+
+[inputs."adjacent-lists-with-different-markers.md"]
+status = "neutral"
+findings = 1
+rewritten = true

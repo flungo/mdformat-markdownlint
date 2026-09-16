@@ -1,0 +1,27 @@
+# MD030 list-marker-space with all four parameters at their default of 1:
+# three spaces after a marker, on single-line and on multi-paragraph items,
+# unordered and ordered, one parameter per document, are written back as one
+# by mdformat alone, with the continuation paragraphs re-indented to match.
+status = "guaranteed"
+rule = "MD030"
+
+[inputs."unordered-single-line-items.md"]
+findings = 2
+rewritten = true
+
+[inputs."ordered-single-line-items.md"]
+findings = 2
+rewritten = true
+
+[inputs."unordered-multi-paragraph-items.md"]
+findings = 2
+rewritten = true
+
+[inputs."ordered-multi-paragraph-items.md"]
+findings = 2
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
+findings = 0
+unchanged = true

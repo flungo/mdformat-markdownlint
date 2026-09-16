@@ -1,0 +1,16 @@
+# MD032 blanks-around-lists: a list written directly under a paragraph and
+# directly above a fence is separated from both by one blank line by mdformat
+# alone. The block below is a fence because a paragraph there is not below
+# the list at all: CommonMark reads it as a lazy continuation of the last
+# item.
+status = "guaranteed"
+rule = "MD032"
+
+[inputs."list-without-blank-lines.md"]
+findings = 2
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
+findings = 0
+unchanged = true

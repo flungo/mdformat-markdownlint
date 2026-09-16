@@ -1,0 +1,18 @@
+# MD005 list-indent: a sibling item indented differently from the rest of its
+# list, at top level or nested, unordered or ordered, is written back at its
+# list's indentation by mdformat alone.
+status = "guaranteed"
+rule = "MD005"
+
+[inputs."misaligned-unordered-items.md"]
+findings = 2
+rewritten = true
+
+[inputs."misaligned-ordered-items.md"]
+findings = 1
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
+findings = 0
+unchanged = true
