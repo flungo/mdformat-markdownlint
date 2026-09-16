@@ -1,0 +1,15 @@
+# MD018 no-missing-space-atx: `#Heading` is a paragraph in CommonMark, and
+# mdformat leaves it as one, neither escaping the hash nor inserting the
+# space, so the rule reports it before and after formatting; the setext
+# heading beside it is what formatting rewrites.
+status = "neutral"
+rule = "MD018"
+
+[inputs."hash-without-space.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

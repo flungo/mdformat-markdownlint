@@ -1,0 +1,16 @@
+# MD026 no-trailing-punctuation at its default set: a heading ending in a
+# period or a colon is a finding and one ending in a question mark is not;
+# the text is content, and mdformat reports the same after rewriting the
+# setext heading as ATX.
+status = "neutral"
+rule = "MD026"
+
+[inputs."trailing-period-colon-and-question-mark.md"]
+from = "trailing-period-colon-and-question-mark.md"
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

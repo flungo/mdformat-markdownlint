@@ -1,0 +1,17 @@
+# MD020 no-missing-space-closed-atx: `#Heading#` is a paragraph in
+# CommonMark, and mdformat leaves it as one, so the rule reports it before
+# and after formatting; the setext heading beside it is what formatting
+# rewrites. The one form the rule reports that is a heading, `# Heading#`, is
+# escaped by mdformat to `# Heading\#`, which removes the finding, so it is
+# not in this document.
+status = "neutral"
+rule = "MD020"
+
+[inputs."closed-hashes-without-spaces.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

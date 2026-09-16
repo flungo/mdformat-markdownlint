@@ -1,0 +1,10 @@
+# MD025 single-title with `front_matter_title` empty: the front-matter title
+# is not a title, so of the pooled document's two level-one headings only the
+# second is a finding, where the default configuration reports both.
+status = "neutral"
+rule = "MD025"
+
+[inputs."front-matter-title-and-two-titles.md"]
+from = "front-matter-title-and-two-titles.md"
+findings = 1
+unchanged = true

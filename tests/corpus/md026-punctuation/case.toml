@@ -1,0 +1,10 @@
+# MD026 no-trailing-punctuation with `punctuation` set to a question mark
+# alone: of the pooled document's three headings only the one ending in a
+# question mark is a finding, where the default set reports the other two.
+status = "neutral"
+rule = "MD026"
+
+[inputs."trailing-period-colon-and-question-mark.md"]
+from = "trailing-period-colon-and-question-mark.md"
+findings = 1
+rewritten = true

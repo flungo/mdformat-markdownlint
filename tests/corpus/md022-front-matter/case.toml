@@ -1,0 +1,14 @@
+# MD022 blanks-around-headings with `include_front_matter` true: the closing
+# fence of the front matter is a line above the first heading, so a heading
+# written directly against it is a finding, and mdformat alone separates the
+# front matter from the first block by one blank line.
+status = "guaranteed"
+rule = "MD022"
+
+[inputs."heading-directly-after-front-matter.md"]
+findings = 1
+rewritten = true
+
+[inputs."blank-line-after-front-matter.md"]
+findings = 0
+unchanged = true

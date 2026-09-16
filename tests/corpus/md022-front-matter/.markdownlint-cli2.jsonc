@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD022": {
+      "include_front_matter": true
+    }
+  }
+}

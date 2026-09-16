@@ -1,0 +1,19 @@
+# MD003 heading-style at `consistent`, markdownlint's default in place of the
+# preset's `atx`: the first heading fixes the style, so an open ATX heading
+# after a setext or a closed one is the finding, and mdformat alone rewrites
+# every heading as open ATX, which is consistent whatever came first.
+status = "guaranteed"
+rule = "MD003"
+
+[inputs."setext-then-atx.md"]
+findings = 1
+rewritten = true
+
+[inputs."closed-atx-then-open-atx.md"]
+findings = 1
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

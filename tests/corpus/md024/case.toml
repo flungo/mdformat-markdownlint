@@ -1,0 +1,17 @@
+# MD024 no-duplicate-heading at its default: every repeat of a heading's text
+# anywhere in the document is a finding, whatever its parent, so the pooled
+# document's three `Details` headings are two findings; the text is content,
+# and mdformat reports the same two after rewriting the setext headings
+# around them as ATX.
+status = "neutral"
+rule = "MD024"
+
+[inputs."duplicate-headings-within-and-across-parents.md"]
+from = "duplicate-headings-within-and-across-parents.md"
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

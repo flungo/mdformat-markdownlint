@@ -1,0 +1,11 @@
+# MD024 no-duplicate-heading with `siblings_only` true: only a repeat under
+# the same parent is a finding, so of the pooled document's three `Details`
+# headings the two under `Usage` are one finding and the one under `Setup` is
+# none, where the default configuration reports two on the same document.
+status = "neutral"
+rule = "MD024"
+
+[inputs."duplicate-headings-within-and-across-parents.md"]
+from = "duplicate-headings-within-and-across-parents.md"
+findings = 1
+rewritten = true

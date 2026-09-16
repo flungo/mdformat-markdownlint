@@ -1,0 +1,16 @@
+# MD041 first-line-heading with `front_matter_title` empty: a front-matter
+# title no longer satisfies the rule, so the pooled document with one and no
+# heading is the finding, where the default configuration reports nothing on
+# it, and formatting leaves it as it is.
+status = "neutral"
+rule = "MD041"
+
+[inputs."front-matter-title-then-no-heading.md"]
+from = "front-matter-title-then-no-heading.md"
+findings = 1
+unchanged = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

@@ -1,0 +1,14 @@
+# MD023 heading-start-left: an ATX heading indented by up to three spaces,
+# and a setext heading whose text is indented, are both written flush left by
+# mdformat alone.
+status = "guaranteed"
+rule = "MD023"
+
+[inputs."indented-atx-and-setext-headings.md"]
+findings = 2
+rewritten = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true
