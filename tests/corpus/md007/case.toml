@@ -1,0 +1,14 @@
+# MD007 ul-indent at its default `indent` of 2: nested items indented by four
+# and eight spaces are written back indented by the parent marker's width,
+# two for a dash, at every level, by mdformat alone.
+status = "guaranteed"
+rule = "MD007"
+
+[inputs."nested-items-indented-by-four.md"]
+findings = 2
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
+findings = 0
+unchanged = true

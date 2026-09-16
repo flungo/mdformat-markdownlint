@@ -83,19 +83,19 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD004 ul-style | `consistent`, `dash` | Guaranteed | [Corpus for `dash`](../../tests/corpus/md004-dash/case.toml), probe for `consistent` | Every bullet is a dash, at every nesting level |
-| MD004 ul-style | `consistent`, `dash`, on two lists written directly one after the other | Neutral | Probe | The source can only express adjacent lists with different markers, so it already violates the rule; mdformat keeps the second list's marker, and no formatter can satisfy the rule there without inserting a separator |
+| MD004 ul-style | `consistent`, `dash` | Guaranteed | [Corpus for `dash`](../../tests/corpus/md004-dash/case.toml), [for `consistent`](../../tests/corpus/md004-consistent/case.toml) | Every bullet is a dash, at every nesting level |
+| MD004 ul-style | `consistent`, `dash`, on two lists written directly one after the other | Neutral | [Corpus](../../tests/corpus/md004-dash/case.toml) | The source can only express adjacent lists with different markers, so it already violates the rule; mdformat separates the lists with a blank line and keeps the second list's marker, since a dash would merge them, and no formatter can satisfy the rule there without inserting a separator. A third adjacent list is written with a dash again, so its finding goes |
 | MD004 ul-style | `asterisk`, `plus`, `sublist` | Unsatisfiable | Probe | |
-| MD005 list-indent | | Guaranteed | Probe | Zero-padded markers included |
-| MD007 ul-indent | `indent` 2 | Guaranteed | Probe | Nested content is indented by the parent marker's width, two for a dash |
+| MD005 list-indent | | Guaranteed | [Corpus](../../tests/corpus/md005/case.toml) | Zero-padded markers included |
+| MD007 ul-indent | `indent` 2 | Guaranteed | [Corpus](../../tests/corpus/md007/case.toml) | Nested content is indented by the parent marker's width, two for a dash |
 | MD007 ul-indent | any other `indent` | Unsatisfiable | Probe | |
 | MD007 ul-indent | `start_indented` true | Unsatisfiable | Probe | The first level is never indented |
 | MD029 ol-prefix | `one` | Guaranteed | [Corpus](../../tests/corpus/md029-one/case.toml) | At mdformat's default, every item after the first is written as `1.`; the plugin also derives `number` as `false`, so a `number = true` in mdformat's own configuration cannot contradict the rule (prototype). A list whose first item is not `1.` or `0.` violates the rule before and after formatting |
 | MD029 ol-prefix | `one_or_ordered`, `ordered` | Bridged | Prototype | `number` derived as `true`. Without the derivation a list starting at `0.` renders `0. 1. 1.`, which the rule reads as ordered and rejects. A list of ten or more items is zero-padded to `01.`, which the rule accepts. A list starting at 2 or above violates the rule before and after formatting |
 | MD029 ol-prefix | `zero` | Unsatisfiable | Probe | Items after the first are never `0.` |
-| MD030 list-marker-space | all four parameters at 1 | Guaranteed | Probe | One space follows every marker |
+| MD030 list-marker-space | all four parameters at 1 | Guaranteed | [Corpus](../../tests/corpus/md030/case.toml) | One space follows every marker |
 | MD030 list-marker-space | any parameter above 1 | Unsatisfiable | Probe | Each parameter tested on its own |
-| MD032 blanks-around-lists | | Guaranteed | Probe | Including a list that follows a comment the plugin keeps adjacent |
+| MD032 blanks-around-lists | | Guaranteed | [Corpus](../../tests/corpus/md032/case.toml) | A list that follows a comment the plugin keeps adjacent is the comment-adjacency row's own entry, pending |
 
 ## Whitespace and blank lines
 

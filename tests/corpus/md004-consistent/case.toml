@@ -1,0 +1,32 @@
+# MD004 ul-style at `consistent`, markdownlint's default in place of the
+# preset's `dash`: the first list fixes the style, so a document of asterisk
+# or plus bullets alone reports nothing, and one whose second list uses a
+# different marker reports that list, whichever marker came first; mdformat
+# alone rewrites every bullet as a dash, which is consistent whatever came
+# first.
+status = "guaranteed"
+rule = "MD004"
+
+[inputs."asterisk-bullets.md"]
+from = "asterisk-bullets.md"
+findings = 0
+rewritten = true
+
+[inputs."plus-bullets.md"]
+from = "plus-bullets.md"
+findings = 0
+rewritten = true
+
+[inputs."dash-then-asterisk-bullets.md"]
+from = "dash-then-asterisk-bullets.md"
+findings = 3
+rewritten = true
+
+[inputs."asterisk-then-dash-bullets.md"]
+findings = 2
+rewritten = true
+
+[inputs."dash-bullets.md"]
+from = "dash-bullets.md"
+findings = 0
+unchanged = true
