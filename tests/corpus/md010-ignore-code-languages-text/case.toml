@@ -1,0 +1,10 @@
+# MD010 no-hard-tabs with `ignore_code_languages` naming `text`: of the pooled
+# document's two fences only the shell one reports its tab, where the default
+# reports both, and the tab is content mdformat preserves.
+status = "neutral"
+rule = "MD010"
+
+[inputs."tabs-in-two-code-languages.md"]
+from = "tabs-in-two-code-languages.md"
+findings = 1
+unchanged = true

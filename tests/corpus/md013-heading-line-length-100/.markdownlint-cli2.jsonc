@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD013": {
+      "heading_line_length": 100
+    }
+  }
+}

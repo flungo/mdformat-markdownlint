@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD010": {
+      "ignore_code_languages": ["text"]
+    }
+  }
+}

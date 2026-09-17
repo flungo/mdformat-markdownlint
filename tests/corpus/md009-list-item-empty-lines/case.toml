@@ -1,0 +1,16 @@
+# MD009 no-trailing-spaces with `list_item_empty_lines` true: an indented
+# empty line inside a list item is not a finding, where the default reports
+# it, and mdformat alone empties it either way; the trailing-spaces document
+# reports as at the default.
+status = "guaranteed"
+rule = "MD009"
+
+[inputs."list-item-empty-line-indented.md"]
+from = "list-item-empty-line-indented.md"
+findings = 0
+rewritten = true
+
+[inputs."trailing-spaces.md"]
+from = "trailing-spaces.md"
+findings = 2
+rewritten = true

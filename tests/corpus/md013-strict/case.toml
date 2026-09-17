@@ -1,0 +1,10 @@
+# MD013 line-length with `strict` true: every line over the limit is a
+# finding, the unbreakable word and the line whose last word begins within
+# the limit included, six where the default reports four.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 6
+rewritten = true

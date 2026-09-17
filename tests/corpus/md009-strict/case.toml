@@ -1,0 +1,11 @@
+# MD009 no-trailing-spaces with `strict` true: two trailing spaces are a
+# finding where they cannot be a hard break, on the last line of a paragraph,
+# so the pooled document reports three where the default reports two;
+# mdformat alone strips them.
+status = "guaranteed"
+rule = "MD009"
+
+[inputs."trailing-spaces.md"]
+from = "trailing-spaces.md"
+findings = 3
+rewritten = true

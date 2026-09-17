@@ -1,0 +1,16 @@
+# MD013 line-length at its defaults, on lines outside tables: a line over
+# eighty columns with whitespace past the limit is a finding, in a paragraph,
+# a heading or a fence, and a line whose last word begins within the limit,
+# or that is one unbreakable word, is not; mdformat never reflows a line, so
+# the findings survive formatting. The pooled document reports four here;
+# each option's case reports its own count on the same bytes. The heading is
+# setext so formatting rewrites the document, which lengthens the heading by
+# its hashes and changes no count. A padded table at the limit is the bridged
+# row, pending the plugin.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 4
+rewritten = true

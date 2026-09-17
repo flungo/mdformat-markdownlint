@@ -1,0 +1,11 @@
+# MD009 no-trailing-spaces with `br_spaces` 0: every trailing space is a
+# finding, the two of a hard break included, so the pooled document reports
+# four where the default reports two; mdformat alone strips them all and
+# writes the hard break as a backslash.
+status = "guaranteed"
+rule = "MD009"
+
+[inputs."trailing-spaces.md"]
+from = "trailing-spaces.md"
+findings = 4
+rewritten = true

@@ -1,0 +1,23 @@
+# MD010 no-hard-tabs at its default `code_blocks` of true: a tab inside a
+# fence is a finding and is code content mdformat preserves, so the finding
+# survives formatting, and a tab inside an HTML block likewise, the exception
+# the matrix states. A tab in prose is the exception the other way: mdformat
+# alone writes it as a space, guaranteed.
+status = "neutral"
+rule = "MD010"
+
+[inputs."tabs-in-two-code-languages.md"]
+from = "tabs-in-two-code-languages.md"
+findings = 2
+unchanged = true
+
+[inputs."tab-in-html-block.md"]
+from = "tab-in-html-block.md"
+findings = 1
+unchanged = true
+
+[inputs."tab-in-prose.md"]
+from = "tab-in-prose.md"
+status = "guaranteed"
+findings = 2
+rewritten = true

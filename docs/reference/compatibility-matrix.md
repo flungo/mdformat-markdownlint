@@ -38,6 +38,7 @@ They are stated once here rather than in every row they touch.
   The fix is the author's: a loose list, or the block moved out of the item.
 - **An HTML block is written verbatim.**
   Everything from an opening tag or `<!--` to the end of the block, a multi-line comment included, is content: trailing spaces, tabs and runs of blank lines inside it survive formatting, and MD009, MD010 and MD012 report them as before.
+  Each of those rules' cases carries the construct inside an HTML block as a neutral document, so the corpus asserts the exception where it applies.
 
 ## What the plugin derives from the markdownlint configuration
 
@@ -101,16 +102,16 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD009 no-trailing-spaces | any `br_spaces`, `strict` true, `list_item_empty_lines` | Guaranteed | Probe | Trailing whitespace is stripped and a hard break is written as a backslash; see the HTML-block exception |
-| MD009 no-trailing-spaces | `code_blocks` true | Neutral | Probe | Code content is preserved |
-| MD010 no-hard-tabs | `code_blocks` false | Guaranteed | Probe | Tabs in prose become spaces; see the HTML-block exception |
-| MD010 no-hard-tabs | `code_blocks` true, the default | Neutral | Probe | Tabs inside code are content |
-| MD012 no-multiple-blanks | any `maximum` | Guaranteed | Probe | At most one blank line separates blocks; blank lines inside code are exempt from the rule and preserved; see the HTML-block exception |
+| MD009 no-trailing-spaces | any `br_spaces`, `strict` true, `list_item_empty_lines` | Guaranteed | [Corpus at the default](../../tests/corpus/md009/case.toml), [for `br_spaces` 0](../../tests/corpus/md009-br-spaces-0/case.toml), [for `strict`](../../tests/corpus/md009-strict/case.toml), [for `list_item_empty_lines`](../../tests/corpus/md009-list-item-empty-lines/case.toml) | Trailing whitespace is stripped and a hard break is written as a backslash; see the HTML-block exception |
+| MD009 no-trailing-spaces | `code_blocks` true | Neutral | [Corpus](../../tests/corpus/md009-code-blocks/case.toml) | Code content is preserved |
+| MD010 no-hard-tabs | `code_blocks` false | Guaranteed | [Corpus](../../tests/corpus/md010-code-blocks-false/case.toml) | Tabs in prose become spaces; see the HTML-block exception |
+| MD010 no-hard-tabs | `code_blocks` true, the default, with any `ignore_code_languages` | Neutral | [Corpus at the default](../../tests/corpus/md010/case.toml), [for `ignore_code_languages`](../../tests/corpus/md010-ignore-code-languages-text/case.toml) | Tabs inside code are content |
+| MD012 no-multiple-blanks | any `maximum` | Guaranteed | [Corpus for 1](../../tests/corpus/md012/case.toml), [for 2](../../tests/corpus/md012-maximum-2/case.toml) | At most one blank line separates blocks; blank lines inside code are exempt from the rule and preserved; see the HTML-block exception |
 | MD013 line-length | default, with `tables` true and padded tables | Bridged | Pending | mdformat's padded tables lengthen every row to the widest cell, so a table at the limit fails on every row after formatting; the plugin derives compact tables whenever the rule measures tables and MD060 does not demand `aligned` |
-| MD013 line-length | any, with compact tables or `tables` false | Neutral | Probe | mdformat never reflows a line at its default `wrap = keep`. Two of its rewrites can lengthen one: an escape such as `*` to `\*` adds a character, and a thematic break becomes seventy underscores, which is a finding only where `line_length` is below 70 with `strict` or `stern` |
-| MD027 no-multiple-space-blockquote | any | Guaranteed | Probe | Lists, fences, nested quotes and tables inside a blockquote included |
-| MD028 no-blanks-blockquote | | Neutral | Probe | Two blockquotes separated by a blank line are kept as written; joining them would change the render |
-| MD047 single-trailing-newline | | Guaranteed | Probe | An empty file stays empty, which the rule accepts |
+| MD013 line-length | any, on lines outside tables, with compact tables or with `tables` false | Neutral | [Corpus at the defaults outside tables](../../tests/corpus/md013/case.toml), [for `line_length`](../../tests/corpus/md013-line-length-100/case.toml), [for `heading_line_length`](../../tests/corpus/md013-heading-line-length-100/case.toml), [for `code_block_line_length`](../../tests/corpus/md013-code-block-line-length-100/case.toml), [for `code_blocks` false](../../tests/corpus/md013-code-blocks-false/case.toml), [for `headings` false](../../tests/corpus/md013-headings-false/case.toml), [for `strict`](../../tests/corpus/md013-strict/case.toml), [for `stern`](../../tests/corpus/md013-stern/case.toml), [for `tables` false](../../tests/corpus/md013-tables-false/case.toml); probe for compact tables | mdformat never reflows a line at its default `wrap = keep`. Two of its rewrites can lengthen one: an escape such as `*` to `\*` adds a character, and a thematic break becomes seventy underscores, which is a finding only where `line_length` is below 70 with `strict` or `stern` |
+| MD027 no-multiple-space-blockquote | any | Guaranteed | [Corpus at the default](../../tests/corpus/md027/case.toml), [for `list_items` false](../../tests/corpus/md027-list-items-false/case.toml) | Lists, fences, nested quotes and tables inside a blockquote included |
+| MD028 no-blanks-blockquote | | Neutral | [Corpus](../../tests/corpus/md028/case.toml) | Two blockquotes separated by a blank line are kept as written; joining them would change the render |
+| MD047 single-trailing-newline | | Guaranteed | [Corpus](../../tests/corpus/md047/case.toml) | An empty file stays empty, which the rule accepts |
 
 ## Code
 

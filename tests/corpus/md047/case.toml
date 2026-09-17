@@ -1,0 +1,18 @@
+# MD047 single-trailing-newline: a file with no trailing newline gains one
+# from mdformat alone, an empty file stays empty, which the rule accepts, and
+# a file ending in one newline is left as it is.
+status = "guaranteed"
+rule = "MD047"
+
+[inputs."no-trailing-newline.md"]
+findings = 1
+rewritten = true
+
+[inputs."empty.md"]
+findings = 0
+unchanged = true
+
+[inputs."open-atx-headings.md"]
+from = "open-atx-headings.md"
+findings = 0
+unchanged = true

@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD012": {
+      "maximum": 2
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# MD013 line-length with `headings` false: the pooled document's heading is
+# not measured, three findings where the default reports four.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 3
+rewritten = true

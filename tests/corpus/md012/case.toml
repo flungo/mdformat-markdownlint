@@ -1,0 +1,23 @@
+# MD012 no-multiple-blanks at its default `maximum` of 1: every blank line
+# beyond the first in a run is a finding, three for runs of two and three,
+# and mdformat alone separates blocks by exactly one. Blank lines inside a
+# fence are outside the rule and preserved. Inside an HTML comment block they
+# are content, the exception the matrix states: the finding survives
+# formatting, neutral. A blank line ends a tag-opened HTML block in CommonMark,
+# so a comment block is where a run of blank lines can be inside one.
+status = "guaranteed"
+rule = "MD012"
+
+[inputs."multiple-blank-lines.md"]
+from = "multiple-blank-lines.md"
+findings = 3
+rewritten = true
+
+[inputs."blank-lines-in-code.md"]
+findings = 0
+unchanged = true
+
+[inputs."blank-lines-in-html-block.md"]
+status = "neutral"
+findings = 1
+unchanged = true
