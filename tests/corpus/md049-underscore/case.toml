@@ -1,0 +1,10 @@
+# MD049 emphasis-style at `underscore`: the two asterisk emphases are the
+# findings, reported at both markers each, four on the pooled document where
+# `consistent` reports two.
+status = "neutral"
+rule = "MD049"
+
+[inputs."mixed-emphasis-markers.md"]
+from = "mixed-emphasis-markers.md"
+findings = 4
+unchanged = true

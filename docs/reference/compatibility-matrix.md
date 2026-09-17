@@ -132,14 +132,14 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD033 no-inline-html | any | Neutral | Probe | Content |
-| MD034 no-bare-urls | | Neutral | Probe | A bare URL, `www.` literal or email address is left as written |
-| MD036 no-emphasis-as-heading | any | Neutral | Probe | Content |
-| MD037 no-space-in-emphasis | | Neutral | Probe | A `**`, `__` or `_` run that cannot open emphasis is escaped, which removes the rule's finding for it; a single `*` beside a space is left as literal text, and the rule's heuristic still reports it |
-| MD039 no-space-in-links | | Neutral | Probe | Stripping the spaces would change the rendered link text |
-| MD044 proper-names | any | Neutral | Probe | Content; a lowercased reference label is not text to the rule |
-| MD049 emphasis-style | any | Neutral | Probe | The marker is kept as written |
-| MD050 strong-style | any | Neutral | Probe | The marker is kept as written |
+| MD033 no-inline-html | any | Neutral | [Corpus at the default](../../tests/corpus/md033/case.toml), [for `allowed_elements`](../../tests/corpus/md033-allowed-elements-br/case.toml), [for `table_allowed_elements`](../../tests/corpus/md033-table-allowed-elements-br/case.toml) | Content |
+| MD034 no-bare-urls | | Neutral | [Corpus](../../tests/corpus/md034/case.toml) | A bare URL, `www.` literal or email address is left as written |
+| MD036 no-emphasis-as-heading | any | Neutral | [Corpus at the default](../../tests/corpus/md036/case.toml), [for `punctuation` empty](../../tests/corpus/md036-punctuation-empty/case.toml) | Content |
+| MD037 no-space-in-emphasis | | Neutral | [Corpus](../../tests/corpus/md037/case.toml) | A `**` or `__` run that cannot open strong emphasis is escaped, which removes the rule's finding for it; a single `*` or `_` beside a space is left as literal text, and the rule's heuristic still reports it |
+| MD039 no-space-in-links | | Neutral | [Corpus](../../tests/corpus/md039/case.toml) | Stripping the spaces would change the rendered link text |
+| MD044 proper-names | any | Neutral | [Corpus for `names`](../../tests/corpus/md044-names-javascript/case.toml), [for `code_blocks` false](../../tests/corpus/md044-names-javascript-code-blocks-false/case.toml), [for `html_elements` false](../../tests/corpus/md044-names-javascript-html-elements-false/case.toml) | Content; a lowercased reference label is not text to the rule |
+| MD049 emphasis-style | any | Neutral | [Corpus for `consistent`](../../tests/corpus/md049/case.toml), [for `asterisk`](../../tests/corpus/md049-asterisk/case.toml), [for `underscore`](../../tests/corpus/md049-underscore/case.toml) | The marker is kept as written |
+| MD050 strong-style | any | Neutral | [Corpus for `consistent`](../../tests/corpus/md050/case.toml), [for `asterisk`](../../tests/corpus/md050-asterisk/case.toml), [for `underscore`](../../tests/corpus/md050-underscore/case.toml) | The marker is kept as written |
 
 ## Links and images
 

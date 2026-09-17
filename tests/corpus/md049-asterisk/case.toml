@@ -1,0 +1,10 @@
+# MD049 emphasis-style at `asterisk`: the underscore emphasis is the finding,
+# reported at both its markers, the same count as `consistent` on the pooled
+# document, whose first marker is an asterisk.
+status = "neutral"
+rule = "MD049"
+
+[inputs."mixed-emphasis-markers.md"]
+from = "mixed-emphasis-markers.md"
+findings = 2
+unchanged = true

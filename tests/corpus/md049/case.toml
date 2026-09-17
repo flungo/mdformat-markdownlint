@@ -1,0 +1,11 @@
+# MD049 emphasis-style at its default `consistent`: the first marker fixes
+# the style, so the underscore emphasis after two asterisk ones is the
+# finding, reported at both its markers, and mdformat keeps every marker as
+# written, so the findings survive formatting.
+status = "neutral"
+rule = "MD049"
+
+[inputs."mixed-emphasis-markers.md"]
+from = "mixed-emphasis-markers.md"
+findings = 2
+unchanged = true

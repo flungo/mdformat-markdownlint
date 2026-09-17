@@ -1,0 +1,10 @@
+# MD033 no-inline-html with `table_allowed_elements` naming `br`: the line
+# break inside the table cell is allowed and the one in the paragraph is
+# not, two findings on the pooled document where the default reports three.
+status = "neutral"
+rule = "MD033"
+
+[inputs."inline-html.md"]
+from = "inline-html.md"
+findings = 2
+rewritten = true

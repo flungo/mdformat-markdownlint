@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD050": {
+      "style": "underscore"
+    }
+  }
+}

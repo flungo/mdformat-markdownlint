@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD033": {
+      "allowed_elements": ["br"]
+    }
+  }
+}

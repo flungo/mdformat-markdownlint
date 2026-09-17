@@ -1,0 +1,11 @@
+# MD050 strong-style at its default `consistent`: the first marker fixes the
+# style, so the underscore strong after two asterisk ones is the finding,
+# reported at both its markers, and mdformat keeps every marker as written,
+# so the findings survive formatting.
+status = "neutral"
+rule = "MD050"
+
+[inputs."mixed-strong-markers.md"]
+from = "mixed-strong-markers.md"
+findings = 2
+unchanged = true

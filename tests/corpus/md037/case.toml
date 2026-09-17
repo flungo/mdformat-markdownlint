@@ -1,0 +1,20 @@
+# MD037 no-space-in-emphasis: a single `*` or `_` beside a space cannot open
+# emphasis, is left as literal text by mdformat, and the rule's heuristic
+# reports it before and after formatting. A `**` or `__` run beside a space
+# is escaped by mdformat, which the rule does not report, so that document
+# is guaranteed: four findings before formatting and none after.
+status = "neutral"
+rule = "MD037"
+
+[inputs."single-markers-with-spaces.md"]
+findings = 4
+unchanged = true
+
+[inputs."double-markers-with-spaces.md"]
+status = "guaranteed"
+findings = 4
+rewritten = true
+
+[inputs."emphasis.md"]
+findings = 0
+unchanged = true

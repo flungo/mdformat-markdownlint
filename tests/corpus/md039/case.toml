@@ -1,0 +1,14 @@
+# MD039 no-space-in-links: spaces inside link text are findings, at the
+# start and at the end, and mdformat keeps them, since stripping them would
+# change the rendered text, so the findings survive formatting. The link is
+# to the document's own heading so the repository's link check resolves it.
+status = "neutral"
+rule = "MD039"
+
+[inputs."spaces-in-link-text.md"]
+findings = 2
+unchanged = true
+
+[inputs."link.md"]
+findings = 0
+unchanged = true
