@@ -1,12 +1,22 @@
-# MD048 code-fence-style at the preset's `backtick`: tilde fences are rewritten
-# with backticks by mdformat alone, lengthened where the content holds a
-# backtick run, and a backtick fence beside them is left as it is.
+# MD048 code-fence-style at the preset's `backtick`: tilde fences, alone or
+# beside a backtick fence, are rewritten with backticks by mdformat alone,
+# lengthened where the content holds a backtick run, and a backtick document
+# is left as it is. Every document is pooled: the `consistent` case runs the
+# same files, and reports nothing on the one whose fences are all tildes.
 status = "guaranteed"
 rule = "MD048"
 
-[inputs."tilde.md"]
+[inputs."tilde-fences.md"]
+from = "tilde-fences.md"
 findings = 2
+rewritten = true
 
-[inputs."backtick.md"]
+[inputs."backtick-then-tilde-fences.md"]
+from = "backtick-then-tilde-fences.md"
+findings = 2
+rewritten = true
+
+[inputs."backtick-fences.md"]
+from = "backtick-fences.md"
 findings = 0
 unchanged = true

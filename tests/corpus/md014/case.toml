@@ -1,0 +1,15 @@
+# MD014 commands-show-output: a code block whose every line begins with a
+# dollar sign reports each line, and the lines are code content, so the
+# findings survive formatting; the indented block is what formatting
+# rewrites, as a fence with the same content. A block that shows output
+# reports nothing and is left as it is.
+status = "neutral"
+rule = "MD014"
+
+[inputs."commands-without-output.md"]
+findings = 3
+rewritten = true
+
+[inputs."commands-with-output.md"]
+findings = 0
+unchanged = true

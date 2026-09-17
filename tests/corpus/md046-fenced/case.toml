@@ -1,13 +1,22 @@
-# MD046 code-block-style at the preset's `fenced`: an indented code block is
-# rewritten as a fence by mdformat alone, and a fence beside it is left as it
-# is. The new fence has no language, which MD040 then reports; that is the
-# matrix's one documented exception and not this case's rule.
+# MD046 code-block-style at the preset's `fenced`: an indented block, alone
+# or beside a fence, is rewritten as a fence by mdformat alone, and a fenced
+# document is left as it is. Every document is pooled: the `consistent` case
+# runs the same files, and reports nothing on the one whose code is all
+# indented.
 status = "guaranteed"
 rule = "MD046"
 
-[inputs."indented.md"]
+[inputs."indented-code.md"]
+from = "indented-code.md"
 findings = 1
+rewritten = true
 
-[inputs."fenced.md"]
+[inputs."fenced-then-indented-code.md"]
+from = "fenced-then-indented-code.md"
+findings = 1
+rewritten = true
+
+[inputs."fenced-code.md"]
+from = "fenced-code.md"
 findings = 0
 unchanged = true

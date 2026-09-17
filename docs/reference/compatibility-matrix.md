@@ -36,7 +36,7 @@ They are stated once here rather than in every row they touch.
   A blank line between two blocks of a list item makes the whole list loose and changes the render, so mdformat never adds one.
   A heading, a fence or a table written directly under an item's text keeps no blank line around it, and MD022, MD031 and MD058 report it exactly as they did before formatting.
   The fix is the author's: a loose list, or the block moved out of the item.
-  The MD022 case carries the construct inside a tight list item as a neutral document, so the corpus asserts the exception where it applies.
+  The MD022 and MD031 cases each carry the construct inside a tight list item as a neutral document, so the corpus asserts the exception where it applies.
 - **An HTML block is written verbatim.**
   Everything from an opening tag or `<!--` to the end of the block, a multi-line comment included, is content: trailing spaces, tabs and runs of blank lines inside it survive formatting, and MD009, MD010 and MD012 report them as before.
   Each of those rules' cases carries the construct inside an HTML block as a neutral document, so the corpus asserts the exception where it applies.
@@ -118,14 +118,14 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD014 commands-show-output | | Neutral | Probe | Code content |
-| MD031 blanks-around-fences | outside tight list items; `list_items` false | Guaranteed | Probe | See the tight-list exception |
-| MD038 no-space-in-code | | Neutral | Probe | mdformat strips only the single symmetric space CommonMark itself strips, which the rule allows; every padding the rule reports is content and is kept |
-| MD040 fenced-code-language | any, on fenced blocks | Neutral | Probe | Content |
+| MD014 commands-show-output | | Neutral | [Corpus](../../tests/corpus/md014/case.toml) | Code content |
+| MD031 blanks-around-fences | outside tight list items; `list_items` false | Guaranteed | [Corpus at the default](../../tests/corpus/md031/case.toml), [for `list_items` false](../../tests/corpus/md031-list-items-false/case.toml) | See the tight-list exception |
+| MD038 no-space-in-code | | Neutral | [Corpus](../../tests/corpus/md038/case.toml) | mdformat strips only the single symmetric space CommonMark itself strips, which the rule allows; every padding the rule reports is content and is kept |
+| MD040 fenced-code-language | any, on fenced blocks | Neutral | [Corpus at the default](../../tests/corpus/md040/case.toml), [for `allowed_languages`](../../tests/corpus/md040-allowed-languages-text/case.toml), [for `language_only`](../../tests/corpus/md040-language-only/case.toml) | Content |
 | MD040 fenced-code-language | any, on an indented code block | Unsatisfiable | Probe | An indented block is outside the rule's scope; mdformat rewrites it as a fence with no language, which puts it inside, and only the author knows the language. The one place a document that lints clean at markdownlint's defaults stops doing so after formatting; ADR-002 names it |
-| MD046 code-block-style | `consistent`, `fenced` | Guaranteed | [Corpus for `fenced`](../../tests/corpus/md046-fenced/case.toml), probe for `consistent` | Indented code is rewritten as a fence |
+| MD046 code-block-style | `consistent`, `fenced` | Guaranteed | [Corpus for `fenced`](../../tests/corpus/md046-fenced/case.toml), [for `consistent`](../../tests/corpus/md046-consistent/case.toml) | Indented code is rewritten as a fence |
 | MD046 code-block-style | `indented` | Unsatisfiable | Probe | |
-| MD048 code-fence-style | `consistent`, `backtick` | Guaranteed | [Corpus for `backtick`](../../tests/corpus/md048-backtick/case.toml), probe for `consistent` | Tilde fences are rewritten with backticks, lengthened where the content holds a backtick run |
+| MD048 code-fence-style | `consistent`, `backtick` | Guaranteed | [Corpus for `backtick`](../../tests/corpus/md048-backtick/case.toml), [for `consistent`](../../tests/corpus/md048-consistent/case.toml) | Tilde fences are rewritten with backticks, lengthened where the content holds a backtick run |
 | MD048 code-fence-style | `tilde` | Unsatisfiable | Probe | |
 
 ## Emphasis and inline text

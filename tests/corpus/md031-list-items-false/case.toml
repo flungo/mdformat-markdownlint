@@ -1,0 +1,21 @@
+# MD031 blanks-around-fences with `list_items` false: a fence inside a list
+# item is not checked, so the pooled tight-list document reports nothing
+# where the default reports two, and mdformat leaves it as it is; a fence at
+# top level reports as at the default and is separated by mdformat alone.
+status = "guaranteed"
+rule = "MD031"
+
+[inputs."fence-without-blank-lines.md"]
+from = "fence-without-blank-lines.md"
+findings = 2
+rewritten = true
+
+[inputs."fence-in-tight-list-item.md"]
+from = "fence-in-tight-list-item.md"
+findings = 0
+unchanged = true
+
+[inputs."fenced-code.md"]
+from = "fenced-code.md"
+findings = 0
+unchanged = true

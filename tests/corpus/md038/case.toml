@@ -1,0 +1,15 @@
+# MD038 no-space-in-code: a code span padded on one side only, or by two
+# spaces on each side, is a finding, and the padding is content mdformat
+# keeps, so the findings survive formatting. A span with one space each side
+# is not a finding, since CommonMark strips that pair, and mdformat strips it
+# too, which is what formatting rewrites here.
+status = "neutral"
+rule = "MD038"
+
+[inputs."padded-code-spans.md"]
+findings = 4
+rewritten = true
+
+[inputs."code-spans.md"]
+findings = 0
+unchanged = true
