@@ -1,0 +1,26 @@
+# MD046 code-block-style at `consistent`, markdownlint's default in place of
+# the preset's `fenced`: the first block fixes the style, so a document of
+# indented code alone reports nothing, and one whose second block is in the
+# other style reports that block, whichever came first; mdformat alone
+# rewrites every block as a fence, which is consistent whatever came first.
+status = "guaranteed"
+rule = "MD046"
+
+[inputs."indented-code.md"]
+from = "indented-code.md"
+findings = 0
+rewritten = true
+
+[inputs."fenced-then-indented-code.md"]
+from = "fenced-then-indented-code.md"
+findings = 1
+rewritten = true
+
+[inputs."indented-then-fenced-code.md"]
+findings = 1
+rewritten = true
+
+[inputs."fenced-code.md"]
+from = "fenced-code.md"
+findings = 0
+unchanged = true

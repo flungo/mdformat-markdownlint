@@ -1,0 +1,24 @@
+# MD031 blanks-around-fences at its default `list_items` of true: a fence
+# written directly against the paragraphs around it is separated from them
+# by one blank line by mdformat alone. Inside a tight list item the exception
+# the matrix states applies: a blank line would make the list loose and
+# change the render, so mdformat keeps the fence flush and the two findings
+# survive formatting, neutral.
+status = "guaranteed"
+rule = "MD031"
+
+[inputs."fence-without-blank-lines.md"]
+from = "fence-without-blank-lines.md"
+findings = 2
+rewritten = true
+
+[inputs."fence-in-tight-list-item.md"]
+from = "fence-in-tight-list-item.md"
+status = "neutral"
+findings = 2
+unchanged = true
+
+[inputs."fenced-code.md"]
+from = "fenced-code.md"
+findings = 0
+unchanged = true

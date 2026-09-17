@@ -1,0 +1,27 @@
+# MD048 code-fence-style at `consistent`, markdownlint's default in place of
+# the preset's `backtick`: the first fence fixes the style, so a document of
+# tilde fences alone reports nothing, and one whose second fence uses the
+# other marker reports that fence, whichever came first; mdformat alone
+# rewrites every fence with backticks, which is consistent whatever came
+# first.
+status = "guaranteed"
+rule = "MD048"
+
+[inputs."tilde-fences.md"]
+from = "tilde-fences.md"
+findings = 0
+rewritten = true
+
+[inputs."backtick-then-tilde-fences.md"]
+from = "backtick-then-tilde-fences.md"
+findings = 2
+rewritten = true
+
+[inputs."tilde-then-backtick-fences.md"]
+findings = 1
+rewritten = true
+
+[inputs."backtick-fences.md"]
+from = "backtick-fences.md"
+findings = 0
+unchanged = true

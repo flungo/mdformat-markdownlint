@@ -1,0 +1,11 @@
+# MD040 fenced-code-language with `language_only` true: a fence whose info
+# string carries more than a language is a finding beside the fence with no
+# info string, two on the pooled document where the default reports one, and
+# the info strings are content mdformat keeps.
+status = "neutral"
+rule = "MD040"
+
+[inputs."fences-with-and-without-languages.md"]
+from = "fences-with-and-without-languages.md"
+findings = 2
+unchanged = true

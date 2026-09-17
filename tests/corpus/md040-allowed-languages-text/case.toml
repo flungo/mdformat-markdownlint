@@ -1,0 +1,11 @@
+# MD040 fenced-code-language with `allowed_languages` naming `text` alone:
+# a fence with no info string and every fence in another language are
+# findings, three on the pooled document where the default reports one, and
+# the info strings are content mdformat keeps.
+status = "neutral"
+rule = "MD040"
+
+[inputs."fences-with-and-without-languages.md"]
+from = "fences-with-and-without-languages.md"
+findings = 3
+unchanged = true
