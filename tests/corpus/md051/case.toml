@@ -1,0 +1,18 @@
+# MD051 link-fragments at its default: a fragment that matches a heading
+# only when case is ignored is a finding, and one no heading matches is a
+# finding, both kept as written; a non-ASCII fragment is percent-encoded by
+# mdformat, which is what formatting rewrites, and still resolves. The
+# missing fragment is one the repository's link check would reject, so
+# lychee.toml excludes that document from the check.
+status = "neutral"
+rule = "MD051"
+
+[inputs."fragments.md"]
+from = "fragments.md"
+findings = 1
+rewritten = true
+
+[inputs."missing-fragment.md"]
+from = "missing-fragment.md"
+findings = 1
+rewritten = true

@@ -1,0 +1,12 @@
+# MD054 link-image-style with `inline` false: the two inline links are the
+# findings, the one whose text is its destination included, and mdformat
+# keeps both as written; the collapsed reference beside them is what
+# formatting rewrites, as a shortcut, which changes nothing this
+# configuration classifies.
+status = "neutral"
+rule = "MD054"
+
+[inputs."link-styles.md"]
+from = "link-styles.md"
+findings = 2
+rewritten = true

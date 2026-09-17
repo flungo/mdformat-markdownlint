@@ -1,0 +1,15 @@
+# MD051 link-fragments with `ignored_pattern` matching fragments that begin
+# with `missing-`: the fragment no heading matches is not checked, where the
+# default reports it, and the fragment in the wrong case still is.
+status = "neutral"
+rule = "MD051"
+
+[inputs."fragments.md"]
+from = "fragments.md"
+findings = 1
+rewritten = true
+
+[inputs."missing-fragment.md"]
+from = "missing-fragment.md"
+findings = 0
+rewritten = true

@@ -1,0 +1,10 @@
+# MD052 reference-links-images with `shortcut_syntax` true: the shortcut
+# reference to an undefined label is a finding too, two on the pooled
+# document where the default reports one, and `[x]` is still ignored.
+status = "neutral"
+rule = "MD052"
+
+[inputs."undefined-references.md"]
+from = "undefined-references.md"
+findings = 2
+rewritten = true

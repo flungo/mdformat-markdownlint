@@ -1,0 +1,15 @@
+# MD051 link-fragments with `ignore_case` true: the fragment that matches a
+# heading only when case is ignored is not a finding, where the default
+# reports it, and the fragment no heading matches still is.
+status = "neutral"
+rule = "MD051"
+
+[inputs."fragments.md"]
+from = "fragments.md"
+findings = 0
+rewritten = true
+
+[inputs."missing-fragment.md"]
+from = "missing-fragment.md"
+findings = 1
+rewritten = true

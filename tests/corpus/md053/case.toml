@@ -1,0 +1,12 @@
+# MD053 link-image-reference-definitions at its default: an unused
+# definition and a duplicate one are findings, and mdformat alone removes
+# both. The `[//]: #` comment idiom is covered by the default
+# `ignored_definitions` and is not a finding; mdformat removes it too, which
+# violates nothing, and keeping it is the plugin's pending behaviour.
+status = "guaranteed"
+rule = "MD053"
+
+[inputs."reference-definitions.md"]
+from = "reference-definitions.md"
+findings = 2
+rewritten = true

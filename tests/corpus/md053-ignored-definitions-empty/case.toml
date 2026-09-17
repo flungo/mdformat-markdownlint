@@ -1,0 +1,11 @@
+# MD053 link-image-reference-definitions with `ignored_definitions` empty:
+# the `[//]: #` comment idiom is an unused definition like any other, three
+# findings on the pooled document where the default reports two, and
+# mdformat alone removes all three.
+status = "guaranteed"
+rule = "MD053"
+
+[inputs."reference-definitions.md"]
+from = "reference-definitions.md"
+findings = 3
+rewritten = true

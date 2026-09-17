@@ -5,4 +5,8 @@
 # or a bare URL the external sweep would follow, and each manifest says so.
 # Nothing else is excluded; a link anywhere else is fixed, never listed here.
 # The values are regular expressions matched against the path.
-exclude_path = []
+exclude_path = [
+  "tests/corpus/md034/bare-url.md",
+  "tests/corpus/md042/empty-destination.md",
+  "tests/documents/missing-fragment.md",
+]

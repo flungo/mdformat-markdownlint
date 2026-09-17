@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD051": {
+      "ignore_case": true
+    }
+  }
+}

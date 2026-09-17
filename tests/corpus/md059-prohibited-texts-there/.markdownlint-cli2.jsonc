@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD059": {
+      "prohibited_texts": ["there"]
+    }
+  }
+}
