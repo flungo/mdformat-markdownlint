@@ -1,0 +1,9 @@
+# MD013 line-length with `line_length` 100: only the pooled document's line
+# of one hundred and ten columns is a finding, where the default reports four.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 1
+rewritten = true

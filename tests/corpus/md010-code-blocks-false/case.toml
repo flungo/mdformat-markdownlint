@@ -1,0 +1,22 @@
+# MD010 no-hard-tabs with `code_blocks` false: a tab inside a fence is not
+# reported, where the default reports the pooled document's two, and a tab in
+# prose is written as a space by mdformat alone. A tab inside an HTML block is
+# still reported and is content, the exception the matrix states.
+status = "guaranteed"
+rule = "MD010"
+
+[inputs."tab-in-prose.md"]
+from = "tab-in-prose.md"
+findings = 2
+rewritten = true
+
+[inputs."tabs-in-two-code-languages.md"]
+from = "tabs-in-two-code-languages.md"
+findings = 0
+unchanged = true
+
+[inputs."tab-in-html-block.md"]
+from = "tab-in-html-block.md"
+status = "neutral"
+findings = 1
+unchanged = true

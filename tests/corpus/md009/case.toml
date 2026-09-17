@@ -1,0 +1,29 @@
+# MD009 no-trailing-spaces at its default `br_spaces` of 2: one or three
+# trailing spaces are findings, two are a hard break and are not, and mdformat
+# alone strips the former and writes the latter as a backslash. An indented
+# empty line inside a list item is a finding at the default and is emptied.
+# Trailing spaces inside a fence are not reported at the default `code_blocks`
+# of false and are preserved. Inside an HTML block they are content, the
+# exception the matrix states: the finding survives formatting, neutral.
+status = "guaranteed"
+rule = "MD009"
+
+[inputs."trailing-spaces.md"]
+from = "trailing-spaces.md"
+findings = 2
+rewritten = true
+
+[inputs."list-item-empty-line-indented.md"]
+from = "list-item-empty-line-indented.md"
+findings = 1
+rewritten = true
+
+[inputs."trailing-spaces-in-code.md"]
+from = "trailing-spaces-in-code.md"
+findings = 0
+unchanged = true
+
+[inputs."trailing-spaces-in-html-block.md"]
+status = "neutral"
+findings = 1
+unchanged = true

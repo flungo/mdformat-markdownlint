@@ -1,0 +1,10 @@
+# MD013 line-length with `heading_line_length` 100: the pooled document's
+# heading of ninety columns is within its own limit, three findings where the
+# default reports four.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 3
+rewritten = true

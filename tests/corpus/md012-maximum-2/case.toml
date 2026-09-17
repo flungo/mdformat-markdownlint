@@ -1,0 +1,10 @@
+# MD012 no-multiple-blanks with `maximum` 2: only the run of three blank
+# lines is a finding, where the default reports three on the same pooled
+# document, and mdformat alone collapses both runs to one.
+status = "guaranteed"
+rule = "MD012"
+
+[inputs."multiple-blank-lines.md"]
+from = "multiple-blank-lines.md"
+findings = 1
+rewritten = true

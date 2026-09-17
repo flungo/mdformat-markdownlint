@@ -1,0 +1,15 @@
+# MD027 no-multiple-space-blockquote at its default `list_items` of true: two
+# spaces after the marker before a paragraph, a fence, a nested quote, a
+# table and a list item are findings, and mdformat alone writes one.
+status = "guaranteed"
+rule = "MD027"
+
+[inputs."blockquote-with-two-spaces.md"]
+from = "blockquote-with-two-spaces.md"
+findings = 6
+rewritten = true
+
+[inputs."blockquote-list-with-two-spaces.md"]
+from = "blockquote-list-with-two-spaces.md"
+findings = 2
+rewritten = true

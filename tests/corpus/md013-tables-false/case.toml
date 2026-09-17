@@ -1,0 +1,9 @@
+# MD013 line-length with `tables` false: a table wider than the limit is not
+# measured, before formatting or after mdformat alone pads it wider still,
+# and the long paragraph line beside it is the one finding both times.
+status = "neutral"
+rule = "MD013"
+
+[inputs."wide-table-and-long-line.md"]
+findings = 1
+rewritten = true

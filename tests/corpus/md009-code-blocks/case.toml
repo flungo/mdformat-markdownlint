@@ -1,0 +1,11 @@
+# MD009 no-trailing-spaces with `code_blocks` true: trailing spaces inside a
+# fence are findings, where the default reports nothing on the same pooled
+# document, and they are code content mdformat preserves, so the findings
+# survive formatting.
+status = "neutral"
+rule = "MD009"
+
+[inputs."trailing-spaces-in-code.md"]
+from = "trailing-spaces-in-code.md"
+findings = 2
+unchanged = true

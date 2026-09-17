@@ -1,0 +1,10 @@
+# MD013 line-length with `stern` true: a line over the limit is a finding
+# unless it is one unbreakable word, so the line whose last word begins
+# within the limit joins the default's four, five in all.
+status = "neutral"
+rule = "MD013"
+
+[inputs."long-lines.md"]
+from = "long-lines.md"
+findings = 5
+rewritten = true

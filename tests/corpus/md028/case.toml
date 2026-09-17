@@ -1,0 +1,15 @@
+# MD028 no-blanks-blockquote: two blockquotes separated by a blank line are
+# kept as written by mdformat, since joining them would change the render, so
+# the finding survives formatting; the setext heading beside them is what
+# formatting rewrites. A marker on its own line inside one blockquote is the
+# form the rule accepts, and is left as it is.
+status = "neutral"
+rule = "MD028"
+
+[inputs."blank-line-between-blockquotes.md"]
+findings = 1
+rewritten = true
+
+[inputs."blockquote-with-empty-marker-line.md"]
+findings = 0
+unchanged = true
