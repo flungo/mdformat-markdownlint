@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD052": {
+      "shortcut_syntax": true
+    }
+  }
+}

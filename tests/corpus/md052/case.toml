@@ -1,0 +1,14 @@
+# MD052 reference-links-images at its default: a full reference to an
+# undefined label is a finding, a shortcut one is not at the default
+# `shortcut_syntax` of false, and the default `ignored_labels` covers `[x]`;
+# every one is plain text mdformat leaves as written, so the finding survives
+# formatting, and the setext heading beside them is what formatting rewrites.
+# Every case extends the preset, so other rules are enabled alongside, which
+# markdownlint 0.41.1 needs to report this rule at all.
+status = "neutral"
+rule = "MD052"
+
+[inputs."undefined-references.md"]
+from = "undefined-references.md"
+findings = 1
+rewritten = true

@@ -1,0 +1,10 @@
+# MD054 link-image-style with `collapsed` false: the collapsed reference is
+# the finding, and mdformat alone rewrites it as a shortcut reference, which
+# the configuration allows.
+status = "guaranteed"
+rule = "MD054"
+
+[inputs."link-styles.md"]
+from = "link-styles.md"
+findings = 1
+rewritten = true

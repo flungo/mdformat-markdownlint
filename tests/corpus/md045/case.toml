@@ -1,0 +1,14 @@
+# MD045 no-alt-text: an image with no alternate text is content mdformat
+# leaves as written, so the finding survives formatting; the setext heading
+# beside it is what formatting rewrites. The image's destination is the
+# case's own manifest so the repository's link check resolves it.
+status = "neutral"
+rule = "MD045"
+
+[inputs."image-without-alt-text.md"]
+findings = 1
+rewritten = true
+
+[inputs."image.md"]
+findings = 0
+unchanged = true

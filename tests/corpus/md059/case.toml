@@ -1,0 +1,11 @@
+# MD059 descriptive-link-text at its default `prohibited_texts`: links whose
+# text is `here` or `click here` are findings and one whose text is `there`
+# is not; the text is content mdformat keeps, so the findings survive
+# formatting, and the setext heading beside them is what formatting rewrites.
+status = "neutral"
+rule = "MD059"
+
+[inputs."link-texts.md"]
+from = "link-texts.md"
+findings = 2
+rewritten = true

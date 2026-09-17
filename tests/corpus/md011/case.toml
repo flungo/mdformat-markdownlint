@@ -1,0 +1,13 @@
+# MD011 no-reversed-links: reversed link syntax is plain text to the parser
+# and mdformat leaves it as written, so the finding survives formatting; the
+# setext heading beside it is what formatting rewrites.
+status = "neutral"
+rule = "MD011"
+
+[inputs."reversed-link.md"]
+findings = 1
+rewritten = true
+
+[inputs."link.md"]
+findings = 0
+unchanged = true

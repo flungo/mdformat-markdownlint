@@ -145,16 +145,17 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD011 no-reversed-links | | Neutral | Probe | Reversed syntax is plain text to the parser |
-| MD042 no-empty-links | | Neutral | Probe | An empty destination is rewritten as `<>`, which the rule reads the same way |
-| MD045 no-alt-text | | Neutral | Probe | Content |
-| MD051 link-fragments | any | Neutral | Probe | Content; a non-ASCII fragment is percent-encoded and still resolves |
-| MD052 reference-links-images | any | Neutral | Probe | An undefined label is plain text and is left as such. markdownlint 0.41.1 reports this rule only when other rules are enabled alongside it, so the corpus never asserts it in isolation |
-| MD053 link-image-reference-definitions | any | Guaranteed | Probe | Unused and duplicate definitions are removed and the rest gathered at the end of the document, sorted by label. A definition whose label the default `ignored_definitions` covers, the `[//]: #` comment idiom, is removed too; deleting it violates nothing, and keeping it is a content-preservation behaviour of the plugin, pending |
-| MD054 link-image-style | `autolink`, `inline`, `url_inline` | Neutral | Probe | Each link keeps its style; removing redundant angle brackets around a destination and moving definitions to the end change nothing the rule classifies |
+| MD011 no-reversed-links | | Neutral | [Corpus](../../tests/corpus/md011/case.toml) | Reversed syntax is plain text to the parser |
+| MD042 no-empty-links | | Neutral | [Corpus](../../tests/corpus/md042/case.toml) | An empty destination is rewritten as `<>`, which the rule reads the same way |
+| MD045 no-alt-text | | Neutral | [Corpus](../../tests/corpus/md045/case.toml) | Content |
+| MD051 link-fragments | any | Neutral | [Corpus at the default](../../tests/corpus/md051/case.toml), [for `ignore_case`](../../tests/corpus/md051-ignore-case/case.toml), [for `ignored_pattern`](../../tests/corpus/md051-ignored-pattern-missing/case.toml) | Content; a non-ASCII fragment is percent-encoded and still resolves |
+| MD052 reference-links-images | any | Neutral | [Corpus at the default](../../tests/corpus/md052/case.toml), [for `shortcut_syntax`](../../tests/corpus/md052-shortcut-syntax/case.toml), [for `ignored_labels` empty](../../tests/corpus/md052-shortcut-syntax-ignored-labels-empty/case.toml) | An undefined label is plain text and is left as such. markdownlint 0.41.1 reports this rule only when other rules are enabled alongside it, so the corpus never asserts it in isolation |
+| MD053 link-image-reference-definitions | any | Guaranteed | [Corpus at the default](../../tests/corpus/md053/case.toml), [for `ignored_definitions` empty](../../tests/corpus/md053-ignored-definitions-empty/case.toml) | Unused and duplicate definitions are removed and the rest gathered at the end of the document, sorted by label. A definition whose label the default `ignored_definitions` covers, the `[//]: #` comment idiom, is removed too; deleting it violates nothing, and keeping it is a content-preservation behaviour of the plugin, pending |
+| MD054 link-image-style | `autolink`, `inline`, `url_inline` | Neutral | [Corpus for `autolink` false](../../tests/corpus/md054-autolink-false/case.toml), [for `inline` false](../../tests/corpus/md054-inline-false/case.toml), [for `url_inline` false](../../tests/corpus/md054-url-inline-false/case.toml) | Each link keeps its style; removing redundant angle brackets around a destination and moving definitions to the end change nothing the rule classifies |
 | MD054 link-image-style | `shortcut` false | Unsatisfiable | Probe | A full or collapsed reference whose text equals its label is rewritten as a shortcut reference |
-| MD054 link-image-style | `collapsed` false, `full` false | Guaranteed | Probe | For the same reason: such references become shortcuts |
-| MD059 descriptive-link-text | any | Neutral | Probe | Content |
+| MD054 link-image-style | `collapsed` false | Guaranteed | [Corpus](../../tests/corpus/md054-collapsed-false/case.toml) | For the same reason: a collapsed reference becomes a shortcut |
+| MD054 link-image-style | `full` false | Neutral | [Corpus](../../tests/corpus/md054-full-false/case.toml) | A full reference whose text equals its label becomes a shortcut, which removes the finding; one whose text differs is kept, since no other reference form carries that text |
+| MD059 descriptive-link-text | any | Neutral | [Corpus at the default](../../tests/corpus/md059/case.toml), [for `prohibited_texts`](../../tests/corpus/md059-prohibited-texts-there/case.toml) | Content |
 
 ## Tables
 

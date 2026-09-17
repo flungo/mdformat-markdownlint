@@ -1,0 +1,16 @@
+# MD042 no-empty-links: a link whose destination is `#` alone, and one whose
+# destination is empty, are both findings; mdformat keeps the former as
+# written and rewrites the latter as `<>`, which the rule reads the same way,
+# so both findings survive formatting. The empty destination is one the
+# repository's link check would reject, so lychee.toml excludes that
+# document from the check.
+status = "neutral"
+rule = "MD042"
+
+[inputs."empty-link.md"]
+findings = 1
+rewritten = true
+
+[inputs."empty-destination.md"]
+findings = 1
+rewritten = true

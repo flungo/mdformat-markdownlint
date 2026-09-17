@@ -1,0 +1,18 @@
+# MD054 link-image-style with `full` false: a full reference whose text
+# differs from its label is the finding and is kept as written, since no
+# other reference form carries that text, so the finding survives
+# formatting. One whose text is its label is rewritten by mdformat alone as
+# a shortcut reference, which the configuration allows, so that document is
+# guaranteed.
+status = "neutral"
+rule = "MD054"
+
+[inputs."link-styles.md"]
+from = "link-styles.md"
+findings = 1
+rewritten = true
+
+[inputs."full-reference-with-label-as-text.md"]
+status = "guaranteed"
+findings = 1
+rewritten = true

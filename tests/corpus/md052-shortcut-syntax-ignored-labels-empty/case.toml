@@ -1,0 +1,12 @@
+# MD052 reference-links-images with `shortcut_syntax` true and
+# `ignored_labels` empty: `[x]` is a shortcut reference to an undefined
+# label like any other, three findings on the pooled document where
+# `shortcut_syntax` alone reports two. The option only reaches shortcut
+# references, so it is set with `shortcut_syntax`.
+status = "neutral"
+rule = "MD052"
+
+[inputs."undefined-references.md"]
+from = "undefined-references.md"
+findings = 3
+rewritten = true
