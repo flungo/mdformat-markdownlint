@@ -1,0 +1,10 @@
+# MD050 strong-style at `underscore`: the two asterisk strongs are the
+# findings, reported at both markers each, four on the pooled document where
+# `consistent` reports two.
+status = "neutral"
+rule = "MD050"
+
+[inputs."mixed-strong-markers.md"]
+from = "mixed-strong-markers.md"
+findings = 4
+unchanged = true

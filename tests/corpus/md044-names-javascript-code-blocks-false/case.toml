@@ -1,0 +1,10 @@
+# MD044 proper-names with `names` listing JavaScript and `code_blocks`
+# false: the name inside the fence is not checked, two findings on the pooled
+# document where the default reports three.
+status = "neutral"
+rule = "MD044"
+
+[inputs."proper-name-in-prose-code-and-html.md"]
+from = "proper-name-in-prose-code-and-html.md"
+findings = 2
+rewritten = true

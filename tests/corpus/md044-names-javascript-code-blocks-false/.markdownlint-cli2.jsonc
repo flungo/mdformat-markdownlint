@@ -1,0 +1,9 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD044": {
+      "names": ["JavaScript"],
+      "code_blocks": false
+    }
+  }
+}

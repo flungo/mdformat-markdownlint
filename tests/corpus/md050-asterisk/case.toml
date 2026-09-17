@@ -1,0 +1,10 @@
+# MD050 strong-style at `asterisk`: the underscore strong is the finding,
+# reported at both its markers, the same count as `consistent` on the pooled
+# document, whose first marker is an asterisk.
+status = "neutral"
+rule = "MD050"
+
+[inputs."mixed-strong-markers.md"]
+from = "mixed-strong-markers.md"
+findings = 2
+unchanged = true

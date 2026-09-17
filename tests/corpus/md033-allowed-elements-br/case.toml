@@ -1,0 +1,10 @@
+# MD033 no-inline-html with `allowed_elements` naming `br`: the two line
+# breaks are allowed wherever they are and only the block-level element is a
+# finding, one on the pooled document where the default reports three.
+status = "neutral"
+rule = "MD033"
+
+[inputs."inline-html.md"]
+from = "inline-html.md"
+findings = 1
+rewritten = true

@@ -1,0 +1,10 @@
+# MD036 no-emphasis-as-heading with `punctuation` empty: a strong line on
+# its own is a finding whatever it ends in, two on the pooled document where
+# the default reports one.
+status = "neutral"
+rule = "MD036"
+
+[inputs."emphasis-as-heading.md"]
+from = "emphasis-as-heading.md"
+findings = 2
+unchanged = true

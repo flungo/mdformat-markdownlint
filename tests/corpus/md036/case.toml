@@ -1,0 +1,10 @@
+# MD036 no-emphasis-as-heading at its default `punctuation`: a strong line
+# on its own is a finding and one ending in a period is not, the text is
+# content, and the findings survive formatting.
+status = "neutral"
+rule = "MD036"
+
+[inputs."emphasis-as-heading.md"]
+from = "emphasis-as-heading.md"
+findings = 1
+unchanged = true

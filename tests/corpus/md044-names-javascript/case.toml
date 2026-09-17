@@ -1,0 +1,13 @@
+# MD044 proper-names with `names` listing JavaScript; the rule checks
+# nothing without one. The name in the wrong case in prose, in a fence and
+# in an HTML element's attribute are findings, the text is content, and the
+# findings survive formatting. The reference definition whose label is the
+# name is what formatting rewrites, lowercasing the label, which is not text
+# to the rule, so no finding is added.
+status = "neutral"
+rule = "MD044"
+
+[inputs."proper-name-in-prose-code-and-html.md"]
+from = "proper-name-in-prose-code-and-html.md"
+findings = 3
+rewritten = true

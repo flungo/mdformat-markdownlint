@@ -1,0 +1,11 @@
+# MD033 no-inline-html at its default: every HTML element is a finding, a
+# block-level one, one inside a paragraph and one inside a table cell, and
+# each is content mdformat writes verbatim, so the findings survive
+# formatting; the table around the third is what formatting rewrites.
+status = "neutral"
+rule = "MD033"
+
+[inputs."inline-html.md"]
+from = "inline-html.md"
+findings = 3
+rewritten = true
