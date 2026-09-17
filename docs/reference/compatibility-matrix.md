@@ -36,6 +36,7 @@ They are stated once here rather than in every row they touch.
   A blank line between two blocks of a list item makes the whole list loose and changes the render, so mdformat never adds one.
   A heading, a fence or a table written directly under an item's text keeps no blank line around it, and MD022, MD031 and MD058 report it exactly as they did before formatting.
   The fix is the author's: a loose list, or the block moved out of the item.
+  The MD022 case carries the construct inside a tight list item as a neutral document, so the corpus asserts the exception where it applies.
 - **An HTML block is written verbatim.**
   Everything from an opening tag or `<!--` to the end of the block, a multi-line comment included, is content: trailing spaces, tabs and runs of blank lines inside it survive formatting, and MD009, MD010 and MD012 report them as before.
   Each of those rules' cases carries the construct inside an HTML block as a neutral document, so the corpus asserts the exception where it applies.
