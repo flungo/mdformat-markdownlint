@@ -16,6 +16,8 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/conftest.py` | The harness: runs both tools and asserts the status |
 | `tests/test_corpus.py` | One test per document, on both runs |
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
+| `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
+| `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
 | `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix |
 | `tests/constraints.txt` | The mdformat releases the pinned leg installs |
 | `tests/package.json` and its lockfile | The markdownlint-cli2 release the pinned leg installs |
@@ -58,7 +60,8 @@ A guaranteed case the plugin turns out to hold is misdeclared and belongs in bri
 ## What a document may contain
 
 Documents are test data, written to violate the rule their case names, so the repository's own Markdown checks skip `tests/corpus/` and `tests/documents/`: `.markdownlint-cli2.jsonc` ignores both directories and the semantic-line-break check inherits that.
-The link check does not skip them, so a document carries no external URL and no relative link or fragment that does not resolve.
+The link check reads them too, so a document carries no external URL and no relative link or fragment that does not resolve, with one exception: a document whose construct is such a link, an unresolvable fragment under MD051, an empty destination under MD042 or a bare URL under MD034, is listed by path in `lychee.toml` and the check does not read it.
+Its manifest says so, the list holds nothing else, and a test fails on an entry that names no corpus document.
 
 ## The two legs
 

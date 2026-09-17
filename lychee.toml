@@ -1,0 +1,8 @@
+# The link check's configuration, read by lychee from the repository root in
+# both jobs of markdown-links.yml and locally. The one setting is the corpus
+# documents the check does not read: each is a document whose construct is a
+# link the check would reject, an unresolvable fragment, an empty destination
+# or a bare URL the external sweep would follow, and each manifest says so.
+# Nothing else is excluded; a link anywhere else is fixed, never listed here.
+# The values are regular expressions matched against the path.
+exclude_path = []

@@ -59,7 +59,7 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
   `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
 - **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header.
 - **The corpus documents under `tests/corpus/` and `tests/documents/` are exempt from the lint and sembr checks, not from the link check.**
-  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores both directories and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link.
+  They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores both directories and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link, except the few whose construct is such a link, which `lychee.toml` lists by path and a test keeps honest.
 
 ## The corpus
 
