@@ -1,0 +1,14 @@
+# MD056 table-column-count: a row with fewer cells than the header and one
+# with more are findings, and mdformat alone pads the short row with empty
+# cells and drops the long row's extra cells, as GFM renders them.
+status = "guaranteed"
+rule = "MD056"
+
+[inputs."uneven-rows.md"]
+findings = 2
+rewritten = true
+
+[inputs."piped-tables.md"]
+from = "piped-tables.md"
+findings = 0
+unchanged = true

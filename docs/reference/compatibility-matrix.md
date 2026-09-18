@@ -36,7 +36,7 @@ They are stated once here rather than in every row they touch.
   A blank line between two blocks of a list item makes the whole list loose and changes the render, so mdformat never adds one.
   A heading, a fence or a table written directly under an item's text keeps no blank line around it, and MD022, MD031 and MD058 report it exactly as they did before formatting.
   The fix is the author's: a loose list, or the block moved out of the item.
-  The MD022 and MD031 cases each carry the construct inside a tight list item as a neutral document, so the corpus asserts the exception where it applies.
+  The MD022, MD031 and MD058 cases each carry the construct inside a tight list item as a neutral document, so the corpus asserts the exception where it applies.
 - **An HTML block is written verbatim.**
   Everything from an opening tag or `<!--` to the end of the block, a multi-line comment included, is content: trailing spaces, tabs and runs of blank lines inside it survive formatting, and MD009, MD010 and MD012 report them as before.
   Each of those rules' cases carries the construct inside an HTML block as a neutral document, so the corpus asserts the exception where it applies.
@@ -161,16 +161,16 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | [Corpus for `leading_and_trailing`](../../tests/corpus/md055-leading-and-trailing/case.toml), probe for `consistent` | Every row is written with a leading and a trailing pipe |
+| MD055 table-pipe-style | `consistent`, `leading_and_trailing` | Guaranteed | [Corpus for `leading_and_trailing`](../../tests/corpus/md055-leading-and-trailing/case.toml), [for `consistent`](../../tests/corpus/md055-consistent/case.toml) | Every row is written with a leading and a trailing pipe |
 | MD055 table-pipe-style | `leading_only`, `trailing_only`, `no_leading_or_trailing` | Unsatisfiable | Probe | |
-| MD056 table-column-count | | Guaranteed | Probe | A short row is padded with empty cells and a long row loses its extra cells, as GFM renders them |
-| MD058 blanks-around-tables | | Guaranteed | Probe | See the tight-list exception |
-| MD060 table-column-style | `any`, the default, with padded tables | Guaranteed | Probe | Padded tables are `aligned`, with wide, combining and escaped characters measured as the rule measures them |
+| MD056 table-column-count | | Guaranteed | [Corpus](../../tests/corpus/md056/case.toml) | A short row is padded with empty cells and a long row loses its extra cells, as GFM renders them |
+| MD058 blanks-around-tables | | Guaranteed | [Corpus](../../tests/corpus/md058/case.toml) | See the tight-list exception |
+| MD060 table-column-style | `any`, the default, with padded tables | Guaranteed | [Corpus](../../tests/corpus/md060-any/case.toml) | Padded tables are `aligned`, with wide, combining and escaped characters measured as the rule measures them |
 | MD060 table-column-style | `any` with compact tables | Bridged | Prototype | An empty cell is rendered as a single space; mdformat alone writes two, which no style accepts |
 | MD060 table-column-style | `aligned` | Guaranteed | [Corpus](../../tests/corpus/md060-aligned/case.toml) | At mdformat's default, every cell is padded to its column's widest; the plugin also derives `compact_tables` as `false`, so a compact setting in mdformat's own configuration cannot contradict the rule (prototype) |
 | MD060 table-column-style | `compact` | Bridged | Prototype | `compact_tables` derived as `true`, and empty cells rendered as above. The delimiter row is `--`, or `:-:` and `-:` for aligned columns, which the style accepts |
 | MD060 table-column-style | `tight` | Unsatisfiable | Probe | Every pipe is padded with a space |
-| MD060 table-column-style | `aligned_delimiter` true with `aligned` | Guaranteed | Probe | |
+| MD060 table-column-style | `aligned_delimiter` true with `aligned` | Guaranteed | [Corpus](../../tests/corpus/md060-aligned-delimiter/case.toml) | |
 | MD060 table-column-style | `aligned_delimiter` true with `compact` | Unsatisfiable | Probe | The compact delimiter row is `--` regardless of the header |
 
 ## Thematic breaks

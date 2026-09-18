@@ -1,0 +1,23 @@
+# MD058 blanks-around-tables: a table written directly under a heading and
+# directly above a fence is separated from both by one blank line by mdformat
+# alone. The block below is a fence because a paragraph there is not below
+# the table at all: GFM reads it as another row. Inside a tight list item the
+# exception the matrix states applies: a blank line would make the list loose
+# and change the render, so mdformat keeps the table flush and the two
+# findings survive formatting, neutral.
+status = "guaranteed"
+rule = "MD058"
+
+[inputs."table-without-blank-lines.md"]
+findings = 2
+rewritten = true
+
+[inputs."table-in-tight-list-item.md"]
+status = "neutral"
+findings = 2
+unchanged = true
+
+[inputs."piped-tables.md"]
+from = "piped-tables.md"
+findings = 0
+unchanged = true
