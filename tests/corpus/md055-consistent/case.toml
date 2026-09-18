@@ -1,0 +1,27 @@
+# MD055 table-pipe-style at `consistent`, markdownlint's default in place of
+# the preset's `leading_and_trailing`: the first table fixes the style, so a
+# document of bare rows alone reports nothing, and one whose second table is
+# in the other style reports that table's rows, whichever came first;
+# mdformat alone writes every row with a leading and a trailing pipe, which
+# is consistent whatever came first.
+status = "guaranteed"
+rule = "MD055"
+
+[inputs."bare-tables.md"]
+from = "bare-tables.md"
+findings = 0
+rewritten = true
+
+[inputs."piped-then-bare-tables.md"]
+from = "piped-then-bare-tables.md"
+findings = 8
+rewritten = true
+
+[inputs."bare-then-piped-tables.md"]
+findings = 6
+rewritten = true
+
+[inputs."piped-tables.md"]
+from = "piped-tables.md"
+findings = 0
+unchanged = true

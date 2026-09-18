@@ -1,14 +1,22 @@
-# MD055 table-pipe-style at the preset's `leading_and_trailing`: rows written
-# without leading and trailing pipes gain both from mdformat alone, and a
-# table already piped and padded beside them is left as it is. markdownlint
-# reports a missing leading pipe and a missing trailing pipe separately, so
-# four bare rows are eight findings.
+# MD055 table-pipe-style at the preset's `leading_and_trailing`: rows
+# written with no leading or trailing pipe, alone or after a piped table, are
+# rewritten with both by mdformat alone, and a piped document is left as it
+# is. Every document is pooled: the `consistent` case runs the same files,
+# and reports nothing on the one whose rows are all bare.
 status = "guaranteed"
 rule = "MD055"
 
-[inputs."bare-rows.md"]
+[inputs."bare-tables.md"]
+from = "bare-tables.md"
 findings = 8
+rewritten = true
 
-[inputs."piped.md"]
+[inputs."piped-then-bare-tables.md"]
+from = "piped-then-bare-tables.md"
+findings = 8
+rewritten = true
+
+[inputs."piped-tables.md"]
+from = "piped-tables.md"
 findings = 0
 unchanged = true

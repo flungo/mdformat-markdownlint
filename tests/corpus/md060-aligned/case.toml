@@ -1,12 +1,36 @@
-# MD060 table-column-style at the preset's `aligned`: at mdformat's default,
-# every cell is padded to its column's widest, so a compact table is rewritten
-# by mdformat alone and an aligned table beside it is left as it is.
+# MD060 table-column-style at the preset's `aligned`: a compact table,
+# alone or after an aligned one, is padded to its columns' widest cells by
+# mdformat alone, and an aligned document is left as it is. The padding is
+# measured as the rule measures it: a wide character counts two columns, a
+# combining character none and an escaped pipe two, and the three documents
+# that carry those are aligned to the rule after formatting. The plugin also
+# derives `compact_tables` as false, pending.
 status = "guaranteed"
 rule = "MD060"
 
-[inputs."compact.md"]
+[inputs."compact-tables.md"]
+from = "compact-tables.md"
 findings = 6
+rewritten = true
 
-[inputs."aligned.md"]
+[inputs."aligned-then-compact-tables.md"]
+from = "aligned-then-compact-tables.md"
+findings = 6
+rewritten = true
+
+[inputs."compact-table-with-wide-characters.md"]
+findings = 3
+rewritten = true
+
+[inputs."compact-table-with-combining-characters.md"]
+findings = 6
+rewritten = true
+
+[inputs."compact-table-with-escaped-pipes.md"]
+findings = 5
+rewritten = true
+
+[inputs."aligned-tables.md"]
+from = "aligned-tables.md"
 findings = 0
 unchanged = true

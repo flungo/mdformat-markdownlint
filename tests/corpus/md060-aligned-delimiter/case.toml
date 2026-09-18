@@ -1,0 +1,14 @@
+# MD060 table-column-style with `aligned_delimiter` true at the preset's
+# `aligned`: a delimiter row shorter than its columns is a finding, and
+# mdformat alone writes every delimiter cell to its column's width.
+status = "guaranteed"
+rule = "MD060"
+
+[inputs."aligned-table-with-short-delimiter.md"]
+findings = 2
+rewritten = true
+
+[inputs."aligned-tables.md"]
+from = "aligned-tables.md"
+findings = 0
+unchanged = true
