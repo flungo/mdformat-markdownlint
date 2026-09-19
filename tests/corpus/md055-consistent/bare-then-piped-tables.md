@@ -1,8 +1,8 @@
 # Tables
 
 Column | Other
---- | ---
-a | b
+------ | -----
+a      | b
 
 | Column | Other |
 | ------ | ----- |

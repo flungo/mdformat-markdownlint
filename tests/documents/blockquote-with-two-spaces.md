@@ -8,6 +8,6 @@
 >
 > >  A nested quote after two spaces.
 >
->  | a | b |
->  | -- | -- |
->  | c | d |
+>  | a   | b   |
+>  | --- | --- |
+>  | c   | d   |

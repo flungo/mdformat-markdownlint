@@ -1,4 +1,3 @@
-A heading
-=========
+# A heading
 
-A link to nothing, [its text](#).
+A link to nothing, [its text](<#>).

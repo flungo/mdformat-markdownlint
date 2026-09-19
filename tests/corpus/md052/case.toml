@@ -2,9 +2,11 @@
 # undefined label is a finding, a shortcut one is not at the default
 # `shortcut_syntax` of false, and the default `ignored_labels` covers `[x]`;
 # every one is plain text mdformat leaves as written, so the finding survives
-# formatting, and the setext heading beside them is what formatting rewrites.
-# Every case extends the preset, so other rules are enabled alongside, which
-# markdownlint 0.41.1 needs to report this rule at all.
+# formatting, and the definition of the defined label beside them, in mixed
+# case with its destination in angle brackets, is what formatting rewrites,
+# lowercasing the label and removing the brackets. Every case extends the
+# preset, so other rules are enabled alongside, which markdownlint 0.41.1
+# needs to report this rule at all.
 status = "neutral"
 rule = "MD052"
 
