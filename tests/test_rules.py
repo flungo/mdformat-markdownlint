@@ -5,7 +5,8 @@ has its rows in the compatibility matrix. Three things hold that set honest:
 the installed markdownlint ships exactly those rules, which is what fails the
 latest leg when a release adds or drops one; a case cannot name a rule outside
 it; and a finding for a rule outside it fails the document it is on, rather
-than being filtered away by the case's rule.
+than being filtered away by the case's rule. And every rule the corpus knows
+has a case, so a rule can be added to the set only with its cases.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ import pytest
 
 from conftest import (
     KNOWN_RULES,
+    cases,
     lint_file,
     load_case,
     markdownlint_rules,
@@ -69,3 +71,10 @@ def test_a_finding_for_an_unknown_rule_fails_the_document(
     document.write_text("# A heading\n")
     with pytest.raises(pytest.fail.Exception, match="MD999.*does not know"):
         lint_file(markdownlint, document)
+
+
+def test_every_known_rule_has_a_case() -> None:
+    covered = {case.rule for case in cases() if case.rule}
+    assert KNOWN_RULES - covered == set(), (
+        f"the corpus knows {sorted(KNOWN_RULES - covered)} but has no case for them"
+    )
