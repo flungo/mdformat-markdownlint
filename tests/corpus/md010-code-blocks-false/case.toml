@@ -19,4 +19,5 @@ unchanged = true
 from = "tab-in-html-block.md"
 status = "neutral"
 findings = 1
+incidental = ["MD033"]
 unchanged = true

@@ -14,6 +14,7 @@ unchanged = true
 [inputs."tab-in-html-block.md"]
 from = "tab-in-html-block.md"
 findings = 1
+incidental = ["MD033"]
 unchanged = true
 
 [inputs."tab-in-prose.md"]

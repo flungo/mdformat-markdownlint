@@ -15,6 +15,7 @@ rewritten = true
 [inputs."setext-second-level-heading-first.md"]
 from = "setext-second-level-heading-first.md"
 findings = 1
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."front-matter-title-then-no-heading.md"]

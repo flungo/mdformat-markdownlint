@@ -7,6 +7,7 @@ rule = "MD018"
 
 [inputs."hash-without-space.md"]
 findings = 2
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

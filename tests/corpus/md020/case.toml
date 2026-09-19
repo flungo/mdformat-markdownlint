@@ -9,6 +9,7 @@ rule = "MD020"
 
 [inputs."closed-hashes-without-spaces.md"]
 findings = 2
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

@@ -6,4 +6,5 @@ rule = "MD013"
 
 [inputs."wide-table-and-long-line.md"]
 findings = 1
+incidental = ["MD060"]
 rewritten = true

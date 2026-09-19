@@ -34,6 +34,21 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
     label = f"{case.name}/{document.name}"
     subject = case.rule or "any rule"
     runs: dict[str, tuple[list, list]] = {}
+    reported: set[str] = set()
+
+    def beside_the_subject(findings: list, when: str) -> None:
+        """A document reports no rule but the case's and the ones its entry
+        lists as incidental; a case naming no rule counts every finding, so
+        its status asserts them all and nothing is beside the subject."""
+        reported.update(finding.rule for finding in findings)
+        if case.rule is None:
+            return
+        stray = {finding.rule for finding in findings} - {case.rule} - document.incidental
+        assert not stray, (
+            f"{label}: reports {sorted(stray)} {when}, beside {subject}; a document trips "
+            "no rule but its subject unless its entry lists the rule as incidental"
+        )
+
     for run, with_plugin in (("without the plugin", False), ("with the plugin", True)):
         # A fresh copy of the whole case per run, pooled documents included, so
         # its configuration travels with it; a case that extends the config
@@ -45,14 +60,18 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
         target = work / document.name
         original = target.read_bytes()
 
-        before = select(lint_file(markdownlint, target), case.rule)
+        linted = lint_file(markdownlint, target)
+        beside_the_subject(linted, "before formatting")
+        before = select(linted, case.rule)
         assert len(before) == document.findings, (
             f"{label}: expected {document.findings} finding(s) for {subject} before "
             f"formatting, found {len(before)}: {before}"
         )
         result = format_file(target, with_plugin=with_plugin)
         assert result.returncode == 0, f"mdformat failed on {label} {run}:\n{result.stderr}"
-        after = select(lint_file(markdownlint, target), case.rule)
+        linted = lint_file(markdownlint, target)
+        beside_the_subject(linted, f"after formatting {run}")
+        after = select(linted, case.rule)
         if document.unchanged:
             assert target.read_bytes() == original, (
                 f"{label}: declared unchanged, but formatting {run} rewrote it"
@@ -65,6 +84,15 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
 
     before, alone = runs["without the plugin"]
     _, bridged = runs["with the plugin"]
+
+    # The list is exact in both directions: a rule it names that no run
+    # reports is a stale entry, and would let the document stop reporting it
+    # unnoticed.
+    unreported = document.incidental - reported
+    assert not unreported, (
+        f"{label}: lists {sorted(unreported)} as incidental, but no run reports them; "
+        "remove them from the entry"
+    )
 
     # The document's status: the case's, unless the entry excepts it.
     status = document.status

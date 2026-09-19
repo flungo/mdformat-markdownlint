@@ -7,6 +7,7 @@ rule = "MD025"
 
 [inputs."setext-and-atx-second-level-headings.md"]
 findings = 1
+incidental = ["MD003", "MD041"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

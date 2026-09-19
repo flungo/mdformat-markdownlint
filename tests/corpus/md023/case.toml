@@ -6,6 +6,7 @@ rule = "MD023"
 
 [inputs."indented-atx-and-setext-headings.md"]
 findings = 2
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

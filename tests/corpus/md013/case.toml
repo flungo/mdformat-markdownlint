@@ -13,4 +13,5 @@ rule = "MD013"
 [inputs."long-lines.md"]
 from = "long-lines.md"
 findings = 4
+incidental = ["MD003"]
 rewritten = true

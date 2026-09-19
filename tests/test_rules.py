@@ -7,6 +7,11 @@ latest leg when a release adds or drops one; a case cannot name a rule outside
 it; and a finding for a rule outside it fails the document it is on, rather
 than being filtered away by the case's rule. And every rule the corpus knows
 has a case, so a rule can be added to the set only with its cases.
+
+The same holds for a rule the corpus does know: a document reports no rule
+but its case's unless its entry lists the rule as incidental, and a listed
+rule that no run reports is a stale entry, so a document trips exactly the
+rules its entry says it does.
 """
 
 from __future__ import annotations
@@ -23,6 +28,7 @@ from conftest import (
     markdownlint_rules,
     matrix_rules,
 )
+from test_corpus import test_document as check_document
 
 
 def test_markdownlint_ships_exactly_the_rules_the_corpus_knows(markdownlint: Path) -> None:
@@ -78,3 +84,73 @@ def test_every_known_rule_has_a_case() -> None:
     assert KNOWN_RULES - covered == set(), (
         f"the corpus knows {sorted(KNOWN_RULES - covered)} but has no case for them"
     )
+
+
+def write_case(directory: Path, manifest: str, document: str) -> None:
+    """A case of one document, `document.md`, under markdownlint's defaults."""
+    directory.mkdir()
+    (directory / "case.toml").write_text(manifest)
+    (directory / "document.md").write_text(document)
+
+
+def test_a_document_listing_an_unknown_rule_as_incidental_does_not_load(tmp_path: Path) -> None:
+    write_case(
+        tmp_path / "md026",
+        'status = "neutral"\nrule = "MD026"\n\n[inputs."document.md"]\nfindings = 1\n'
+        'incidental = ["MD002"]\n',
+        "# A heading ending in a period.\n",
+    )
+    with pytest.raises(ValueError, match="does not know the rule 'MD002'"):
+        load_case(tmp_path / "md026")
+
+
+def test_a_document_listing_its_subject_as_incidental_does_not_load(tmp_path: Path) -> None:
+    write_case(
+        tmp_path / "md026",
+        'status = "neutral"\nrule = "MD026"\n\n[inputs."document.md"]\nfindings = 1\n'
+        'incidental = ["MD026"]\n',
+        "# A heading ending in a period.\n",
+    )
+    with pytest.raises(ValueError, match="the case's own rule"):
+        load_case(tmp_path / "md026")
+
+
+def test_a_case_naming_no_rule_refuses_incidental(tmp_path: Path) -> None:
+    write_case(
+        tmp_path / "baseline",
+        'status = "guaranteed"\n\n[inputs."document.md"]\nfindings = 0\n'
+        'incidental = ["MD026"]\n',
+        "# A heading\n",
+    )
+    with pytest.raises(ValueError, match="counts every finding"):
+        load_case(tmp_path / "baseline")
+
+
+def test_a_document_reporting_a_rule_beside_its_subject_fails(
+    tmp_path: Path, markdownlint: Path
+) -> None:
+    # Text above the first heading is MD041's, not MD026's, and the entry
+    # does not list it.
+    write_case(
+        tmp_path / "md026",
+        'status = "neutral"\nrule = "MD026"\n\n[inputs."document.md"]\nfindings = 1\n'
+        "unchanged = true\n",
+        "Text before the heading.\n\n# A heading ending in a period.\n",
+    )
+    case = load_case(tmp_path / "md026")
+    with pytest.raises(AssertionError, match=r"reports \['MD041'\] before formatting, beside MD026"):
+        check_document(case, case.inputs[0], tmp_path / "work", markdownlint)
+
+
+def test_a_rule_listed_as_incidental_that_no_run_reports_fails(
+    tmp_path: Path, markdownlint: Path
+) -> None:
+    write_case(
+        tmp_path / "md026",
+        'status = "neutral"\nrule = "MD026"\n\n[inputs."document.md"]\nfindings = 1\n'
+        'incidental = ["MD041"]\nunchanged = true\n',
+        "# A heading ending in a period.\n",
+    )
+    case = load_case(tmp_path / "md026")
+    with pytest.raises(AssertionError, match=r"lists \['MD041'\] as incidental, but no run reports"):
+        check_document(case, case.inputs[0], tmp_path / "work", markdownlint)
