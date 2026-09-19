@@ -8,6 +8,7 @@ rule = "MD026"
 [inputs."trailing-period-colon-and-question-mark.md"]
 from = "trailing-period-colon-and-question-mark.md"
 findings = 2
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

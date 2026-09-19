@@ -7,6 +7,7 @@ rule = "MD025"
 
 [inputs."setext-and-atx-titles.md"]
 findings = 1
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."front-matter-title-and-two-titles.md"]

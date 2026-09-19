@@ -8,4 +8,5 @@ rule = "MD024"
 [inputs."duplicate-headings-within-and-across-parents.md"]
 from = "duplicate-headings-within-and-across-parents.md"
 findings = 1
+incidental = ["MD003"]
 rewritten = true

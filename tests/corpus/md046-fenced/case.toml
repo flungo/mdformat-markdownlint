@@ -9,11 +9,13 @@ rule = "MD046"
 [inputs."indented-code.md"]
 from = "indented-code.md"
 findings = 1
+incidental = ["MD040"]
 rewritten = true
 
 [inputs."fenced-then-indented-code.md"]
 from = "fenced-then-indented-code.md"
 findings = 1
+incidental = ["MD040"]
 rewritten = true
 
 [inputs."fenced-code.md"]

@@ -26,4 +26,5 @@ unchanged = true
 [inputs."trailing-spaces-in-html-block.md"]
 status = "neutral"
 findings = 1
+incidental = ["MD033"]
 unchanged = true

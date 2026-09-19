@@ -12,4 +12,5 @@ rewritten = true
 [inputs."blockquote-list-with-two-spaces.md"]
 from = "blockquote-list-with-two-spaces.md"
 findings = 2
+incidental = ["MD007"]
 rewritten = true

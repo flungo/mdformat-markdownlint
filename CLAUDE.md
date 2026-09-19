@@ -67,6 +67,7 @@ The repository's own CI beyond the Markdown checks is [`pytest.yml`](.github/wor
 Every case is formatted twice, without and with the plugin, so a guaranteed row is proven to hold by mdformat alone and a bridged row to hold only once the plugin is added.
 What a case is and what each status asserts is [`docs/reference/corpus.md`](docs/reference/corpus.md); how to run it locally and bump a pin is [`docs/runbooks/running-the-corpus.md`](docs/runbooks/running-the-corpus.md).
 The harness detects a rewrite that changes a document's meaning only through the counts it asserts, so a document is built to move a count under every such rewrite; the rules for that, and the pitfalls behind them, are the reference's section on writing a document.
+A document reports no rule but its subject unless its entry lists the rule as incidental, so a construct that trips a second rule is rewritten where it can be and declared where it cannot.
 A red `latest` leg is a bump waiting to be made, and the runbook says how.
 
 ## Sensitive information

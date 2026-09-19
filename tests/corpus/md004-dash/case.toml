@@ -35,4 +35,5 @@ unchanged = true
 [inputs."adjacent-lists-with-different-markers.md"]
 status = "neutral"
 findings = 1
+incidental = ["MD032"]
 rewritten = true

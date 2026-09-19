@@ -18,7 +18,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
 | `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
 | `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
-| `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix and a case in the corpus |
+| `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix and a case in the corpus; and a document reports exactly the rules its entry says it does |
 | `tests/constraints.txt` | The mdformat releases the pinned leg installs |
 | `tests/package.json` and its lockfile | The markdownlint-cli2 release the pinned leg installs |
 
@@ -33,6 +33,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `inputs.<file>.from` | a filename, or absent | The pooled document under `tests/documents/` the harness copies into the case under this entry's name; absent, the document is the case's own file of that name. The case's own `.md` files are exactly the entries without `from` |
 | `inputs.<file>.status` | `guaranteed`, `neutral`, `bridged`, or absent | The status this document asserts; absent, the case's. Set on a document whose construct is the exception to the rule's row under the same configuration, such as two adjacent lists under MD004, so the case stays one per configuration and the exception is an entry in it rather than a case of its own; a case naming no rule counts every finding and cannot carry one |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
+| `inputs.<file>.incidental` | a list of rules the corpus knows, or absent | The rules beside the case's that the document reports, on some run: a rule outside the list fails the document, and so does a listed rule no run reports, so the list is exact. Each is on the construct itself, never on filler; a case naming no rule counts every finding and cannot carry one |
 | `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style |
 | `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter |
 
@@ -53,6 +54,7 @@ The findings before formatting must match the count the case declares, each form
 
 A finding for a rule the corpus does not know fails the document it is on, whatever rule the case names, rather than being filtered out with the findings the case is not about.
 That, with the load-time check on `rule` and the test that the installed markdownlint ships exactly the rules the corpus knows, is what makes a rule ID the corpus does not know a failure and never a skip.
+A finding for a rule the corpus does know, beside the case's, fails the document too unless its entry lists that rule as `incidental`, and a listed rule no run reports fails it as a stale entry: a document reports exactly the rules its entry says it does, on every lint of every run, and the filter to the case's rule hides nothing.
 
 Two runs rather than one keep a status honest.
 A guaranteed case the plugin turns out to hold is misdeclared and belongs in bridged; a bridged case mdformat alone already satisfies is misdeclared and belongs in guaranteed; both fail, so a status claims no more than the run that earns it.
@@ -67,8 +69,9 @@ A document is therefore built so that every way formatting could alter what it m
   The directive documents prove this by removal: each of `disable-line`, `disable`, `enable`, `disable-file`, `capture`, `restore` and `configure-file` is placed so that losing it adds or removes a finding, which took a capture document that disables the rule before capturing and enables it after, since a bare `restore` restores the file's initial state and changes nothing.
 - **Counts are per rule, not per line or per construct.**
   A rewrite that trades one finding for another of the same rule is invisible, so a document never holds constructs whose findings could swap: the `configure-file` document has two headings its configuration allows against one it reports, so losing the configuration turns one finding into two rather than exchanging them.
-- **A neutral document is rewritten wherever it can be.**
-  Neutrality asserted on a document mdformat leaves byte for byte proves nothing about formatting; a construct mdformat rewrites beside the construct under test, a setext heading or an asterisk bullet, makes the assertion run across a real rewrite.
+- **A neutral document is rewritten wherever it can be, by a form of its own construct.**
+  Neutrality asserted on a document mdformat leaves byte for byte proves nothing about formatting, so a construct mdformat rewrites sits beside the construct under test, and it is one of the same kind, so the rewrite the assertion runs across is one the rule's own constructs meet: a link's destination in angle brackets or its title in single quotes, a reference definition in mixed case, a blockquote marker with no space after it, a `1)` list marker, a fence of four backticks, a one-dash delimiter row, and beside a heading rule's construct a setext heading.
+  Each of those but the last is written back without a finding for any rule.
   `unchanged` or `rewritten` is declared on every document, so the fixed point or the rewrite is asserted rather than assumed.
 - **A case names a document that violates its rule**, which the loader enforces.
   A value no document can violate on its own, MD022 at `lines_above` 0, is proven in a form that can, the per-level array beside a value that is violated.
@@ -78,10 +81,17 @@ A document is therefore built so that every way formatting could alter what it m
   A paragraph directly below a list is a lazy continuation of the last item, a paragraph directly below a table is another row, and a blank line ends a tag-opened HTML block: each looked like the construct under test and was not, and each was found by running both tools on the draft, not by reading it.
 - **Every count is taken from a run, never reasoned.**
   A document's count under each configuration it is pooled into, and each claim that losing a construct changes the count, is established by running markdownlint on the document and on the document with the construct removed.
-- **Noise stays out.**
-  A finding for another rule is filtered by the case's `rule`, but a document that trips rules it is not about hides what it is about; a long line, a duplicate heading or a missing title is avoided unless it is the subject.
+- **A document reports no rule but its subject, and its entry lists the exceptions.**
+  A finding for another rule is filtered from the count but not from the test: the entry's `incidental` list names every other rule the document reports on any run, a rule outside it fails the document, and so does a listed rule no run reports.
+  Before a rule is listed the document is edited so that it stops firing, wherever the construct allows: an aligned table for a rule about pipes or cell counts, a paragraph above a table and a blockquote below it or below a list, an ordered list before the title, a title above the heading MD022 tests at a lower level.
+  What is listed is on the construct itself, the setext heading whose level MD001 counts or the HTML block MD009 leaves alone, or is what mdformat makes of it, the fence with no language it writes for an indented block.
+  A pooled document that reports a rule under one case lists it in that case's entry, and is split into two documents only when they are two documents, never to shorten a list.
 
 > **🤖 Agent** — Before declaring a document's count in its manifest, remove each construct or directive the document is about and run markdownlint on the result; the count must change, or the document cannot detect losing it.
+
+<!-- -->
+
+> **🤖 Agent** — Before listing a rule under `incidental`, edit the document so the rule stops firing; list it only when the construct itself is what reports it.
 
 ## What a document may contain
 

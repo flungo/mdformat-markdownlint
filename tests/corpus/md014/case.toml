@@ -8,6 +8,7 @@ rule = "MD014"
 
 [inputs."commands-without-output.md"]
 findings = 3
+incidental = ["MD040", "MD046"]
 rewritten = true
 
 [inputs."commands-with-output.md"]
