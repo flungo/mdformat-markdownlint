@@ -177,7 +177,7 @@ The plugin will report a `.mdformat.toml` value the configuration implies as red
 
 | Rule | Setting | Status | Evidence | Notes |
 | -- | -- | -- | -- | -- |
-| MD035 hr-style | `consistent` | Guaranteed | Probe | Every thematic break is rewritten as seventy underscores |
+| MD035 hr-style | `consistent` | Guaranteed | [Corpus](../../tests/corpus/md035-consistent/case.toml) | Every thematic break is rewritten as seventy underscores |
 | MD035 hr-style | the explicit style of seventy underscores | Guaranteed | [Corpus](../../tests/corpus/md035-underscores/case.toml) | |
 | MD035 hr-style | any other explicit style | Unsatisfiable | Construction | |
 
@@ -194,8 +194,8 @@ markdownlint's directives are HTML comments, and mdformat treats a comment on it
 | Directive | Status | Evidence | Notes |
 | -- | -- | -- | -- |
 | `disable-next-line` | Bridged | Prototype | A comment block written flush against the next block stays flush, at top level, in a blockquote and in a list item; one the author separated with a blank line keeps it. A comment kept flush before a heading, list, fence or table triggers none of MD022, MD032, MD031 or MD058 |
-| `disable-line` | Guaranteed | Probe | An inline comment on the governed line is inline HTML and is kept in place |
-| `disable`, `enable`, `disable-file`, `capture`, `restore`, `configure-file` | Guaranteed | Probe | Their scope starts at the comment's own line, so a blank line after it changes nothing |
+| `disable-line` | Guaranteed | [Corpus](../../tests/corpus/inline-configuration/case.toml) | An inline comment on the governed line is inline HTML and is kept in place |
+| `disable`, `enable`, `disable-file`, `capture`, `restore`, `configure-file` | Guaranteed | [Corpus](../../tests/corpus/inline-configuration/case.toml) | Their scope starts at the comment's own line, so a blank line after it changes nothing |
 
 ## mdformat behaviours an adopter meets that no rule describes
 

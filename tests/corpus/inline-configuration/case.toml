@@ -1,0 +1,40 @@
+# markdownlint's comment directives, configuration inside the document, run
+# under the preset with MD026 as the vehicle rule: each document carries a
+# heading the rule would report and a directive that governs it, and the
+# findings are the same before and after formatting, so the directive still
+# applies once mdformat has written each comment as a block with a blank
+# line after it. `disable-line` is inline HTML on the governed line and is
+# kept in place; the scope of `disable`, `enable`, `disable-file`, `capture`,
+# `restore` and `configure-file` starts at the comment's own line, so the
+# blank line changes nothing. Each document is built so that a directive
+# lost or moved changes its count: a lost `disable-line`, `disable` or
+# `disable-file` adds a finding and a lost `enable` removes one; the capture
+# document disables the rule before capturing and enables it after, so a lost
+# `capture` or `restore` adds a finding where a bare restore would have
+# changed nothing; and the `configure-file` document has two headings its
+# configuration allows against one it reports, so losing it turns one
+# finding into two. `disable-next-line` is the bridged row: mdformat alone
+# puts the blank line between the comment and the line it governs, and the
+# case joins with the plugin's comment adjacency.
+status = "neutral"
+rule = "MD026"
+
+[inputs."disable-line.md"]
+findings = 1
+unchanged = true
+
+[inputs."disable-and-enable.md"]
+findings = 1
+rewritten = true
+
+[inputs."disable-file.md"]
+findings = 0
+rewritten = true
+
+[inputs."capture-and-restore.md"]
+findings = 1
+rewritten = true
+
+[inputs."configure-file.md"]
+findings = 1
+rewritten = true
