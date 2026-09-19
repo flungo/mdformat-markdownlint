@@ -18,7 +18,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
 | `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
 | `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
-| `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix |
+| `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix and a case in the corpus |
 | `tests/constraints.txt` | The mdformat releases the pinned leg installs |
 | `tests/package.json` and its lockfile | The markdownlint-cli2 release the pinned leg installs |
 
