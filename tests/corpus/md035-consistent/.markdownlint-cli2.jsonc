@@ -1,0 +1,8 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD035": {
+      "style": "consistent"
+    }
+  }
+}

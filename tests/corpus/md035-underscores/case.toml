@@ -1,18 +1,33 @@
-# MD035 hr-style at the preset's seventy underscores: dashes, asterisks and a
-# short underscore break are all rewritten by mdformat alone, and a
-# seventy-underscore break beside them is left as it is.
+# MD035 hr-style at the preset's explicit style of seventy underscores: a
+# dash, asterisk or short underscore break, alone or beside the preset's
+# break, is rewritten as seventy underscores by mdformat alone, and a
+# document of the preset's breaks is left as it is. Every document is
+# pooled: the `consistent` case runs the same files, and reports nothing on
+# the one whose breaks are all dashes.
 status = "guaranteed"
 rule = "MD035"
 
-[inputs."dashes.md"]
-findings = 1
+[inputs."dash-breaks.md"]
+from = "dash-breaks.md"
+findings = 2
+rewritten = true
 
-[inputs."asterisks.md"]
+[inputs."dash-then-underscore-breaks.md"]
+from = "dash-then-underscore-breaks.md"
 findings = 1
+rewritten = true
 
-[inputs."short-underscores.md"]
+[inputs."asterisk-then-underscore-breaks.md"]
+from = "asterisk-then-underscore-breaks.md"
 findings = 1
+rewritten = true
 
-[inputs."underscores.md"]
+[inputs."short-then-long-underscore-breaks.md"]
+from = "short-then-long-underscore-breaks.md"
+findings = 1
+rewritten = true
+
+[inputs."underscore-breaks.md"]
+from = "underscore-breaks.md"
 findings = 0
 unchanged = true

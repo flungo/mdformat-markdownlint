@@ -5,7 +5,7 @@ The shape is that of eslint-config-prettier — the linter is configured to acce
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the corpus harness and the config package with its cases exist; the plugin's behaviours and the rest of the corpus are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the config package with its cases and the corpus for every row the plugin's behaviours do not gate exist; the plugin's behaviours and the cases they unlock are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 > Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing until its behaviours land, the config package is installable only from a checkout, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
 
 ## Repo layout
@@ -28,7 +28,7 @@ docs/
 ```
 
 **The compatibility matrix and the corpus must agree** ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
-A status that changes in one changes in the other in the same pull request; until the corpus exists, the matrix's Evidence column says how each row is known.
+A status that changes in one changes in the other in the same pull request; the matrix's Evidence column links each row to its case, or says how the row is known where the plugin's behaviour it waits on is pending.
 
 ## Conventions
 

@@ -1,0 +1,22 @@
+# MD035 hr-style at `consistent`, markdownlint's default in place of the
+# preset's explicit style: the first break fixes the style, so a document of
+# dash breaks alone reports nothing, and one whose second break is the
+# preset's reports that break; mdformat alone rewrites every break as seventy
+# underscores, which is consistent whatever came first.
+status = "guaranteed"
+rule = "MD035"
+
+[inputs."dash-breaks.md"]
+from = "dash-breaks.md"
+findings = 0
+rewritten = true
+
+[inputs."dash-then-underscore-breaks.md"]
+from = "dash-then-underscore-breaks.md"
+findings = 1
+rewritten = true
+
+[inputs."underscore-breaks.md"]
+from = "underscore-breaks.md"
+findings = 0
+unchanged = true
