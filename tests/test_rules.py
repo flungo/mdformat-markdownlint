@@ -93,6 +93,18 @@ def write_case(directory: Path, manifest: str, document: str) -> None:
     (directory / "document.md").write_text(document)
 
 
+def test_a_document_declaring_neither_unchanged_nor_rewritten_does_not_load(
+    tmp_path: Path,
+) -> None:
+    write_case(
+        tmp_path / "md026",
+        'status = "neutral"\nrule = "MD026"\n\n[inputs."document.md"]\nfindings = 1\n',
+        "# A heading ending in a period.\n",
+    )
+    with pytest.raises(ValueError, match="exactly one of unchanged and rewritten"):
+        load_case(tmp_path / "md026")
+
+
 def test_a_document_listing_an_unknown_rule_as_incidental_does_not_load(tmp_path: Path) -> None:
     write_case(
         tmp_path / "md026",

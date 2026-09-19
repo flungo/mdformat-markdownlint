@@ -199,12 +199,17 @@ def load_case(directory: Path) -> Case:
             )
         if len(set(incidental)) != len(incidental):
             raise ValueError(f"{manifest}: inputs.{name}.incidental lists a rule twice")
+        # Every document declares the fixed point or the rewrite, so neither is
+        # assumed: exactly one of the two is true.
         if not isinstance(unchanged, bool) or not isinstance(rewritten, bool):
             raise ValueError(
                 f"{manifest}: inputs.{name}.unchanged and .rewritten must be true or false"
             )
-        if unchanged and rewritten:
-            raise ValueError(f"{manifest}: inputs.{name} cannot be both unchanged and rewritten")
+        if unchanged == rewritten:
+            raise ValueError(
+                f"{manifest}: inputs.{name} declares exactly one of unchanged and rewritten, "
+                "so the fixed point or the rewrite is asserted rather than assumed"
+            )
         inputs.append(
             Input(
                 name=name,

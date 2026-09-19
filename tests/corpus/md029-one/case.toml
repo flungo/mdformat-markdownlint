@@ -6,6 +6,7 @@ rule = "MD029"
 
 [inputs."ordered.md"]
 findings = 2
+rewritten = true
 
 [inputs."ones.md"]
 findings = 0

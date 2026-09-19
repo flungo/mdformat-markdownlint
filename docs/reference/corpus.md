@@ -34,8 +34,8 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `inputs.<file>.status` | `guaranteed`, `neutral`, `bridged`, or absent | The status this document asserts; absent, the case's. Set on a document whose construct is the exception to the rule's row under the same configuration, such as two adjacent lists under MD004, so the case stays one per configuration and the exception is an entry in it rather than a case of its own; a case naming no rule counts every finding and cannot carry one |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
 | `inputs.<file>.incidental` | a list of rules the corpus knows, or absent | The rules beside the case's that the document reports, on some run: a rule outside the list fails the document, and so does a listed rule no run reports, so the list is exact. Each is on the construct itself, never on filler; a case naming no rule counts every finding and cannot carry one |
-| `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style |
-| `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter |
+| `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style. Every entry sets exactly one of this and `rewritten`, which the loader enforces |
+| `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter. Every entry sets exactly one of this and `unchanged`, which the loader enforces |
 
 A case about a rule carries two kinds of document.
 One violates the rule, in one construct per document where the rule has several, with a compliant construct beside it that formatting must not touch; its finding count asserts that exactly the constructs the case is about are what markdownlint reports.
@@ -72,7 +72,7 @@ A document is therefore built so that every way formatting could alter what it m
 - **A neutral document is rewritten wherever it can be, by a form of its own construct.**
   Neutrality asserted on a document mdformat leaves byte for byte proves nothing about formatting, so a construct mdformat rewrites sits beside the construct under test, and it is one of the same kind, so the rewrite the assertion runs across is one the rule's own constructs meet: a link's destination in angle brackets or its title in single quotes, a reference definition in mixed case, a blockquote marker with no space after it, a `1)` list marker, a fence of four backticks, a one-dash delimiter row, and beside a heading rule's construct a setext heading.
   Each of those but the last is written back without a finding for any rule.
-  `unchanged` or `rewritten` is declared on every document, so the fixed point or the rewrite is asserted rather than assumed.
+  `unchanged` or `rewritten` is declared on every document, which the loader enforces, so the fixed point or the rewrite is asserted rather than assumed.
 - **A case names a document that violates its rule**, which the loader enforces.
   A value no document can violate on its own, MD022 at `lines_above` 0, is proven in a form that can, the per-level array beside a value that is violated.
 - **Constructs that behave differently are separate documents.**
