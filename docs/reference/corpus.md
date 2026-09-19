@@ -57,6 +57,32 @@ That, with the load-time check on `rule` and the test that the installed markdow
 Two runs rather than one keep a status honest.
 A guaranteed case the plugin turns out to hold is misdeclared and belongs in bridged; a bridged case mdformat alone already satisfies is misdeclared and belongs in guaranteed; both fail, so a status claims no more than the run that earns it.
 
+### Writing a document
+
+The harness detects a change of meaning only through what it asserts: the findings per rule before and after formatting, on both runs, and whether the bytes changed.
+A document is therefore built so that every way formatting could alter what it means moves one of those, and the rules below are the ones the corpus has needed so far.
+
+- **Every construct the document is about is load-bearing.**
+  Remove it, or the directive that governs it, and the count must change; where it does not, the assertion cannot tell the construct from its absence.
+  The directive documents prove this by removal: each of `disable-line`, `disable`, `enable`, `disable-file`, `capture`, `restore` and `configure-file` is placed so that losing it adds or removes a finding, which took a capture document that disables the rule before capturing and enables it after, since a bare `restore` restores the file's initial state and changes nothing.
+- **Counts are per rule, not per line or per construct.**
+  A rewrite that trades one finding for another of the same rule is invisible, so a document never holds constructs whose findings could swap: the `configure-file` document has two headings its configuration allows against one it reports, so losing the configuration turns one finding into two rather than exchanging them.
+- **A neutral document is rewritten wherever it can be.**
+  Neutrality asserted on a document mdformat leaves byte for byte proves nothing about formatting; a construct mdformat rewrites beside the construct under test, a setext heading or an asterisk bullet, makes the assertion run across a real rewrite.
+  `unchanged` or `rewritten` is declared on every document, so the fixed point or the rewrite is asserted rather than assumed.
+- **A case names a document that violates its rule**, which the loader enforces.
+  A value no document can violate on its own, MD022 at `lines_above` 0, is proven in a form that can, the per-level array beside a value that is violated.
+- **Constructs that behave differently are separate documents.**
+  mdformat escapes a `**` run beside a space and leaves a lone `*` alone, so one document of both would be neither guaranteed nor neutral; each behaviour has its own document, with its own status where they differ.
+- **A construct is checked to be what it looks like.**
+  A paragraph directly below a list is a lazy continuation of the last item, a paragraph directly below a table is another row, and a blank line ends a tag-opened HTML block: each looked like the construct under test and was not, and each was found by running both tools on the draft, not by reading it.
+- **Every count is taken from a run, never reasoned.**
+  A document's count under each configuration it is pooled into, and each claim that losing a construct changes the count, is established by running markdownlint on the document and on the document with the construct removed.
+- **Noise stays out.**
+  A finding for another rule is filtered by the case's `rule`, but a document that trips rules it is not about hides what it is about; a long line, a duplicate heading or a missing title is avoided unless it is the subject.
+
+> **🤖 Agent** — Before declaring a document's count in its manifest, remove each construct or directive the document is about and run markdownlint on the result; the count must change, or the document cannot detect losing it.
+
 ## What a document may contain
 
 Documents are test data, written to violate the rule their case names, so the repository's own Markdown checks skip `tests/corpus/` and `tests/documents/`: `.markdownlint-cli2.jsonc` ignores both directories and the semantic-line-break check inherits that.

@@ -66,6 +66,7 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
 The repository's own CI beyond the Markdown checks is [`pytest.yml`](.github/workflows/pytest.yml): the test suite, every case under `tests/corpus/` and the plugin's own tests, on a pinned leg and a latest leg per Python version.
 Every case is formatted twice, without and with the plugin, so a guaranteed row is proven to hold by mdformat alone and a bridged row to hold only once the plugin is added.
 What a case is and what each status asserts is [`docs/reference/corpus.md`](docs/reference/corpus.md); how to run it locally and bump a pin is [`docs/runbooks/running-the-corpus.md`](docs/runbooks/running-the-corpus.md).
+The harness detects a rewrite that changes a document's meaning only through the counts it asserts, so a document is built to move a count under every such rewrite; the rules for that, and the pitfalls behind them, are the reference's section on writing a document.
 A red `latest` leg is a bump waiting to be made, and the runbook says how.
 
 ## Sensitive information
