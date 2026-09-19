@@ -1,5 +1,6 @@
-A heading
-=========
+# A heading
 
 A full reference to an undefined label, [text][missing], a shortcut one, [missing],
-and the ignored label, [x].
+the ignored label, [x], and a defined one, [text][Defined].
+
+[Defined]: <#a-heading>

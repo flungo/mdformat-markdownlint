@@ -1,8 +1,8 @@
 # MD028 no-blanks-blockquote: two blockquotes separated by a blank line are
 # kept as written by mdformat, since joining them would change the render, so
-# the finding survives formatting; the setext heading beside them is what
-# formatting rewrites. A marker on its own line inside one blockquote is the
-# form the rule accepts, and is left as it is.
+# the finding survives formatting; the first quote's marker, written with no
+# space after it, is what formatting rewrites. A marker on its own line inside
+# one blockquote is the form the rule accepts, and is left as it is.
 status = "neutral"
 rule = "MD028"
 

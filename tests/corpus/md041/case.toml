@@ -7,8 +7,8 @@
 status = "neutral"
 rule = "MD041"
 
-[inputs."asterisk-list-before-title.md"]
-from = "asterisk-list-before-title.md"
+[inputs."list-before-title.md"]
+from = "list-before-title.md"
 findings = 1
 rewritten = true
 

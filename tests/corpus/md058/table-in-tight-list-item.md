@@ -4,6 +4,4 @@
   | Column | Other |
   | ------ | ----- |
   | a      | b     |
-  ```text
-  A fence directly under the table
-  ```
+  > A blockquote directly under the table

@@ -1,4 +1,3 @@
-A heading
-=========
+# A heading
 
-An image with no alternate text, ![](case.toml).
+An image with no alternate text, ![](<case.toml>).

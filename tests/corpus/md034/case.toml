@@ -1,10 +1,10 @@
 # MD034 no-bare-urls: a bare URL with a scheme, a bare `www.` literal and a
-# bare email address are findings and are left as written by mdformat, so
-# the findings survive formatting; the setext headings beside them are what
-# formatting rewrites. An email address in angle brackets is an autolink,
-# not bare, and is left as it is. The bare URL is one the repository's
-# external link sweep would follow, so lychee.toml excludes that document
-# from the check.
+# bare email address are findings and are left as written by mdformat, so the
+# findings survive formatting; the single-quoted titles of the links beside
+# them are what formatting rewrites, as double quotes. An email address in
+# angle brackets is an autolink, not bare, and is left as it is. The bare URL
+# is one the repository's external link sweep would follow, so lychee.toml
+# excludes that document from the check.
 status = "neutral"
 rule = "MD034"
 

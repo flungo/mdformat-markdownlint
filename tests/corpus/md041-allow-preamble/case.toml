@@ -6,12 +6,12 @@
 status = "neutral"
 rule = "MD041"
 
-[inputs."asterisk-list-before-title.md"]
-from = "asterisk-list-before-title.md"
+[inputs."list-before-title.md"]
+from = "list-before-title.md"
 findings = 0
 rewritten = true
 
-[inputs."asterisk-list-before-second-level-heading.md"]
+[inputs."list-before-second-level-heading.md"]
 findings = 1
 rewritten = true
 

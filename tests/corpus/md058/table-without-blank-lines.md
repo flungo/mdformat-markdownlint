@@ -1,9 +1,7 @@
 # Tables
 
-## A heading directly above
+A paragraph directly above the table.
 | Column | Other |
 | ------ | ----- |
 | a      | b     |
-```text
-A fence directly below; a paragraph there would be a row of the table.
-```
+> A blockquote directly below the table; a paragraph there would be a row of it.

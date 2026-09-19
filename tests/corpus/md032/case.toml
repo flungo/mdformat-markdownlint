@@ -1,8 +1,8 @@
 # MD032 blanks-around-lists: a list written directly under a paragraph and
-# directly above a fence is separated from both by one blank line by mdformat
-# alone. The block below is a fence because a paragraph there is not below
-# the list at all: CommonMark reads it as a lazy continuation of the last
-# item.
+# directly above a blockquote is separated from both by one blank line by
+# mdformat alone. The block below is a blockquote because a paragraph there is
+# not below the list at all: CommonMark reads it as a lazy continuation of the
+# last item.
 status = "guaranteed"
 rule = "MD032"
 

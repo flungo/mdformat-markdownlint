@@ -1,5 +1,5 @@
-Text directly above.
-# No blank line above
-Text directly below.
+# A title
 
-## No blank line above either
+Text directly above.
+## No blank line above
+Text directly below.

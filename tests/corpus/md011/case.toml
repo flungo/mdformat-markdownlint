@@ -1,6 +1,7 @@
 # MD011 no-reversed-links: reversed link syntax is plain text to the parser
 # and mdformat leaves it as written, so the finding survives formatting; the
-# setext heading beside it is what formatting rewrites.
+# single-quoted title of the link beside it is what formatting rewrites, as
+# double quotes.
 status = "neutral"
 rule = "MD011"
 
