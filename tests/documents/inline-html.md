@@ -6,6 +6,6 @@ A block-level element.
 
 A paragraph with a line break<br>inside it.
 
-| a | b |
-| -- | -- |
+| a                                | b |
+| -------------------------------- | - |
 | a cell with a break<br>inside it | d |

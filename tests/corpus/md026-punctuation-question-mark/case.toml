@@ -7,4 +7,5 @@ rule = "MD026"
 [inputs."trailing-period-colon-and-question-mark.md"]
 from = "trailing-period-colon-and-question-mark.md"
 findings = 1
+incidental = ["MD003"]
 rewritten = true

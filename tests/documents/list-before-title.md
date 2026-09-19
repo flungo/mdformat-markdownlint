@@ -1,4 +1,4 @@
-* A list before the title.
+1) A list before the title.
 
 # The title
 

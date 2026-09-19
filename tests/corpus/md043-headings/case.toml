@@ -9,11 +9,13 @@ rule = "MD043"
 [inputs."heading-text-differs.md"]
 from = "heading-text-differs.md"
 findings = 1
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."heading-case-differs.md"]
 from = "heading-case-differs.md"
 findings = 0
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."heading-structure-matches.md"]

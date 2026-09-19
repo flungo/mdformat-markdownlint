@@ -80,13 +80,16 @@ class Input:
     directory or the shared pool; the status it asserts, the case's unless the
     document is a construct the row excepts; how many findings it reports
     before formatting, for the case's rule or for any rule when the case names
-    none; and whether mdformat must write it back byte for byte (`unchanged`)
-    or must not (`rewritten`)."""
+    none; the rules beside the case's that it reports on some run
+    (`incidental`), each on the construct itself, and outside which no rule
+    may appear; and whether mdformat must write it back byte for byte
+    (`unchanged`) or must not (`rewritten`)."""
 
     name: str
     source: Path
     status: str
     findings: int
+    incidental: frozenset[str]
     unchanged: bool
     rewritten: bool
 
@@ -166,22 +169,54 @@ def load_case(directory: Path) -> Case:
                 "no rule counts every finding and has no row for a document to except"
             )
         findings = spec.get("findings") if isinstance(spec, dict) else None
+        incidental = spec.get("incidental", []) if isinstance(spec, dict) else None
         unchanged = spec.get("unchanged", False) if isinstance(spec, dict) else None
         rewritten = spec.get("rewritten", False) if isinstance(spec, dict) else None
         if not isinstance(findings, int) or isinstance(findings, bool) or findings < 0:
             raise ValueError(f"{manifest}: inputs.{name}.findings must be a count")
+        # The rules the document reports beside the case's, listed so that a
+        # rule outside the list fails it rather than being filtered away with
+        # the findings the case is not about; a case naming no rule counts
+        # every finding, so nothing is beside it.
+        if not isinstance(incidental, list) or not all(
+            isinstance(item, str) for item in incidental
+        ):
+            raise ValueError(f"{manifest}: inputs.{name}.incidental lists rule IDs")
+        if incidental and rule is None:
+            raise ValueError(
+                f"{manifest}: inputs.{name}.incidental lists rules beside the case's, but a "
+                "case naming no rule counts every finding and has none beside it"
+            )
+        unknown = sorted(set(incidental) - KNOWN_RULES)
+        if unknown:
+            raise ValueError(
+                f"{manifest}: the corpus does not know the rule {unknown[0]!r}, which "
+                f"inputs.{name}.incidental lists"
+            )
+        if rule in incidental:
+            raise ValueError(
+                f"{manifest}: inputs.{name}.incidental lists {rule}, the case's own rule"
+            )
+        if len(set(incidental)) != len(incidental):
+            raise ValueError(f"{manifest}: inputs.{name}.incidental lists a rule twice")
+        # Every document declares the fixed point or the rewrite, so neither is
+        # assumed: exactly one of the two is true.
         if not isinstance(unchanged, bool) or not isinstance(rewritten, bool):
             raise ValueError(
                 f"{manifest}: inputs.{name}.unchanged and .rewritten must be true or false"
             )
-        if unchanged and rewritten:
-            raise ValueError(f"{manifest}: inputs.{name} cannot be both unchanged and rewritten")
+        if unchanged == rewritten:
+            raise ValueError(
+                f"{manifest}: inputs.{name} declares exactly one of unchanged and rewritten, "
+                "so the fixed point or the rewrite is asserted rather than assumed"
+            )
         inputs.append(
             Input(
                 name=name,
                 source=source,
                 status=own_status,
                 findings=findings,
+                incidental=frozenset(incidental),
                 unchanged=unchanged,
                 rewritten=rewritten,
             )

@@ -8,6 +8,7 @@ rule = "MD027"
 [inputs."blockquote-list-with-two-spaces.md"]
 from = "blockquote-list-with-two-spaces.md"
 findings = 0
+incidental = ["MD007"]
 rewritten = true
 
 [inputs."blockquote-with-two-spaces.md"]

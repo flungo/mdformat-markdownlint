@@ -9,6 +9,7 @@ rule = "MD022"
 
 [inputs."three-levels-without-blank-lines.md"]
 findings = 2
+incidental = ["MD041"]
 rewritten = true
 
 [inputs."open-atx-headings.md"]

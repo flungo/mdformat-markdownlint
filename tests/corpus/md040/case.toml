@@ -1,7 +1,7 @@
-# MD040 fenced-code-language at its default: a fence with no info string is
-# a finding, whatever language the author meant is content, and the finding
-# survives formatting; a fence with any info string reports nothing. The
-# tilde fence is what formatting rewrites, as backticks. An indented block,
+# MD040 fenced-code-language at its default: a fence with no info string is a
+# finding, whatever language the author meant is content, and the finding
+# survives formatting; a fence with any info string reports nothing. The fence
+# of four backticks is what formatting rewrites, as three. An indented block,
 # which formatting turns into a fence with no language, is the unsatisfiable
 # row and waits for the refusal.
 status = "neutral"
@@ -12,6 +12,6 @@ from = "fences-with-and-without-languages.md"
 findings = 1
 unchanged = true
 
-[inputs."tilde-fence-without-language.md"]
+[inputs."four-backtick-fence-without-language.md"]
 findings = 1
 rewritten = true

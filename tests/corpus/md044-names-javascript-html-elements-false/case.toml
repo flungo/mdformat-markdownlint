@@ -7,4 +7,5 @@ rule = "MD044"
 [inputs."proper-name-in-prose-code-and-html.md"]
 from = "proper-name-in-prose-code-and-html.md"
 findings = 2
+incidental = ["MD033"]
 rewritten = true

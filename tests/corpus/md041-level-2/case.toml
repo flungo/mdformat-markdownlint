@@ -14,4 +14,5 @@ unchanged = true
 [inputs."setext-second-level-heading-first.md"]
 from = "setext-second-level-heading-first.md"
 findings = 0
+incidental = ["MD003"]
 rewritten = true

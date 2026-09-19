@@ -7,14 +7,15 @@
 status = "neutral"
 rule = "MD041"
 
-[inputs."asterisk-list-before-title.md"]
-from = "asterisk-list-before-title.md"
+[inputs."list-before-title.md"]
+from = "list-before-title.md"
 findings = 1
 rewritten = true
 
 [inputs."setext-second-level-heading-first.md"]
 from = "setext-second-level-heading-first.md"
 findings = 1
+incidental = ["MD003"]
 rewritten = true
 
 [inputs."front-matter-title-then-no-heading.md"]

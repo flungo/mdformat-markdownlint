@@ -1,4 +1,4 @@
-* A list before the first heading.
+1) A list before the first heading.
 
 ## A section, not a title
 

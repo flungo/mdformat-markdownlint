@@ -6,6 +6,7 @@ rule = "MD005"
 
 [inputs."misaligned-unordered-items.md"]
 findings = 2
+incidental = ["MD007"]
 rewritten = true
 
 [inputs."misaligned-ordered-items.md"]

@@ -1,4 +1,3 @@
-A heading
-=========
+# A heading
 
-A fragment no heading matches, [the missing heading](#missing-heading).
+A fragment no heading matches, [the missing heading](<#missing-heading>).
