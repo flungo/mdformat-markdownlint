@@ -1,7 +1,9 @@
 # MD025 single-title with `level` 2: the title is a level-two heading, so a
 # second one is the finding, before and after mdformat rewrites the setext
 # one as ATX, and the pooled document with one heading of each level reports
-# nothing.
+# nothing. The rule checks a level only where the document's first heading
+# is at that level, so the document starts at level two and reports MD041
+# beside its subject.
 status = "neutral"
 rule = "MD025"
 
