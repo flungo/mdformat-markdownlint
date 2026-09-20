@@ -5,3 +5,8 @@
 # workflow_dispatch runs of the markdown-links workflow, only after
 # LYCHEE_GITHUB_TOKEN is provisioned (a tokenless run's cross-repo 404s are
 # token artifacts, not dead links).
+
+# Claude Code session links, which only a plan under docs/plans/ may carry, per
+# CLAUDE.md: claude.ai answers 403 to a request that is not signed in, so the
+# sweep cannot resolve one.
+^https://claude\.ai/code/session_
