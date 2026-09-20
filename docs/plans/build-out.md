@@ -27,3 +27,12 @@ The matrix is written first, because it fixes the scope of the corpus and the un
 - [ ] Upstream filings: an empty-cell fix and the task-list escape that breaks a link whose text is `x` to mdformat-gfm; a comment-adjacency option and an exclusion hook proposed to mdformat; the plugin shrinks as each lands.
 - [ ] Publish `mdformat-markdownlint` to PyPI and `markdownlint-config-mdformat` to npm, each from its own tag prefix with trusted publishing, with the release procedure recorded as a runbook; choose the licence first.
 - [ ] Decide adoption for the fleet's own repositories in their own ADRs; this repository's adoption of itself comes first.
+  The vehicle is a reusable `mdformat` check workflow in the Markdown family of `flungo/github-workflows`, which the proposed ADR under § Follow-ups decides and a dedicated session builds once the packages publish, so the publish step ends by telling that session.
+
+## Follow-ups
+
+Work that continues outside this repository once the steps above complete:
+
+- [flungo/github-workflows#56](https://github.com/flungo/github-workflows/pull/56) — the proposed ADR-019, adopting mdformat as the fleet's Markdown formatter through this project's plugin and preset, held as a draft until the packages publish; it records why mdformat alone was not adopted and what the plugin changes.
+- [The session that finishes it](https://claude.ai/code/session_013xbn92MwX5afzrqnG2xxue) — owns that pull request, builds the workflow with its reference and runbook entries when told the packages are published, flips the ADR to accepted, and hands the per-repository adoption on.
+- [The session completing this plan](https://claude.ai/code/session_01Knz8gEB94rkpnQbKpmPN3c) — carries the steps above from the plugin behaviours onward, and is the one that tells the session above when the packages are published.

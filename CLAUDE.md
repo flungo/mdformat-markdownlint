@@ -3,6 +3,7 @@
 An [mdformat](https://github.com/hukkin/mdformat) plugin, a [markdownlint](https://github.com/DavidAnson/markdownlint) preset shipped as an npm package, and the corpus that proves the two agree: a repository keeps one style configuration, markdownlint's, and mdformat's output lints clean against it.
 The shape is that of eslint-config-prettier — the linter is configured to accept the formatter's fixed decisions, and the plugin bridges only what a static preset cannot ([ADR-001](docs/decisions/001-make-markdownlint-accept-mdformat.md)).
 What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-002](docs/decisions/002-the-compatibility-contract.md)).
+The project exists because the fleet's evaluation of mdformat, recorded in [ADR-019 of flungo/github-workflows](https://github.com/flungo/github-workflows/pull/56), found it not worth adopting alone and worth adopting with this plugin and preset; that ADR is proposed until the packages publish, and the workflow and fleet adoption it decides follow from here.
 
 > **Status: build-out under way.**
 > The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the config package with its cases and the corpus for every row the plugin's behaviours do not gate exist; the plugin's behaviours and the cases they unlock are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
@@ -57,7 +58,7 @@ The conventions themselves stay in `markdown-standards`; only repo-specific fact
 - **The repository's Markdown follows mdformat's decisions wherever markdownlint is indifferent.**
   Every ordered-list item is `1.`, since numbering the source churns on insertion, and a table's delimiter row is `--` per column.
   `mdformat --check --compact-tables` over the documents then disagrees only on empty compact cells, which mdformat writes as two spaces and MD060 rejects; that is the plugin's bridge, pending, and until it lands those cells stay single-spaced.
-- **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header.
+- **`.lycheeignore`** is populated only from this repo's own token-enabled `workflow_dispatch` runs, per the rules in its header, with one standing entry: Claude Code session links, which answer 403 to a request that is not signed in and which only a plan may carry (see § Working with this repo in Claude Code).
 - **The corpus documents under `tests/corpus/` and `tests/documents/` are exempt from the lint and sembr checks, not from the link check.**
   They exist to violate rules, so `.markdownlint-cli2.jsonc` ignores both directories and the sembr check inherits that; lychee still reads them, so a document carries no external URL and no unresolvable link, except the few whose construct is such a link, which `lychee.toml` lists by path and a test keeps honest.
 
@@ -78,6 +79,10 @@ Never commit tokens, keys or secret values; a secret is referred to by its **nam
 ## Working with this repo in Claude Code
 
 GitHub interaction is through the **GitHub MCP** (`mcp__github__*`); there is no `gh` CLI in web sessions.
+
+**A Claude Code session is referenced only from a plan.**
+A plan under `docs/plans/` may link the session that carries a step, since the plan is retired when its work completes and the link goes with it; no other repository file references a session, in prose or in a link.
+`.lycheeignore` skips the class because a session link answers 403 to a request that is not signed in, so the sweep does not police where one appears and this convention does.
 
 **Validating Markdown locally** — the commands, where to read the linter version from (a CI run, never a number written here), how to install `lychee` in a sandbox, and why the external URL sweep cannot be verified locally all come from the `markdown-standards` plugin's `validating-locally.md`.
 One repo-specific argument: once the corpus's node side is installed, pass `--exclude-path tests/node_modules` to `lychee`, or it reads the READMEs of every installed module; CI never installs them, so the shared workflow needs nothing.
