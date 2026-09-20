@@ -32,6 +32,23 @@ What the corpus is and how a case is written is [the corpus reference](../refere
 
    The header names the versions the run is against; a failing case names its directory and the findings that broke its status.
 
+## Probing a draft document
+
+The harness is the probe: a draft goes into its case before its counts are known, and the failing test reports them.
+
+1. **Write the draft into the case directory**, or into `tests/documents/` with a `from` entry, and give its manifest entry a status, a guessed `findings` and one of `unchanged` or `rewritten`, as [the corpus reference](../reference/corpus.md) describes.
+1. **Run that case alone:**
+
+   ```sh
+   python -m pytest -k <case-directory-name>
+   ```
+
+   The assertion that fails names what markdownlint reported, before formatting and after each run, with each finding's line and detail, and whether the bytes changed; correct the entry from that, never from reading the document.
+
+1. **Prove each construct load-bearing** by removing it, or the directive that governs it, and running the case again: the count must change, or the document cannot detect losing it.
+   Then restore it.
+1. **Run the whole suite once the entry is right**, since a pooled document is asserted under every case that names it.
+
 ## The latest leg
 
 The same three steps, with the installs replaced by the newest release of each tool, ignoring the plugin's own bounds on purpose:
