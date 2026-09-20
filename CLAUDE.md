@@ -6,14 +6,15 @@ What an adopter may rely on, rule by rule, is the compatibility contract ([ADR-0
 The project exists because the fleet's evaluation of mdformat, recorded in [ADR-019 of flungo/github-workflows](https://github.com/flungo/github-workflows/pull/56), found it not worth adopting alone and worth adopting with this plugin and preset; that ADR is proposed until the packages publish, and the workflow and fleet adoption it decides follow from here.
 
 > **Status: build-out under way.**
-> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the config package with its cases and the corpus for every row the plugin's behaviours do not gate exist; the plugin's behaviours and the cases they unlock are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
-> Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing until its behaviours land, the config package is installable only from a checkout, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
+> The skeleton, the founding decisions, the [compatibility matrix](docs/reference/compatibility-matrix.md), the Markdown CI with its two lint and link contexts required on `main`, the package skeleton, the config package with its cases and the corpus for every row the plugin's behaviours do not gate exist, and the plugin reads the markdownlint configuration as markdownlint-cli2 does ([reference](docs/reference/configuration.md)); the behaviours that act on it and the cases they unlock are tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
+> Nothing is published yet: the package registers as the `markdownlint` extension and changes nothing but read the configuration until its behaviours land, the config package is installable only from a checkout, and the prototype the matrix's Evidence column refers to lives outside the repository until then.
 
 ## Repo layout
 
 ```text
 pyproject.toml              The package: flit_core build, the mdformat.parser_extension entry
-                            point, and dependency bounds that hold adopters at the verified minor.
+                            point, and the bounds that hold adopters at the verified minor of the
+                            three packages the contract is stated against.
 src/mdformat_markdownlint/  The plugin.
 markdownlint-config-mdformat/  The npm package: the preset, every setting mdformat's fixed
                             choices satisfy, that a .markdownlint-cli2.jsonc extends by name.

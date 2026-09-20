@@ -55,7 +55,7 @@ The same three steps, with the installs replaced by the newest release of each t
 
 ```sh
 python -m pip install --no-deps -e .
-python -m pip install --upgrade pytest mdformat mdformat-gfm mdformat-frontmatter 'tomli; python_version < "3.11"'
+python -m pip install --upgrade pytest mdformat mdformat-gfm mdformat-frontmatter ruamel.yaml 'tomli; python_version < "3.11"'
 npm install --prefix tests --no-save --no-package-lock markdownlint-cli2@latest
 ```
 

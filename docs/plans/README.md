@@ -8,4 +8,4 @@ A plan has a status line at the top, a goal, and numbered checkbox steps (`- [ ]
 
 | Plan | Status |
 | -- | -- |
-| [`build-out.md`](build-out.md) | In progress — skeleton, founding decisions, the compatibility matrix, the Markdown CI, the package skeleton with the corpus harness, and the config package with its cases landed; next the corpus |
+| [`build-out.md`](build-out.md) | In progress — skeleton, founding decisions, the compatibility matrix, the Markdown CI, the package skeleton with the corpus harness, the config package with its cases, the corpus and the plugin's configuration reader landed; next the behaviours that act on the configuration |

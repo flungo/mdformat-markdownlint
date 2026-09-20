@@ -29,12 +29,17 @@ dependencies = [
   "mdformat>=1.0.0,<1.1",
   "mdformat-gfm>=1.0.0,<1.1",
   "mdformat-frontmatter>=2.1.2,<2.2",
+  # The configuration reader parses the YAML form with the YAML 1.2 core
+  # schema layered on ruamel.yaml, which mdformat-frontmatter brings in
+  # already (ADR-004), and the TOML form with the standard library's parser,
+  # or its backport before Python 3.11.
+  "ruamel.yaml>=0.18",
+  "tomli>=2; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
 test = [
   "pytest>=8",
-  "tomli>=2; python_version < '3.11'",
 ]
 
 [project.urls]

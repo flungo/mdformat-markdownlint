@@ -46,7 +46,7 @@ They are stated once here rather than in every row they touch.
 mdformat itself has three options that affect style: paragraph wrapping, ordered-list numbering and line endings.
 Its other options, `validate`, `exclude`, `extensions` and `codeformatters`, select behaviour rather than style.
 Compact tables is an option of mdformat-gfm's `tables` plugin.
-The plugin sets two of these from the nearest `.markdownlint-cli2.jsonc` and leaves the rest to mdformat's own configuration.
+The plugin sets two of these from the configuration markdownlint-cli2 would lint the file with, read as that tool reads it ([how the plugin reads the configuration](configuration.md)), and leaves the rest to mdformat's own configuration.
 
 | markdownlint setting | mdformat option | Derivation | Evidence |
 | -- | -- | -- | -- |
