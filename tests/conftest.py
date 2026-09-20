@@ -251,6 +251,11 @@ def materialise(case: Case, work: Path) -> None:
     for item in case.inputs:
         if item.shared:
             shutil.copyfile(item.source, work / item.name)
+    # A case extends the config package by name, as an adopter does, and each
+    # tool resolves the name by Node's rules from the configuration file's
+    # directory, so the copy carries the node_modules the corpus installed
+    # beside its configuration, as an adopter's checkout does.
+    (work / "node_modules").symlink_to(TESTS_DIR / "node_modules", target_is_directory=True)
 
 
 def format_file(path: Path, *, with_plugin: bool) -> FormatResult:
