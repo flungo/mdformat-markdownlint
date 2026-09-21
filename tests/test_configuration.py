@@ -3,13 +3,12 @@
 Each expectation on which files are read and how they combine was first
 observed by running the corpus's pinned markdownlint-cli2 on the same layout
 and reading which rules it reported, so a test here restates that run rather
-than a reading of the code; the parser tests restate what jsonc-parser and
-js-yaml, the parsers markdownlint-cli2 uses, returned for the same text.
+than a reading of the code. The parsers have their own tests beside this
+file, against what jsonc-parser and js-yaml returned for the same text.
 """
 
 from __future__ import annotations
 
-import math
 import subprocess
 import sys
 from pathlib import Path
@@ -19,7 +18,6 @@ from markdown_it import MarkdownIt
 
 import mdformat_markdownlint
 from mdformat_markdownlint import ConfigurationError, clear_cache, configuration_for
-from mdformat_markdownlint._configuration import parse_jsonc, parse_yaml
 
 BREAKABLE = "word " * 30
 
@@ -319,78 +317,6 @@ def test_a_config_file_no_parser_accepts_names_every_parser(tmp_path: Path) -> N
     write(tmp_path, "a.md", "")
     with pytest.raises(ConfigurationError, match=r"Unable to parse .*parse_jsonc.*loads.*parse_yaml"):
         configuration_for(tmp_path / "a.md", cwd=tmp_path)
-
-
-@pytest.mark.parametrize(
-    ("text", "expected"),
-    [
-        ('{"a": 1, // c\n "b": [1,2,],}', {"a": 1, "b": [1, 2]}),
-        ('{"a": "// not a comment", /* x */ "b": 2}', {"a": "// not a comment", "b": 2}),
-        ('{"a": 1, "a": 2}', {"a": 2}),
-        ('{"a": "\\u0041\\n"}', {"a": "A\n"}),
-        ('{"a":1}\n\n', {"a": 1}),
-        ("null", None),
-        ("[1,2]", [1, 2]),
-    ],
-)
-def test_jsonc_accepts_what_jsonc_parser_accepts(text: str, expected: object) -> None:
-    assert parse_jsonc(text) == expected
-
-
-@pytest.mark.parametrize(
-    "text",
-    [
-        "{a: 1}",
-        '{"a": 1,, }',
-        "",
-        "// only comment",
-        '{"a": 1} trailing',
-        '{"a": NaN}',
-        '{"a": 0x10}',
-        "{\"a\": 'x'}",
-        '{"a": +1}',
-        '{"a": .5}',
-        '{"a": 01}',
-        '{"a": "multi\nline"}',
-        "{,}",
-        '{"a": [,]}',
-        '{"a": 1 /* open',
-    ],
-)
-def test_jsonc_rejects_what_jsonc_parser_rejects(text: str) -> None:
-    with pytest.raises(ValueError):
-        parse_jsonc(text)
-
-
-def test_yaml_uses_the_core_schema_js_yaml_uses() -> None:
-    document = parse_yaml(
-        "a: yes\nb: on\nc: true\nd: 0o17\ne: 1_000\nf: 0x1F\ng: ~\nh: 2001-01-01\n"
-        "j: 1e3\nk: 012\nl: \"x\"\nm: [1, two]\nn: {p: q}\no: -0o7\np: 0b101\nq: +12\n"
-        "r: True\ns: FALSE\nt: y\nu: off\nv: Null\nw:\nx: 1.\ny: .5\n"
-    )
-    assert document == {
-        "a": "yes", "b": "on", "c": True, "d": 15, "e": "1_000", "f": 31, "g": None,
-        "h": "2001-01-01", "j": 1000.0, "k": 12, "l": "x", "m": [1, "two"], "n": {"p": "q"},
-        "o": "-0o7", "p": "0b101", "q": 12, "r": True, "s": False, "t": "y", "u": "off",
-        "v": None, "w": None, "x": 1.0, "y": 0.5,
-    }
-    assert isinstance(document["j"], float) and isinstance(document["q"], int)
-
-
-def test_yaml_special_floats_keys_and_merge_keys_as_js_yaml_has_them() -> None:
-    document = parse_yaml("a: .nan\nb: .inf\nc: -.Inf\n1: one\ntrue: two\nnull: three\nbase: &b {x: 1}\nd:\n  <<: *b\n  y: 2\n")
-    assert math.isnan(document["a"]) and document["b"] == math.inf and document["c"] == -math.inf
-    assert document["1"] == "one" and document["true"] == "two" and document["null"] == "three"
-    assert document["d"] == {"<<": {"x": 1}, "y": 2}
-
-
-@pytest.mark.parametrize(
-    "text",
-    ["", "# comment only\n", "a: 1\na: 2\n", "a: 1\n---\nb: 2\n", "a:\n\tb: 1\n", "a: !!binary aGk=\n", "a: !!set {x, y}\n"],
-)
-def test_yaml_rejects_what_js_yaml_rejects(text: str) -> None:
-    with pytest.raises(Exception, match=r"empty|duplicated|single document|cannot start any token|tag"):
-        parse_yaml(text)
 
 
 # --- the plugin --------------------------------------------------------------

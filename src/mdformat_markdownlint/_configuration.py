@@ -7,9 +7,10 @@ tool's code rather than either tool's documentation: ``markdownlint-cli2.mjs``
 ``mergeOptions``) for which files are read and how they combine, and
 ``markdownlint/lib/markdownlint.mjs`` (``readConfig``, ``extendConfig`` and
 ``resolveConfigExtends``) for ``extends``. The parsers match the ones those
-modules use: jsonc-parser, smol-toml and js-yaml, whose default schema is the
-YAML 1.2 core schema. ``docs/reference/configuration.md`` states the result
-for an adopter, divergences included.
+modules use: jsonc-parser (``_jsonc``), js-yaml (``_yaml``) and smol-toml,
+which the standard library's TOML parser stands in for.
+``docs/reference/configuration.md`` states the result for an adopter,
+divergences included.
 """
 
 from __future__ import annotations
@@ -25,12 +26,10 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any
 
-from ruamel.yaml import YAML
-from ruamel.yaml.constructor import ConstructorError, SafeConstructor
 from ruamel.yaml.error import YAMLError
-from ruamel.yaml.events import DocumentStartEvent
-from ruamel.yaml.nodes import MappingNode
-from ruamel.yaml.resolver import VersionedResolver
+
+from mdformat_markdownlint._jsonc import parse_jsonc
+from mdformat_markdownlint._yaml import parse_yaml
 
 if sys.version_info >= (3, 11):
     import tomllib
@@ -379,198 +378,3 @@ def _describe(value: Any) -> str:
         int: "a number",
         float: "a number",
     }.get(type(value), type(value).__name__)
-
-
-# --- JSONC, as jsonc-parser reads it for markdownlint-cli2 ------------------
-
-
-def parse_jsonc(text: str) -> Any:
-    """JSON with line and block comments and trailing commas, and nothing
-    else jsonc-parser reports: ``NaN``, single quotes, a leading comma and
-    text after the value are errors, as they are there."""
-    return json.loads(_strip_jsonc(text), parse_constant=_reject_constant)
-
-
-def _reject_constant(token: str) -> Any:
-    raise ValueError(f"{token} is not a JSON value")
-
-
-def _strip_jsonc(text: str) -> str:
-    out: list[str] = []
-    last = ""  # the last significant character emitted
-    i = 0
-    n = len(text)
-    while i < n:
-        char = text[i]
-        if char == '"':
-            j = i + 1
-            while j < n and text[j] != '"':
-                if text[j] == "\\":
-                    j += 1
-                j += 1
-            out.append(text[i : j + 1])
-            last = '"'
-            i = j + 1
-        elif text.startswith("//", i):
-            j = text.find("\n", i)
-            i = n if j < 0 else j
-        elif text.startswith("/*", i):
-            j = text.find("*/", i + 2)
-            if j < 0:
-                raise ValueError("unterminated block comment")
-            out.append(" ")
-            i = j + 2
-        elif char == "," and last not in ("", "[", "{", ","):
-            j = _skip_insignificant(text, i + 1)
-            if j < n and text[j] in "}]":
-                i += 1
-            else:
-                out.append(char)
-                last = char
-                i += 1
-        else:
-            out.append(char)
-            if not char.isspace():
-                last = char
-            i += 1
-    return "".join(out)
-
-
-def _skip_insignificant(text: str, i: int) -> int:
-    n = len(text)
-    while True:
-        while i < n and text[i].isspace():
-            i += 1
-        if text.startswith("//", i):
-            j = text.find("\n", i)
-            i = n if j < 0 else j
-        elif text.startswith("/*", i):
-            j = text.find("*/", i + 2)
-            i = n if j < 0 else j + 2
-        else:
-            return i
-
-
-# --- YAML, as js-yaml's load reads it for markdownlint-cli2 -----------------
-
-
-_CORE_TAGS = frozenset(
-    f"tag:yaml.org,2002:{name}" for name in ("null", "bool", "int", "float", "str", "seq", "map")
-)
-
-
-class _CoreResolver(VersionedResolver):
-    """The YAML 1.2 core schema, js-yaml's default, whatever version the
-    document declares: ``yes`` and ``on`` are strings, ``012`` is twelve,
-    ``0o17`` is octal, and nothing else resolves implicitly."""
-
-    _core: dict[str | None, list[tuple[str, re.Pattern[str]]]] = {}
-
-    @property
-    def versioned_resolver(self) -> dict[str | None, list[tuple[str, re.Pattern[str]]]]:
-        return self._core
-
-
-def _add_core_resolver(tag: str, regexp: re.Pattern[str], first: list[str]) -> None:
-    for char in first:
-        _CoreResolver._core.setdefault(char, []).append((tag, regexp))
-
-
-_add_core_resolver("tag:yaml.org,2002:null", re.compile(r"^(?:~|null|Null|NULL|)$"), ["~", "n", "N", ""])
-_add_core_resolver(
-    "tag:yaml.org,2002:bool",
-    re.compile(r"^(?:true|True|TRUE|false|False|FALSE)$"),
-    list("tTfF"),
-)
-_add_core_resolver(
-    "tag:yaml.org,2002:int",
-    re.compile(r"^(?:[-+]?[0-9]+|0o[0-7]+|0x[0-9a-fA-F]+)$"),
-    list("-+0123456789"),
-)
-_add_core_resolver(
-    "tag:yaml.org,2002:float",
-    re.compile(
-        r"^(?:[-+]?(?:\.[0-9]+|[0-9]+(?:\.[0-9]*)?)(?:[eE][-+]?[0-9]+)?"
-        r"|[-+]?\.(?:inf|Inf|INF)|\.(?:nan|NaN|NAN))$"
-    ),
-    list("-+.0123456789"),
-)
-
-
-def _js_key(key: Any) -> str:
-    """A key as a JavaScript object stores it: a string."""
-    if isinstance(key, str):
-        return key
-    if key is None:
-        return "null"
-    if key is True or key is False:
-        return "true" if key else "false"
-    if isinstance(key, float):
-        return f"{key:g}"
-    return str(key)
-
-
-class _CoreConstructor(SafeConstructor):
-    """Only the core schema's tags construct, so an explicit ``!!binary``,
-    ``!!set`` or ``!!timestamp`` is an error; there is no merge key, so
-    ``<<`` is a key; a duplicated key is an error; and a key is a string, as
-    a JavaScript object's is."""
-
-    yaml_constructors = {
-        tag: constructor
-        for tag, constructor in SafeConstructor.yaml_constructors.items()
-        if tag in _CORE_TAGS or tag is None
-    }
-
-    def flatten_mapping(self, node: Any) -> None:
-        return
-
-    def construct_mapping(self, node: Any, deep: bool = False) -> dict[str, Any]:
-        if not isinstance(node, MappingNode):
-            raise ConstructorError(
-                None, None, f"expected a mapping node, but found {node.id}", node.start_mark
-            )
-        mapping: dict[str, Any] = {}
-        for key_node, value_node in node.value:
-            key = _js_key(self.construct_object(key_node, deep=True))
-            if key in mapping:
-                raise ConstructorError(None, None, "duplicated mapping key", key_node.start_mark)
-            mapping[key] = self.construct_object(value_node, deep=True)
-        return mapping
-
-    def construct_yaml_int(self, node: Any) -> int:
-        value = self.construct_scalar(node)
-        if value.startswith("0o"):
-            return int(value[2:], 8)
-        if value.startswith("0x"):
-            return int(value[2:], 16)
-        return int(value)
-
-    def construct_yaml_float(self, node: Any) -> float:
-        value = self.construct_scalar(node)
-        lowered = value.lower()
-        if lowered.endswith(".inf"):
-            return float("-inf") if lowered.startswith("-") else float("inf")
-        if lowered.endswith(".nan"):
-            return float("nan")
-        return float(value)
-
-
-_CoreConstructor.add_constructor("tag:yaml.org,2002:int", _CoreConstructor.construct_yaml_int)
-_CoreConstructor.add_constructor("tag:yaml.org,2002:float", _CoreConstructor.construct_yaml_float)
-
-
-def _core_yaml() -> YAML:
-    loader = YAML(typ="safe", pure=True)
-    loader.Resolver = _CoreResolver
-    loader.Constructor = _CoreConstructor
-    return loader
-
-
-def parse_yaml(text: str) -> Any:
-    """One YAML document in the 1.2 core schema; an empty stream is an error,
-    as js-yaml's ``load`` makes it, where ruamel.yaml alone reads it and a
-    ``null`` document alike as ``None``."""
-    if not any(isinstance(event, DocumentStartEvent) for event in _core_yaml().parse(text)):
-        raise ValueError("expected a document, but the input is empty")
-    return _core_yaml().load(text)
