@@ -4,6 +4,14 @@ Both tools run as the subprocesses an adopter runs, so a case exercises the
 entry point, mdformat's option handling and markdownlint-cli2's configuration
 discovery rather than an in-process shortcut. The case format and the
 assertion each status makes are documented in docs/reference/corpus.md.
+
+Neither tool is launched per document. A document's share of the work is under
+two milliseconds of linting and less formatting, against a quarter-second of
+process startup, so the corpus is built into one tree and each tool is run over
+it whole: markdownlint-cli2 applies the configuration nearest each file, which
+is the case's own, and mdformat formats each file independently of the rest
+(ADR-005). `run_document` keeps the per-document pipeline for a case built
+outside the corpus and for attributing a batched failure.
 """
 
 from __future__ import annotations
@@ -14,6 +22,7 @@ import shutil
 import subprocess
 import sys
 from collections import Counter
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -306,14 +315,190 @@ def lint_file(markdownlint: Path, path: Path) -> list[Finding]:
     return findings
 
 
-def select(findings: list[Finding], rule: str | None) -> list[Finding]:
+# The two runs every document is put through, in the order the assertions read
+# them: a status claims no more than the run that earns it.
+RUNS = (("without the plugin", False), ("with the plugin", True))
+
+
+@dataclass(frozen=True)
+class DocumentRuns:
+    """What the pipeline observed for one document: the findings before
+    formatting, which are the same for both runs because both start from the
+    same bytes, and then per run the findings after formatting, whether the
+    bytes changed, and the stderr of a format that did not exit zero."""
+
+    before: tuple[Finding, ...]
+    after: dict[str, tuple[Finding, ...]]
+    changed: dict[str, bool]
+    format_failures: dict[str, str]
+
+
+def build_tree(loaded: list[Case], root: Path) -> None:
+    """Materialise every case under `root`, one directory per case, so a case's
+    configuration sits beside its documents exactly as it does in the corpus."""
+    root.mkdir(parents=True)
+    for case in loaded:
+        materialise(case, root / case.name)
+
+
+def document_paths(loaded: list[Case]) -> list[str]:
+    """Every document's path within a built tree, `<case>/<document>`.
+
+    Both tools are given these rather than a glob over the tree: a case's copy
+    carries a link to the corpus's `node_modules`, so anything that walks the
+    tree reaches the README of every installed package.
+    """
+    return [
+        f"{case.name}/{document.name}" for case in loaded for document in case.inputs
+    ]
+
+
+def lint_tree(markdownlint: Path, tree: Path, paths: list[str]) -> dict[str, list[Finding]]:
+    """Lint every document of a built tree in one run, keyed `<case>/<document>`.
+
+    markdownlint-cli2 resolves configuration by walking up from each file, so a
+    case directory's own `.markdownlint-cli2.jsonc` governs its documents and
+    no others; the tree's root holds none for anything to inherit.
+    """
+    proc = subprocess.run(
+        [str(markdownlint), *paths],
+        cwd=tree,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode not in (0, 1):
+        raise RuntimeError(
+            f"markdownlint-cli2 failed on {tree}:\n{proc.stdout}\n{proc.stderr}"
+        )
+    findings: dict[str, list[Finding]] = {}
+    for line in (proc.stdout + proc.stderr).splitlines():
+        match = _FINDING.match(line)
+        if match:
+            findings.setdefault(match["file"].replace("\\", "/"), []).append(
+                Finding(
+                    line=int(match["line"]),
+                    rule=match["rule"],
+                    detail=match["detail"],
+                )
+            )
+    return findings
+
+
+def format_tree(tree: Path, paths: list[str], *, with_plugin: bool) -> FormatResult:
+    """Format every document of a built tree in one run. mdformat treats each
+    file independently, so this is the per-file run repeated, not a new one."""
+    extensions = CONTRACT_EXTENSIONS + ((PLUGIN_EXTENSION,) if with_plugin else ())
+    command = [sys.executable, "-m", "mdformat"]
+    for extension in extensions:
+        command += ["--extensions", extension]
+    command += paths
+    proc = subprocess.run(
+        command, cwd=tree, capture_output=True, text=True, check=False
+    )
+    return FormatResult(returncode=proc.returncode, stderr=proc.stderr)
+
+
+def attribute_format_failure(
+    loaded: list[Case], root: Path, *, with_plugin: bool
+) -> dict[str, str]:
+    """Which documents a failed tree format belongs to, found by formatting a
+    fresh tree one document at a time. Only a non-zero exit reaches here, so the
+    cost is paid on the way to a failure report and nowhere else."""
+    build_tree(loaded, root)
+    failures: dict[str, str] = {}
+    for case in loaded:
+        for document in case.inputs:
+            result = format_file(root / case.name / document.name, with_plugin=with_plugin)
+            if result.returncode != 0:
+                failures[f"{case.name}/{document.name}"] = result.stderr
+    return failures
+
+
+def run_corpus(loaded: list[Case], markdownlint: Path, root: Path) -> dict[str, DocumentRuns]:
+    """Put the whole corpus through the pipeline, five subprocesses in all:
+    lint the unformatted tree once, then per run format a tree and lint it."""
+    paths = document_paths(loaded)
+    pristine = root / "pristine"
+    build_tree(loaded, pristine)
+    before = lint_tree(markdownlint, pristine, paths)
+
+    after: dict[str, dict[str, list[Finding]]] = {}
+    changed: dict[str, dict[str, bool]] = {}
+    failures: dict[str, dict[str, str]] = {}
+    for run, with_plugin in RUNS:
+        tree = root / run.replace(" ", "-")
+        build_tree(loaded, tree)
+        result = format_tree(tree, paths, with_plugin=with_plugin)
+        failures[run] = (
+            attribute_format_failure(
+                loaded, root / f"attribute-{run.replace(' ', '-')}", with_plugin=with_plugin
+            )
+            if result.returncode != 0
+            else {}
+        )
+        after[run] = lint_tree(markdownlint, tree, paths)
+        changed[run] = {
+            f"{case.name}/{document.name}": (
+                (tree / case.name / document.name).read_bytes()
+                != (pristine / case.name / document.name).read_bytes()
+            )
+            for case in loaded
+            for document in case.inputs
+        }
+
+    return {
+        key: DocumentRuns(
+            before=tuple(before.get(key, ())),
+            after={run: tuple(after[run].get(key, ())) for run, _ in RUNS},
+            changed={run: changed[run][key] for run, _ in RUNS},
+            format_failures={
+                run: failures[run][key] for run, _ in RUNS if key in failures[run]
+            },
+        )
+        for case in loaded
+        for key in (f"{case.name}/{document.name}" for document in case.inputs)
+    }
+
+
+def run_document(
+    case: Case, document: Input, root: Path, markdownlint: Path
+) -> DocumentRuns:
+    """The same pipeline for one document, a copy of its whole case per run.
+
+    The corpus goes through `run_corpus`; this is for a case built outside it,
+    which has no tree to join.
+    """
+    before: tuple[Finding, ...] | None = None
+    after: dict[str, tuple[Finding, ...]] = {}
+    changed: dict[str, bool] = {}
+    failures: dict[str, str] = {}
+    for run, with_plugin in RUNS:
+        work = root / run.replace(" ", "-")
+        materialise(case, work)
+        target = work / document.name
+        original = target.read_bytes()
+        if before is None:
+            before = tuple(lint_file(markdownlint, target))
+        result = format_file(target, with_plugin=with_plugin)
+        if result.returncode != 0:
+            failures[run] = result.stderr
+        after[run] = tuple(lint_file(markdownlint, target))
+        changed[run] = target.read_bytes() != original
+    assert before is not None
+    return DocumentRuns(
+        before=before, after=after, changed=changed, format_failures=failures
+    )
+
+
+def select(findings: Sequence[Finding], rule: str | None) -> list[Finding]:
     """The findings a case is about: every finding when it names no rule."""
     if rule is None:
-        return findings
+        return list(findings)
     return [finding for finding in findings if finding.rule == rule]
 
 
-def count_by_rule(findings: list[Finding]) -> Counter[str]:
+def count_by_rule(findings: Sequence[Finding]) -> Counter[str]:
     return Counter(finding.rule for finding in findings)
 
 
@@ -376,3 +561,13 @@ def markdownlint() -> Path:
             "side with `npm ci --prefix tests` (docs/runbooks/running-the-corpus.md)"
         )
     return MARKDOWNLINT_CLI2
+
+
+@pytest.fixture(scope="session")
+def corpus(
+    markdownlint: Path, tmp_path_factory: pytest.TempPathFactory
+) -> dict[str, DocumentRuns]:
+    """Every document's runs, from one pass over the whole corpus."""
+    return run_corpus(
+        cases(), markdownlint, tmp_path_factory.mktemp("corpus")
+    )
