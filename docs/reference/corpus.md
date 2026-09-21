@@ -13,8 +13,8 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/documents/*.md` | The pool: a document more than one case runs, written once and named from each case's `case.toml` by `from`, so a document that behaves in a known way under several configurations is the same bytes in every case that runs it; a pooled document no case names fails the suite |
 | `tests/corpus/<case>/.markdownlint-cli2.jsonc` | The markdownlint configuration the case runs under; absent, markdownlint runs on its defaults. A case about a preset setting extends the config package by name, `markdownlint-config-mdformat`, as an adopter does |
 | `markdownlint-config-mdformat/` | The config package the cases extend; `tests/package.json` installs it from the tree, so `npm ci --prefix tests` links it beside the markdownlint-cli2 the harness runs, and a case's temporary copy carries a link to that `node_modules` beside its configuration, as an adopter's checkout does, so each tool resolves the name by Node's rules from the configuration file's directory ([how the plugin reads the configuration](configuration.md)) |
-| `tests/conftest.py` | The harness: runs both tools and asserts the status |
-| `tests/test_corpus.py` | One test per document, on both runs |
+| `tests/conftest.py` | The harness: loads the cases, builds them into one tree and runs both tools over it, keeping a per-document pipeline for a case built outside the corpus |
+| `tests/test_corpus.py` | One test per document, on both runs: the assertions each status makes, over what the pass observed |
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
 | `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
 | `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
@@ -42,8 +42,11 @@ One violates the rule, in one construct per document where the rule has several,
 The other is already what mdformat writes, and is `unchanged`: it proves the setting really is the formatter's output, since a preset value that differed from it would be rewritten, and it proves formatting is stable on compliant input rather than churning it.
 Two documents rather than one is deliberate: the violating document alone shows the rule is satisfied after formatting, and the compliant document shows the fixed point is where the preset says it is.
 
-For each document the harness copies the case directory twice, pooled documents included, lints the document, formats it in place, one copy with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and one with the `markdownlint` extension added, and lints both again.
-Both tools run as the subprocesses an adopter runs, from the case's own directory, so the configuration markdownlint-cli2 discovers is the case's and nothing outside the case reaches either tool.
+The harness builds the whole corpus into one tree, a directory per case holding its documents and its configuration, and runs each tool over the tree whole ([ADR-005](../decisions/005-run-the-corpus-in-one-pass.md)).
+It lints the unformatted tree once, for the findings every document reports before formatting; then per run it builds a tree, formats it in one invocation, with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and then with the `markdownlint` extension added, and lints it in one more.
+Both tools run as the subprocesses an adopter runs, and markdownlint-cli2 resolves configuration by walking up from each file, so the configuration a document is linted under is its own case's and nothing outside the case reaches either tool; the tree's root carries none for anything to inherit.
+Each run names every document rather than globbing the tree, since a case's copy carries a link to the corpus's `node_modules` and anything that walks the tree reads the README of every installed package.
+A case built outside the corpus, which no tree holds, goes through the same assertions by way of the per-document pipeline the harness keeps for it.
 The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not; then the document's status, the case's unless its entry says otherwise, decides what the two runs must show:
 
 | Status | Without the plugin | With the plugin |

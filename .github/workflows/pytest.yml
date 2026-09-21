@@ -16,6 +16,13 @@ on:
 permissions:
   contents: read
 
+# A push supersedes the run before it on the same pull request, and the matrix
+# is four jobs, so an untended branch can hold three generations of them at
+# once. A run on `main` is the record of that commit and is never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   pytest:
     runs-on: ubuntu-latest

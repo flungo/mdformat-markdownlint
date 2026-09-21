@@ -28,7 +28,7 @@ from conftest import (
     markdownlint_rules,
     matrix_rules,
 )
-from test_corpus import test_document as check_document
+from test_corpus import check_case_from_scratch
 
 
 def test_markdownlint_ships_exactly_the_rules_the_corpus_knows(markdownlint: Path) -> None:
@@ -151,7 +151,7 @@ def test_a_document_reporting_a_rule_beside_its_subject_fails(
     )
     case = load_case(tmp_path / "md026")
     with pytest.raises(AssertionError, match=r"reports \['MD041'\] before formatting, beside MD026"):
-        check_document(case, case.inputs[0], tmp_path / "work", markdownlint)
+        check_case_from_scratch(case, case.inputs[0], tmp_path / "work", markdownlint)
 
 
 def test_a_rule_listed_as_incidental_that_no_run_reports_fails(
@@ -165,4 +165,4 @@ def test_a_rule_listed_as_incidental_that_no_run_reports_fails(
     )
     case = load_case(tmp_path / "md026")
     with pytest.raises(AssertionError, match=r"lists \['MD041'\] as incidental, but no run reports"):
-        check_document(case, case.inputs[0], tmp_path / "work", markdownlint)
+        check_case_from_scratch(case, case.inputs[0], tmp_path / "work", markdownlint)

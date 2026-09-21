@@ -31,6 +31,7 @@ What the corpus is and how a case is written is [the corpus reference](../refere
    ```
 
    The header names the versions the run is against; a failing case names its directory and the findings that broke its status.
+   The whole suite takes seconds: the corpus is built into one tree and each tool is run over it whole, rather than launched per document ([ADR-005](../decisions/005-run-the-corpus-in-one-pass.md)).
 
 ## Probing a draft document
 
@@ -43,6 +44,7 @@ The harness is the probe: a draft goes into its case before its counts are known
    python -m pytest -k <case-directory-name>
    ```
 
+   The selected tests still run against the whole corpus's pass, so the run costs what the whole suite costs; the saving is in reading one case's failures rather than every case's.
    The assertion that fails names what markdownlint reported, before formatting and after each run, with each finding's line and detail, and whether the bytes changed; correct the entry from that, never from reading the document.
 
 1. **Prove each construct load-bearing** by removing it, or the directive that governs it, and running the case again: the count must change, or the document cannot detect losing it.
