@@ -31,6 +31,7 @@ What the corpus is and how a case is written is [the corpus reference](../refere
    ```
 
    The header names the versions the run is against; a failing case names its directory and the findings that broke its status.
+   The suite runs the cases across every core, since each one is independent of the rest and the time goes on launching the two tools rather than running them.
 
 ## Probing a draft document
 
@@ -40,9 +41,10 @@ The harness is the probe: a draft goes into its case before its counts are known
 1. **Run that case alone:**
 
    ```sh
-   python -m pytest -k <case-directory-name>
+   python -m pytest -n0 -k <case-directory-name>
    ```
 
+   `-n0` turns off the parallelism the whole suite wants: one case is a handful of tests, and the workers cost more than they save.
    The assertion that fails names what markdownlint reported, before formatting and after each run, with each finding's line and detail, and whether the bytes changed; correct the entry from that, never from reading the document.
 
 1. **Prove each construct load-bearing** by removing it, or the directive that governs it, and running the case again: the count must change, or the document cannot detect losing it.
@@ -55,7 +57,7 @@ The same three steps, with the installs replaced by the newest release of each t
 
 ```sh
 python -m pip install --no-deps -e .
-python -m pip install --upgrade pytest mdformat mdformat-gfm mdformat-frontmatter ruamel.yaml 'tomli; python_version < "3.11"'
+python -m pip install --upgrade pytest pytest-xdist mdformat mdformat-gfm mdformat-frontmatter ruamel.yaml 'tomli; python_version < "3.11"'
 npm install --prefix tests --no-save --no-package-lock markdownlint-cli2@latest
 ```
 

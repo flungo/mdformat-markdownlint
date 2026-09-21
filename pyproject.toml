@@ -40,6 +40,11 @@ dependencies = [
 [project.optional-dependencies]
 test = [
   "pytest>=8",
+  # The corpus spends its time launching the two tools, not running them: a
+  # document costs six subprocesses and almost nothing else, so the suite is
+  # bound by process startup on one core. xdist spreads the cases over all of
+  # them.
+  "pytest-xdist>=3",
 ]
 
 [project.urls]
@@ -65,4 +70,7 @@ exclude = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+# A case is independent of every other, so the suite parallelises cleanly; `-n0`
+# turns it off when a single case is being probed and the workers are overhead
+# (docs/runbooks/running-the-corpus.md).
+addopts = "-ra --strict-markers -n auto"
