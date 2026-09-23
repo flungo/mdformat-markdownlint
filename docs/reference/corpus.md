@@ -16,6 +16,7 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/conftest.py` | The harness: runs both tools and asserts the status |
 | `tests/test_corpus.py` | One test per document, on both runs |
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
+| `tests/test_javascript.py` | JavaScript's truthiness, as the plugin decides it where the tools do, against what Node gives |
 | `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
 | `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
 | `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix and a case in the corpus; and a document reports exactly the rules its entry says it does |
