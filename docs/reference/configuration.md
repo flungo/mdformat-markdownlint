@@ -71,7 +71,8 @@ The plugin stops, with a message naming the file, rather than format under a con
 - a JavaScript configuration file, `.cjs` or `.mjs`, of either kind, where it is the one markdownlint-cli2 would read;
 - an options file that cannot be parsed, or that holds something other than an object;
 - a configuration file that none of the three parsers accepts;
-- an `extends` that resolves to no file, or that leads back to a file already being read.
+- an `extends` that resolves to no file, or that leads back to a file already being read;
+- a setting mdformat's output can never satisfy, MD029 `zero`, MD060 `tight` or `aligned_delimiter` with `compact`, or a `style` value of either rule the plugin does not know ([the refusal set](compatibility-matrix.md#the-refusal-set)).
 
 ## What is not read
 
@@ -83,6 +84,16 @@ Each of these is a way markdownlint-cli2's reading and the plugin's differ, stat
   A preset that restricts its subpaths through `exports` resolves here where Node would refuse it.
 - **Modules resolvable only from markdownlint-cli2's own installation**, which Node also searches from the linter's location, are not found; the plugin looks from the configuration file's directory, which is where a repository installs its presets.
 - **`gitignore`, `globs` and the other options** that decide which files markdownlint-cli2 lints are carried in the options and not acted on, since mdformat is told its files.
+
+## A rule's setting
+
+A behaviour that acts on a rule's setting, such as the options derived from MD029 and MD060 ([what the plugin derives](compatibility-matrix.md#what-the-plugin-derives-from-the-markdownlint-configuration)), reads it as markdownlint's `getEffectiveConfig` resolves it, so the setting is the one the rule runs with:
+
+- **A key names a rule by any of its names or tags**, regardless of case: `MD029`, `ol-prefix` and `ol` all reach MD029, and a tag reaches every rule that carries it.
+- **A later key replaces what an earlier one set** for the same rule, whole: `{ "ol": false, "MD029": { "style": "ordered" } }` enables MD029 at `ordered`, and the same two keys in the other order disable it.
+- **`default`**, wherever it sits, decides whether a rule no key names is enabled.
+- **An object value enables the rule** unless it carries `enabled` false, and its members other than `enabled` and `severity` are the rule's options.
+  Any other value enables the rule when it is truthy, `true`, `"warning"` or a number other than zero, and disables it otherwise, `false`, `null`, `0` or `""`, with no options either way.
 
 ## For the plugin's own behaviours
 

@@ -2,10 +2,11 @@
 
 The plugin registers as the ``markdownlint`` parser extension. It reads the
 markdownlint configuration for the file being formatted the way
-markdownlint-cli2 does, and its behaviours, each landing with the corpus
-entries that prove it per the build-out plan, act on what it read; until they
-land it changes nothing, and the corpus's baseline case is what a formatted
-file must still satisfy.
+markdownlint-cli2 does, derives mdformat's ``number`` and ``compact_tables``
+from it, refusing the MD029 and MD060 settings mdformat cannot satisfy, and
+its other behaviours, each landing with the corpus entries that
+prove it per the build-out plan, act on what it read as they land; the
+corpus's baseline case is what a formatted file must still satisfy.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from mdformat_markdownlint._configuration import (
     clear_cache,
     configuration_for,
 )
+from mdformat_markdownlint._derived import Derived, UnsatisfiableError, apply, derive
 
 __all__ = [
     "CHANGES_AST",
@@ -30,8 +32,11 @@ __all__ = [
     "RENDERERS",
     "Configuration",
     "ConfigurationError",
+    "Derived",
+    "UnsatisfiableError",
     "clear_cache",
     "configuration_for",
+    "derive",
     "update_mdit",
 ]
 
@@ -50,13 +55,19 @@ CONFIGURATION_OPTION = "mdformat_markdownlint"
 
 
 def update_mdit(mdit: MarkdownIt) -> None:
-    """Read the markdownlint configuration for the file mdformat is formatting
-    and keep it on the parser.
+    """Read the markdownlint configuration for the file mdformat is formatting,
+    keep it on the parser, and set the options it derives.
 
     mdformat builds a parser per file and names the file in its options;
     standard input and the API's text carry no name and get the working
     directory's configuration, as markdownlint-cli2 gives standard input.
+    The options mdformat renders with are the file's own, so a derived value
+    replaces what the command line, `.mdformat.toml` or the API call gave
+    for this file and no other.
     """
-    filename = mdit.options.get("mdformat", {}).get("filename", "")
+    options = mdit.options.get("mdformat", {})
+    filename = options.get("filename", "")
     path = Path(filename) if filename and filename != "-" else None
-    mdit.options[CONFIGURATION_OPTION] = configuration_for(path)
+    configuration = configuration_for(path)
+    mdit.options[CONFIGURATION_OPTION] = configuration
+    mdit.options["mdformat"] = apply(options, derive(configuration.config))

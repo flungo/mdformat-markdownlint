@@ -1,0 +1,22 @@
+# MD060 table-column-style at `tight` in place of the preset's `aligned`:
+# no pipe may have a space beside it, and mdformat writes a space each side
+# of every pipe, so no table can satisfy the style after formatting: a
+# compact and an aligned table report every pipe before and after mdformat
+# alone, and a tight table, clean before, is padded into a finding on every
+# pipe. The plugin refuses the setting and writes nothing.
+status = "unsatisfiable"
+rule = "MD060"
+
+[inputs."compact-tables.md"]
+from = "compact-tables.md"
+findings = 16
+without_plugin = { rewritten = true }
+
+[inputs."aligned-tables.md"]
+from = "aligned-tables.md"
+findings = 16
+without_plugin = { unchanged = true }
+
+[inputs."tight-tables.md"]
+findings = 0
+without_plugin = { rewritten = true, findings = 16 }

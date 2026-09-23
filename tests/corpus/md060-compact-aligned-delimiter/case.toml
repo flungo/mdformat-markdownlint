@@ -1,0 +1,25 @@
+# MD060 table-column-style at `compact` with `aligned_delimiter`, in place
+# of the preset's `aligned`: the delimiter row's pipes must align with the
+# header's, and mdformat writes the compact delimiter row as `--` whatever
+# the header's width, so a compact table cannot satisfy the setting after
+# formatting: the two compact tables report their delimiter rows before and
+# every padded pipe after mdformat alone pads them, and an aligned table
+# reports every padded pipe before and after. The plugin refuses the setting
+# and writes nothing.
+status = "unsatisfiable"
+rule = "MD060"
+
+[inputs."compact-tables.md"]
+from = "compact-tables.md"
+findings = 2
+without_plugin = { rewritten = true, findings = 4 }
+
+[inputs."mdformat-compact-tables.md"]
+from = "mdformat-compact-tables.md"
+findings = 2
+without_plugin = { rewritten = true, findings = 4 }
+
+[inputs."aligned-tables.md"]
+from = "aligned-tables.md"
+findings = 4
+without_plugin = { unchanged = true }

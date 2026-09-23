@@ -14,8 +14,10 @@ import shutil
 import subprocess
 import sys
 from collections import Counter
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 
 import pytest
 
@@ -57,9 +59,25 @@ KNOWN_RULES = frozenset(
 CONTRACT_EXTENSIONS = ("gfm", "tables", "frontmatter")
 PLUGIN_EXTENSION = "markdownlint"
 
-# The statuses ADR-002 defines that the harness can assert today. Unsatisfiable
-# joins them when the plugin's refusal lands.
-STATUSES = ("guaranteed", "neutral", "bridged")
+# The statuses ADR-002 defines, each asserted as docs/reference/corpus.md
+# states.
+STATUSES = ("guaranteed", "neutral", "bridged", "unsatisfiable")
+
+
+@dataclass(frozen=True)
+class Run:
+    """How one of the two runs formats a document."""
+
+    with_plugin: bool
+
+
+# The two runs every document is formatted on, by name.
+RUNS: Mapping[str, Run] = MappingProxyType(
+    {
+        "without the plugin": Run(with_plugin=False),
+        "with the plugin": Run(with_plugin=True),
+    }
+)
 
 _FINDING = re.compile(
     r"^(?P<file>.+?):(?P<line>\d+)(?::(?P<column>\d+))? "
@@ -75,6 +93,17 @@ class Finding:
 
 
 @dataclass(frozen=True)
+class Outcome:
+    """What one run must make of a document: whether mdformat writes it back
+    byte for byte, and the exact count of findings for the rule after
+    formatting where the entry pins it, `None` where the status alone
+    decides."""
+
+    unchanged: bool
+    findings: int | None = None
+
+
+@dataclass(frozen=True)
 class Input:
     """One document of a case: where its bytes come from, the case's own
     directory or the shared pool; the status it asserts, the case's unless the
@@ -82,16 +111,19 @@ class Input:
     before formatting, for the case's rule or for any rule when the case names
     none; the rules beside the case's that it reports on some run
     (`incidental`), each on the construct itself, and outside which no rule
-    may appear; and whether mdformat must write it back byte for byte
-    (`unchanged`) or must not (`rewritten`)."""
+    may appear; and what each run must make of it (`outcomes`, by the run's
+    name): the same on both runs for a guaranteed or neutral document, from
+    the entry's `unchanged` or `rewritten`; each run's own for a bridged
+    document, from its `with_plugin` and `without_plugin` tables; and the run
+    without the plugin alone for an unsatisfiable document, since with the
+    plugin nothing is written."""
 
     name: str
     source: Path
     status: str
     findings: int
     incidental: frozenset[str]
-    unchanged: bool
-    rewritten: bool
+    outcomes: Mapping[str, Outcome]
 
     @property
     def shared(self) -> bool:
@@ -128,8 +160,10 @@ def load_case(directory: Path) -> Case:
             f"{manifest}: the corpus does not know the rule {rule!r}; a rule it knows "
             "is one markdownlint ships, MD001 to MD060 less the retired IDs"
         )
-    if status == "bridged" and rule is None:
-        raise ValueError(f"{manifest}: a bridged case names the rule the plugin holds")
+    if status in ("bridged", "unsatisfiable") and rule is None:
+        raise ValueError(
+            f"{manifest}: a {status} case names the rule the plugin holds or refuses"
+        )
     table = data.get("inputs")
     if not isinstance(table, dict) or not table:
         raise ValueError(f"{manifest}: a case lists each of its documents under [inputs.<file>]")
@@ -170,8 +204,6 @@ def load_case(directory: Path) -> Case:
             )
         findings = spec.get("findings") if isinstance(spec, dict) else None
         incidental = spec.get("incidental", []) if isinstance(spec, dict) else None
-        unchanged = spec.get("unchanged", False) if isinstance(spec, dict) else None
-        rewritten = spec.get("rewritten", False) if isinstance(spec, dict) else None
         if not isinstance(findings, int) or isinstance(findings, bool) or findings < 0:
             raise ValueError(f"{manifest}: inputs.{name}.findings must be a count")
         # The rules the document reports beside the case's, listed so that a
@@ -199,17 +231,7 @@ def load_case(directory: Path) -> Case:
             )
         if len(set(incidental)) != len(incidental):
             raise ValueError(f"{manifest}: inputs.{name}.incidental lists a rule twice")
-        # Every document declares the fixed point or the rewrite, so neither is
-        # assumed: exactly one of the two is true.
-        if not isinstance(unchanged, bool) or not isinstance(rewritten, bool):
-            raise ValueError(
-                f"{manifest}: inputs.{name}.unchanged and .rewritten must be true or false"
-            )
-        if unchanged == rewritten:
-            raise ValueError(
-                f"{manifest}: inputs.{name} declares exactly one of unchanged and rewritten, "
-                "so the fixed point or the rewrite is asserted rather than assumed"
-            )
+        outcomes = _outcomes(manifest, name, own_status, spec)
         inputs.append(
             Input(
                 name=name,
@@ -217,8 +239,7 @@ def load_case(directory: Path) -> Case:
                 status=own_status,
                 findings=findings,
                 incidental=frozenset(incidental),
-                unchanged=unchanged,
-                rewritten=rewritten,
+                outcomes=outcomes,
             )
         )
     if rule is not None and not any(item.findings for item in inputs):
@@ -233,6 +254,101 @@ def load_case(directory: Path) -> Case:
         rule=rule,
         inputs=tuple(inputs),
     )
+
+
+def _outcomes(manifest: Path, name: str, status: str, spec: dict) -> Mapping[str, Outcome]:
+    """What each run must make of the document, from the entry: a guaranteed
+    or neutral document declares `unchanged` or `rewritten` once, for both
+    runs, since the plugin changes nothing it asserts; a bridged document
+    declares each run under `with_plugin` and `without_plugin`, since the
+    plugin's output differs from mdformat's own; an unsatisfiable document
+    declares `without_plugin` alone, since with the plugin nothing is written.
+    Every declaration names exactly one of unchanged and rewritten, so the
+    unchanged document or the rewrite is asserted rather than assumed."""
+    top = _unchanged(manifest, f"inputs.{name}", spec)
+    with_plugin = spec.get("with_plugin")
+    without_plugin = spec.get("without_plugin")
+    if status in ("guaranteed", "neutral"):
+        if with_plugin is not None or without_plugin is not None:
+            raise ValueError(
+                f"{manifest}: inputs.{name} is {status}, so the plugin changes nothing the "
+                "status asserts and the entry declares unchanged or rewritten once, for "
+                "both runs, not per run"
+            )
+        if top is None:
+            raise ValueError(
+                f"{manifest}: inputs.{name} declares exactly one of unchanged and rewritten, "
+                "so the unchanged document or the rewrite is asserted rather than assumed"
+            )
+        return MappingProxyType({run: Outcome(unchanged=top) for run in RUNS})
+    if top is not None:
+        raise ValueError(
+            f"{manifest}: inputs.{name} is {status}, so each run is declared under "
+            "with_plugin and without_plugin, not at the top level"
+        )
+    outcomes = {}
+    if status == "bridged":
+        outcomes["with the plugin"] = _run_outcome(manifest, name, "with_plugin", with_plugin, pins=False)
+    elif with_plugin is not None:
+        raise ValueError(
+            f"{manifest}: inputs.{name} is unsatisfiable, so with the plugin nothing is "
+            "written and the entry declares without_plugin alone"
+        )
+    outcomes["without the plugin"] = _run_outcome(
+        manifest, name, "without_plugin", without_plugin, pins=True
+    )
+    return MappingProxyType(outcomes)
+
+
+def _run_outcome(manifest: Path, name: str, key: str, table: object, *, pins: bool) -> Outcome:
+    """One run's declaration: `unchanged` or `rewritten`, exactly one, and for
+    the run without the plugin an optional `findings`, the exact count for
+    the rule after formatting, at least one, since mdformat alone never holds
+    the rule on a bridged or unsatisfiable document."""
+    label = f"inputs.{name}.{key}"
+    if not isinstance(table, dict):
+        raise ValueError(f"{manifest}: {label} is a table declaring unchanged or rewritten")
+    unchanged = _unchanged(manifest, label, table)
+    if unchanged is None:
+        raise ValueError(
+            f"{manifest}: {label} declares exactly one of unchanged and rewritten, so the "
+            "unchanged document or the rewrite is asserted rather than assumed"
+        )
+    findings = table.get("findings")
+    if findings is not None:
+        if not pins:
+            raise ValueError(
+                f"{manifest}: {label}.findings is not declared; with the plugin a bridged "
+                "document reports nothing, which the status asserts"
+            )
+        if not isinstance(findings, int) or isinstance(findings, bool) or findings < 1:
+            raise ValueError(
+                f"{manifest}: {label}.findings pins the count after formatting alone, at "
+                "least one: a count of zero would say mdformat alone holds the rule, which "
+                "is a guaranteed case"
+            )
+    unknown = set(table) - {"unchanged", "rewritten", "findings"}
+    if unknown:
+        raise ValueError(f"{manifest}: {label} has no key {sorted(unknown)[0]!r}")
+    return Outcome(unchanged=unchanged, findings=findings)
+
+
+def _unchanged(manifest: Path, label: str, table: dict) -> bool | None:
+    """`unchanged` or `rewritten` from a table: True or False for the one
+    that is set, None where neither is, and an error where both are or
+    either is not a boolean."""
+    unchanged = table.get("unchanged", False)
+    rewritten = table.get("rewritten", False)
+    if not isinstance(unchanged, bool) or not isinstance(rewritten, bool):
+        raise ValueError(f"{manifest}: {label}.unchanged and .rewritten must be true or false")
+    if unchanged and rewritten:
+        raise ValueError(
+            f"{manifest}: {label} declares exactly one of unchanged and rewritten, so the "
+            "unchanged document or the rewrite is asserted rather than assumed"
+        )
+    if not unchanged and not rewritten:
+        return None
+    return unchanged
 
 
 def cases() -> list[Case]:

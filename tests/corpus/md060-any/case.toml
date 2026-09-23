@@ -2,12 +2,13 @@
 # preset's `aligned`: a table that is neither compact nor aligned is a
 # finding, and mdformat alone pads it to aligned; a compact table reports
 # nothing and is padded to aligned, which the style accepts, and an aligned
-# table is left as it is. A compact table an adopter wants kept compact is
-# the bridged row, pending the plugin.
+# table is left as it is. The plugin derives nothing from `any`, which
+# accepts what mdformat writes either way (ADR-005).
 status = "guaranteed"
 rule = "MD060"
 
 [inputs."misaligned-table.md"]
+from = "misaligned-table.md"
 findings = 1
 rewritten = true
 

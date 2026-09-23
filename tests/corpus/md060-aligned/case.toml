@@ -4,7 +4,8 @@
 # measured as the rule measures it: a wide character counts two columns, a
 # combining character none and an escaped pipe two, and the three documents
 # that carry those are aligned to the rule after formatting. The plugin also
-# derives `compact_tables` as false, pending.
+# derives `compact_tables` as false, which the harness cannot show since it
+# passes mdformat no option; tests/test_derived.py does.
 status = "guaranteed"
 rule = "MD060"
 

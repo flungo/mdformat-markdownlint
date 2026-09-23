@@ -28,6 +28,7 @@ from typing import Any
 
 from ruamel.yaml.error import YAMLError
 
+from mdformat_markdownlint._javascript import truthy
 from mdformat_markdownlint._jsonc import parse_jsonc
 from mdformat_markdownlint._yaml import parse_yaml
 
@@ -109,10 +110,10 @@ def configuration_for(path: Path | None = None, *, cwd: Path | None = None) -> C
         if (
             config is None
             and parent.config is not None
-            and not _truthy((options or {}).get("config"))
+            and not truthy((options or {}).get("config"))
         ):
             config = parent.config
-    effective = config if _truthy(config) else (options or {}).get("config")
+    effective = config if truthy(config) else (options or {}).get("config")
     if not isinstance(effective, dict):
         effective = {}
     return Configuration(
@@ -210,7 +211,7 @@ def _read_options(path: Path) -> dict[str, Any] | None:
             f"{_describe(value)} where an options object is expected"
         )
     config = value.get("config")
-    if isinstance(config, dict) and _truthy(config.get("extends")):
+    if isinstance(config, dict) and truthy(config.get("extends")):
         value["config"] = _extend(config, path, ())
     return value
 
@@ -237,7 +238,7 @@ def _parse_configuration(path: Path, text: str) -> dict[str, Any]:
 
 def _extend(config: dict[str, Any], path: Path, seen: tuple[Path, ...]) -> dict[str, Any]:
     extends = config.get("extends")
-    if not _truthy(extends):
+    if not truthy(extends):
         return config
     if not isinstance(extends, str):
         raise ConfigurationError(
@@ -348,26 +349,13 @@ def _merge_options(first: dict[str, Any], second: dict[str, Any]) -> dict[str, A
     merged = {**first, **second}
     first_config = first.get("config")
     second_config = second.get("config")
-    if _truthy(first_config) or _truthy(second_config):
+    if truthy(first_config) or truthy(second_config):
         merged["config"] = {**_spreadable(first_config), **_spreadable(second_config)}
     return merged
 
 
 def _spreadable(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
-
-
-def _truthy(value: Any) -> bool:
-    """JavaScript's truthiness, which decides what markdownlint-cli2 treats as
-    present: an empty object is present; ``null``, ``false``, zero, ``NaN``
-    and the empty string are not."""
-    if value is None or value is False:
-        return False
-    if isinstance(value, (int, float)):
-        # NaN is the one number unequal to itself, which is how a float is
-        # found to be NaN without importing math for it.
-        return value != 0 and value == value
-    return value != ""
 
 
 def _describe(value: Any) -> str:

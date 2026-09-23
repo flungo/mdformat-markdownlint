@@ -16,6 +16,8 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 | `tests/conftest.py` | The harness: runs both tools and asserts the status |
 | `tests/test_corpus.py` | One test per document, on both runs |
 | `tests/test_plugin.py` | The plugin is registered under its entry point and loads with the contract's extensions |
+| `tests/test_derived.py` | The options the plugin derives from a rule's setting, resolved as markdownlint resolves it, the refusal of a setting mdformat cannot meet or the plugin does not know, and that a derived value replaces mdformat's own, which no case can show since the harness passes mdformat no option |
+| `tests/test_javascript.py` | JavaScript's truthiness, as the plugin decides it where the tools do, against what Node gives |
 | `lychee.toml` | The link check's configuration: the corpus documents it does not read, each one whose construct is a link the check would reject, listed by path; nothing else |
 | `tests/test_link_check.py` | Every path `lychee.toml` excludes is a corpus document that exists |
 | `tests/test_rules.py` | A rule ID the corpus does not know is a failure, not a skip: the installed markdownlint ships exactly the rules the corpus knows, each with its rows in the matrix and a case in the corpus; and a document reports exactly the rules its entry says it does |
@@ -28,29 +30,33 @@ The matrix is the human-readable form of the corpus and the two must agree; a st
 
 | Key | Values | Meaning |
 | -- | -- | -- |
-| `status` | `guaranteed`, `neutral`, `bridged` | The matrix status the case asserts; `unsatisfiable` joins them when the plugin's refusal lands |
-| `rule` | a rule the corpus knows, or absent | The rule the case is about, required for a bridged case; absent, every finding counts, which is what a baseline case asserts. The rules the corpus knows are the ones markdownlint ships, and a case naming any other does not load |
+| `status` | `guaranteed`, `neutral`, `bridged`, `unsatisfiable` | The matrix status the case asserts |
+| `rule` | a rule the corpus knows, or absent | The rule the case is about, required for a bridged or unsatisfiable case; absent, every finding counts, which is what a baseline case asserts. The rules the corpus knows are the ones markdownlint ships, and a case naming any other does not load |
 | `inputs.<file>.from` | a filename, or absent | The pooled document under `tests/documents/` the harness copies into the case under this entry's name; absent, the document is the case's own file of that name. The case's own `.md` files are exactly the entries without `from` |
-| `inputs.<file>.status` | `guaranteed`, `neutral`, `bridged`, or absent | The status this document asserts; absent, the case's. Set on a document whose construct is the exception to the rule's row under the same configuration, such as two adjacent lists under MD004, so the case stays one per configuration and the exception is an entry in it rather than a case of its own; a case naming no rule counts every finding and cannot carry one |
+| `inputs.<file>.status` | `guaranteed`, `neutral`, `bridged`, `unsatisfiable`, or absent | The status this document asserts; absent, the case's. Set on a document whose construct is the exception to the rule's row under the same configuration, such as two adjacent lists under MD004, so the case stays one per configuration and the exception is an entry in it rather than a case of its own; a case naming no rule counts every finding and cannot carry one |
 | `inputs.<file>.findings` | a count | How many findings the document reports before formatting, for the rule or for any rule when the case names none; every `.md` in the directory is listed, and a case naming a rule needs one document above zero, or it proves nothing |
 | `inputs.<file>.incidental` | a list of rules the corpus knows, or absent | The rules beside the case's that the document reports, on some run: a rule outside the list fails the document, and so does a listed rule no run reports, so the list is exact. Each is on the construct itself, never on filler; a case naming no rule counts every finding and cannot carry one |
-| `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a document written in mdformat's own style. Every entry sets exactly one of this and `rewritten`, which the loader enforces |
-| `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a baseline document that is consistent in styles mdformat does not write, so the case cannot quietly stop exercising the formatter. Every entry sets exactly one of this and `unchanged`, which the loader enforces |
+| `inputs.<file>.unchanged` | `true` or `false` | Whether mdformat must write the document back byte for byte, on both runs; set on a guaranteed or neutral document written in mdformat's own style. Such an entry sets exactly one of this and `rewritten`, which the loader enforces; a bridged or unsatisfiable entry declares each run instead, below |
+| `inputs.<file>.rewritten` | `true` or `false` | Whether mdformat must change the document, on both runs; set on a guaranteed or neutral document that is consistent in styles mdformat does not write, a baseline document above all, so the case cannot quietly stop exercising the formatter |
+| `inputs.<file>.with_plugin` | a table with `unchanged` or `rewritten` | For a bridged document, what the run with the plugin must make of it: `unchanged` on the document the plugin writes as it is, `rewritten` otherwise, exactly one. The findings after that run are the status's, none |
+| `inputs.<file>.without_plugin` | a table with `unchanged` or `rewritten`, and `findings` or not | For a bridged or unsatisfiable document, what the run without the plugin must make of it: `unchanged` or `rewritten`, exactly one, and `findings`, the exact count for the rule after mdformat alone formats it, at least one; absent, at least one is asserted, since mdformat alone never holds the rule on such a document. A bridged or unsatisfiable entry declares its runs here and nothing at the top level, and an unsatisfiable one declares this run only, since with the plugin nothing is written |
 
 A case about a rule carries two kinds of document.
 One violates the rule, in one construct per document where the rule has several, with a compliant construct beside it that formatting must not touch; its finding count asserts that exactly the constructs the case is about are what markdownlint reports.
 The other is already what mdformat writes, and is `unchanged`: it proves the setting really is the formatter's output, since a preset value that differed from it would be rewritten, and it proves formatting is stable on compliant input rather than churning it.
-Two documents rather than one is deliberate: the violating document alone shows the rule is satisfied after formatting, and the compliant document shows the fixed point is where the preset says it is.
+In a bridged case it is what mdformat writes under the plugin, unchanged with the plugin and rewritten without, and the entry declares each run: every bridged document is one mdformat alone leaves a finding on, so one mdformat alone also writes as it is belongs in a guaranteed case.
+Two documents rather than one is deliberate: the violating document alone shows the rule is satisfied after formatting, and the compliant document shows the unchanged form is where the preset says it is.
 
 For each document the harness copies the case directory twice, pooled documents included, lints the document, formats it in place, one copy with mdformat and the `gfm`, `tables` and `frontmatter` extensions alone and one with the `markdownlint` extension added, and lints both again.
 Both tools run as the subprocesses an adopter runs, from the case's own directory, so the configuration markdownlint-cli2 discovers is the case's and nothing outside the case reaches either tool.
-The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not; then the document's status, the case's unless its entry says otherwise, decides what the two runs must show:
+The findings before formatting must match the count the case declares, each format must exit zero, an `unchanged` document must come back byte for byte and a `rewritten` one must not, on each run the entry declares it for, and a count the entry pins for a run must be met; then the document's status, the case's unless its entry says otherwise, decides what the two runs must show:
 
 | Status | Without the plugin | With the plugin |
 | -- | -- | -- |
 | `guaranteed` | No finding for the rule; with no rule named, no finding at all | No finding for the rule: the plugin does not break what mdformat alone holds |
-| `bridged` | For a violating document, at least one finding for the rule: mdformat alone does not hold it | No finding for the rule: the plugin is what holds it |
+| `bridged` | At least one finding for the rule, or the count the entry pins: mdformat alone does not hold it on any document of the case | No finding for the rule: the plugin is what holds it |
 | `neutral` | The findings for the rule are the same, by rule and count, as before formatting | The same |
+| `unsatisfiable` | At least one finding for the rule, or the count the entry pins: the setting is one mdformat's output never meets | mdformat stops with a message naming the rule, and the file is left as it was |
 
 A finding for a rule the corpus does not know fails the document it is on, whatever rule the case names, rather than being filtered out with the findings the case is not about.
 That, with the load-time check on `rule` and the test that the installed markdownlint ships exactly the rules the corpus knows, is what makes a rule ID the corpus does not know a failure and never a skip.
@@ -72,7 +78,7 @@ A document is therefore built so that every way formatting could alter what it m
 - **A neutral document is rewritten wherever it can be, by a form of its own construct.**
   Neutrality asserted on a document mdformat leaves byte for byte proves nothing about formatting, so a construct mdformat rewrites sits beside the construct under test, and it is one of the same kind, so the rewrite the assertion runs across is one the rule's own constructs meet: a link's destination in angle brackets or its title in single quotes, a reference definition in mixed case, a blockquote marker with no space after it, a `1)` list marker, a fence of four backticks, a one-dash delimiter row, and beside a heading rule's construct a setext heading.
   Each of those but the last is written back without a finding for any rule.
-  `unchanged` or `rewritten` is declared on every document, which the loader enforces, so the fixed point or the rewrite is asserted rather than assumed.
+  `unchanged` or `rewritten` is declared on every document, for each run where the runs differ, which the loader enforces, so the unchanged document or the rewrite is asserted rather than assumed.
 - **A case names a document that violates its rule**, which the loader enforces.
   A value no document can violate on its own, MD022 at `lines_above` 0, is proven in a form that can, the per-level array beside a value that is violated.
 - **Constructs that behave differently are separate documents.**

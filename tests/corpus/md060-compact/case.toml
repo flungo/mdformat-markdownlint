@@ -1,0 +1,41 @@
+# MD060 table-column-style at `compact` in place of the preset's `aligned`:
+# the plugin derives `compact_tables` as true, so every table is written
+# with one space each side of every pipe and a two-dash delimiter row,
+# which the style accepts and mdformat alone does not write: alone it pads
+# every cell to its column's widest, a finding on every padded pipe, and
+# leaves an aligned table as it is. The table in that form is what the
+# plugin writes, unchanged with it and rewritten by mdformat alone. No
+# document here has an empty cell, which mdformat writes as two spaces and
+# the style rejects: that is the bridge the matrix lists as pending.
+status = "bridged"
+rule = "MD060"
+
+[inputs."aligned-then-compact-tables.md"]
+from = "aligned-then-compact-tables.md"
+findings = 4
+with_plugin = { rewritten = true }
+without_plugin = { rewritten = true, findings = 8 }
+
+[inputs."misaligned-table.md"]
+from = "misaligned-table.md"
+findings = 1
+with_plugin = { rewritten = true }
+without_plugin = { rewritten = true, findings = 2 }
+
+[inputs."compact-tables.md"]
+from = "compact-tables.md"
+findings = 0
+with_plugin = { rewritten = true }
+without_plugin = { rewritten = true, findings = 4 }
+
+[inputs."aligned-tables.md"]
+from = "aligned-tables.md"
+findings = 4
+with_plugin = { rewritten = true }
+without_plugin = { unchanged = true }
+
+[inputs."mdformat-compact-tables.md"]
+from = "mdformat-compact-tables.md"
+findings = 0
+with_plugin = { unchanged = true }
+without_plugin = { rewritten = true, findings = 4 }

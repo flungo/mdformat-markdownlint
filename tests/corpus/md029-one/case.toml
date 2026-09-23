@@ -1,6 +1,8 @@
 # MD029 ol-prefix at the preset's `one`: at mdformat's default, every item
 # after the first is written as `1.`, so an ordered list numbered 1, 2, 3 is
 # rewritten by mdformat alone and a list of ones beside it is left as it is.
+# The plugin also derives `number` as false, which the harness cannot show
+# since it passes mdformat no option; tests/test_derived.py does.
 status = "guaranteed"
 rule = "MD029"
 
@@ -9,5 +11,6 @@ findings = 2
 rewritten = true
 
 [inputs."ones.md"]
+from = "list-of-ones.md"
 findings = 0
 unchanged = true
