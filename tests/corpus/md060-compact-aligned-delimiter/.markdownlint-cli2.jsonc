@@ -1,0 +1,9 @@
+{
+  "config": {
+    "extends": "markdownlint-config-mdformat",
+    "MD060": {
+      "style": "compact",
+      "aligned_delimiter": true
+    }
+  }
+}

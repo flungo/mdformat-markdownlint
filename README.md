@@ -3,7 +3,7 @@
 An [mdformat](https://github.com/hukkin/mdformat) plugin and a [markdownlint](https://github.com/DavidAnson/markdownlint) configuration that keep the two tools in agreement: one style configuration, markdownlint's, and formatter output that lints clean against it.
 
 > **Status: nothing is published yet.**
-> The [compatibility matrix](docs/reference/compatibility-matrix.md) is written, the package skeleton, the corpus and the config package with its cases exist, and the plugin reads the markdownlint configuration as markdownlint-cli2 does; the behaviours that act on it follow.
+> The [compatibility matrix](docs/reference/compatibility-matrix.md) is written, the package skeleton, the corpus and the config package with its cases exist, and the plugin reads the markdownlint configuration as markdownlint-cli2 does and derives mdformat's `number` and `compact_tables` from it; the other behaviours that act on it follow.
 > Progress is tracked in [`docs/plans/build-out.md`](docs/plans/build-out.md).
 
 ## What it will do

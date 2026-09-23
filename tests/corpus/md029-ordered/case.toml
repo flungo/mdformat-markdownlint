@@ -1,0 +1,32 @@
+# MD029 ol-prefix at `ordered` in place of the preset's `one`: the plugin
+# derives `number` as true, so a list is written 1, 2, 3, and from 0, 1, 2
+# where it starts at zero, which the style accepts and mdformat alone does
+# not write: alone it numbers every item after the first `1.`, which is a
+# finding on every item but the second, and leaves a list of ones as it is.
+# The list numbered 1, 2, 3 is what the plugin writes, unchanged with it and
+# rewritten by mdformat alone.
+status = "bridged"
+rule = "MD029"
+
+[inputs."misnumbered-list-from-one.md"]
+from = "misnumbered-list-from-one.md"
+findings = 1
+with_plugin = { rewritten = true }
+without_plugin = { rewritten = true, findings = 2 }
+
+[inputs."misnumbered-list-from-zero.md"]
+findings = 2
+with_plugin = { rewritten = true }
+without_plugin = { rewritten = true, findings = 1 }
+
+[inputs."list-of-ones.md"]
+from = "list-of-ones.md"
+findings = 2
+with_plugin = { rewritten = true }
+without_plugin = { unchanged = true }
+
+[inputs."ordered-list.md"]
+from = "ordered-list.md"
+findings = 0
+with_plugin = { unchanged = true }
+without_plugin = { rewritten = true, findings = 2 }

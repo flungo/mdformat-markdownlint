@@ -1,0 +1,22 @@
+# MD029 ol-prefix at `zero` in place of the preset's `one`: every item must
+# be `0.`, and mdformat writes every item after the first as `1.`, so no
+# list of more than one item can satisfy the style after formatting: a list
+# of ones and a list numbered 1, 2, 3 report every item before and after
+# mdformat alone, and a list of zeros, clean before, is rewritten into a
+# finding. The plugin refuses the setting and writes nothing.
+status = "unsatisfiable"
+rule = "MD029"
+
+[inputs."list-of-ones.md"]
+from = "list-of-ones.md"
+findings = 3
+without_plugin = { unchanged = true }
+
+[inputs."ordered-list.md"]
+from = "ordered-list.md"
+findings = 3
+without_plugin = { rewritten = true }
+
+[inputs."list-of-zeros.md"]
+findings = 0
+without_plugin = { rewritten = true, findings = 2 }

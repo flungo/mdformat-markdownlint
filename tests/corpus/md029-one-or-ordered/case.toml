@@ -1,0 +1,25 @@
+# MD029 ol-prefix at `one_or_ordered`, markdownlint's default in place of
+# the preset's `one`: the style accepts what mdformat writes, every item
+# after the first `1.`, so a misnumbered list and a list numbered 1, 2, 3
+# are rewritten by mdformat alone into a form the style accepts, and a list
+# of ones is left as it is. The plugin derives nothing from the style
+# (ADR-005). A list starting at zero is the exception: mdformat writes it
+# 0, 1, 1, which the style reads as ordered and rejects; the plugin will
+# number that list alone, pending, and no document here has one until then.
+status = "guaranteed"
+rule = "MD029"
+
+[inputs."misnumbered-list-from-one.md"]
+from = "misnumbered-list-from-one.md"
+findings = 1
+rewritten = true
+
+[inputs."ordered-list.md"]
+from = "ordered-list.md"
+findings = 0
+rewritten = true
+
+[inputs."list-of-ones.md"]
+from = "list-of-ones.md"
+findings = 0
+unchanged = true
