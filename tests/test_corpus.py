@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from conftest import (
+    RUNS,
     Case,
     Input,
     cases,
@@ -49,7 +50,7 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
             "no rule but its subject unless its entry lists the rule as incidental"
         )
 
-    for run, with_plugin in (("without the plugin", False), ("with the plugin", True)):
+    for run, spec in RUNS.items():
         # A fresh copy of the whole case per run, pooled documents included, so
         # its configuration travels with it; a case that extends the config
         # package by name resolves it from here too, since the corpus's
@@ -67,23 +68,46 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
             f"{label}: expected {document.findings} finding(s) for {subject} before "
             f"formatting, found {len(before)}: {before}"
         )
-        result = format_file(target, with_plugin=with_plugin)
+        result = format_file(target, with_plugin=spec.with_plugin)
+        if document.status == "unsatisfiable" and spec.with_plugin:
+            # The plugin refuses the setting: mdformat stops, names the rule,
+            # and writes nothing, so there is nothing to lint.
+            assert result.returncode != 0, (
+                f"{label}: unsatisfiable, but with the plugin mdformat formatted it; "
+                "if the plugin holds the rule, the case is bridged"
+            )
+            assert case.rule in result.stderr, (
+                f"{label}: unsatisfiable, but the refusal does not name {case.rule}:\n"
+                f"{result.stderr}"
+            )
+            assert target.read_bytes() == original, (
+                f"{label}: unsatisfiable, but with the plugin the refused file was written"
+            )
+            continue
         assert result.returncode == 0, f"mdformat failed on {label} {run}:\n{result.stderr}"
         linted = lint_file(markdownlint, target)
         beside_the_subject(linted, f"after formatting {run}")
         after = select(linted, case.rule)
-        if document.unchanged:
+        # What the entry declares for this run: the bytes, and the count
+        # after formatting where it pins one.
+        outcome = document.outcomes[run]
+        if outcome.unchanged:
             assert target.read_bytes() == original, (
-                f"{label}: declared unchanged, but formatting {run} rewrote it"
+                f"{label}: declared unchanged {run}, but formatting {run} rewrote it"
             )
-        if document.rewritten:
+        else:
             assert target.read_bytes() != original, (
-                f"{label}: declared rewritten, but formatting {run} left it as it was"
+                f"{label}: declared rewritten {run}, but formatting {run} left it as it was"
+            )
+        if outcome.findings is not None:
+            assert len(after) == outcome.findings, (
+                f"{label}: expected {outcome.findings} finding(s) for {subject} after "
+                f"formatting {run}, found {len(after)}: {after}"
             )
         runs[run] = (before, after)
 
     before, alone = runs["without the plugin"]
-    _, bridged = runs["with the plugin"]
+    _, bridged = runs.get("with the plugin", (None, []))
 
     # The list is exact in both directions: a rule it names that no run
     # reports is a stale entry, and would let the document stop reporting it
@@ -106,11 +130,13 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
             f"file reports {bridged}: the plugin broke it"
         )
     elif status == "bridged":
-        if document.findings:
-            assert alone, (
-                f"{label}: bridged, but mdformat alone already satisfies {case.rule}; "
-                "the case is guaranteed"
-            )
+        # Every bridged document is one the plugin changes: mdformat alone
+        # leaves a finding on it, whether or not it had one before, or the
+        # bridge did nothing and the document belongs in a guaranteed case.
+        assert alone, (
+            f"{label}: bridged, but mdformat alone already satisfies {case.rule}; "
+            "the case is guaranteed"
+        )
         assert not bridged, (
             f"{label}: bridged, but with the plugin the formatted file still reports {bridged}"
         )
@@ -121,6 +147,11 @@ def test_document(case: Case, document: Input, tmp_path: Path, markdownlint: Pat
         )
         assert count_by_rule(bridged) == expected, (
             f"{label}: neutral, but the plugin changed the findings"
+        )
+    elif status == "unsatisfiable":
+        assert alone, (
+            f"{label}: unsatisfiable, but mdformat alone satisfies {case.rule}; "
+            "the setting is one its output can meet, and the refusal is wrong"
         )
     else:  # pragma: no cover
         raise AssertionError(f"unhandled status {status}")
