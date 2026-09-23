@@ -9,6 +9,7 @@ ADRs are numbered sequentially and **never deleted or renumbered** — a superse
 | [002](002-the-compatibility-contract.md) | The compatibility contract: every rule variant is guaranteed, neutral, bridged or refused, and a corpus proves which | Accepted |
 | [003](003-ship-the-preset-as-an-npm-package.md) | Ship the preset as an npm package beside the plugin, versioned independently | Accepted |
 | [004](004-read-yaml-configuration-with-ruamel-under-the-core-schema.md) | Read YAML configuration with ruamel.yaml under a YAML 1.2 core-schema loader | Accepted |
+| [005](005-derive-options-only-from-explicit-settings.md) | Derive mdformat's options only from explicit markdownlint settings | Accepted |
 
 ## Adding a new ADR
 
